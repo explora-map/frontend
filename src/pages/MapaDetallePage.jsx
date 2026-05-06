@@ -7,8 +7,10 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { obterMapaPorId, eliminarMapa, cambiarVisibilidade } from '../services/mapaApi';
 import { listarMarcadores, crearMarcador, eliminarMarcador } from '../services/marcadorApi';
+import { listarCategorias } from '../services/categoriaApi';
 import MapViewer from '../components/MapViewer';
 import ConvitePanel from '../components/ConvitePanel';
+import CategoriaPanel from '../components/CategoriaPanel';
 import '../assets/styles/mapas.css';
 
 export default function MapaDetallePage() {
@@ -21,13 +23,24 @@ export default function MapaDetallePage() {
     const [error, setError] = useState('');
     const [deleting, setDeleting] = useState(false);
     const [toggling, setToggling] = useState(false);
+    const [categorias, setCategorias] = useState([]);
     const [marcadores, setMarcadores] = useState([]);
     const [mostrarFormMarcador, setMostrarFormMarcador] = useState(false);
+    const [categoriaId, setCategoriaId] = useState('');
     const [nomeMarcador, setNomeMarcador] = useState('');
     const [descMarcador, setDescMarcador] = useState('');
     const [coordsMarcador, setCoordsMarcador] = useState(null);
     const [erroMarcador, setErroMarcador] = useState('');
     const [gardandoMarcador, setGardandoMarcador] = useState(false);
+
+    const loadCategorias = useCallback(async () => {
+        try {
+            const data = await listarCategorias(id);
+            setCategorias(data);
+        } catch {
+            setError('Non foi posible cargar as categorías.');
+        }
+    }, [id]);
 
     const loadMarcadores = useCallback(async () => {
         try {
@@ -46,7 +59,8 @@ export default function MapaDetallePage() {
             .catch(() => setError('Non foi posible cargar o mapa.'))
             .finally(() => setLoading(false));
         loadMarcadores();
-    }, [id, loadMarcadores]);
+        loadCategorias();
+    }, [id, loadMarcadores, loadCategorias]);
 
     const isOwner = mapa?.creadoPor === username;
 
@@ -69,6 +83,7 @@ export default function MapaDetallePage() {
         setErroMarcador('');
         setGardandoMarcador(false);
         setMostrarFormMarcador(false);
+        setCategoriaId('');
     }
 
     async function handleCrearMarcador() {
@@ -88,6 +103,7 @@ export default function MapaDetallePage() {
                 descricion: descMarcador,
                 latitude: coordsMarcador.lat,
                 lonxitude: coordsMarcador.lng,
+                categoriaId: categoriaId || null,
             });
             resetFormMarcador();
             await loadMarcadores();
@@ -219,6 +235,23 @@ export default function MapaDetallePage() {
                             rows={3}
                         />
                     </div>
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="categoriaId">Categoría (opcional)</label>
+                        <select
+                            id="categoriaId"
+                            className="form-input"
+                            value={categoriaId}
+                            onChange={(e) => setCategoriaId(e.target.value)}
+                            disabled={gardandoMarcador}
+                        >
+                            <option value="">Sen categoría</option>
+                            {categorias.map((categoria) => (
+                                <option key={categoria.id} value={categoria.id}>
+                                    [{categoria.cor}] {categoria.nome}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                     {erroMarcador && <p className="form-error">{erroMarcador}</p>}
                     <div className="form-marcador__btns">
                         <button
@@ -237,6 +270,7 @@ export default function MapaDetallePage() {
                                 setCoordsMarcador(null);
                                 setErroMarcador('');
                                 setGardandoMarcador(false);
+                                setCategoriaId('');
                             }}
                             disabled={gardandoMarcador}
                         >
@@ -253,6 +287,12 @@ export default function MapaDetallePage() {
                         {marcadores.map((marcador) => (
                             <li key={marcador.id} className="marcador-item">
                                 <span className="marcador-item__nome">{marcador.nome}</span>
+                                {marcador.categoriaNome && (
+                                    <span>
+                                        <span style={{ backgroundColor: marcador.categoriaCor, width: 12, height: 12, display: 'inline-block', borderRadius: '50%', marginRight: 6 }} />
+                                        <span style={{ color: 'grey' }}>{marcador.categoriaNome}</span>
+                                    </span>
+                                )}
                                 <span className="marcador-item__coords">
                                     Lat: {marcador.latitude.toFixed(4)} · Lng: {marcador.lonxitude.toFixed(4)}
                                 </span>
@@ -269,6 +309,13 @@ export default function MapaDetallePage() {
                     </ul>
                 </div>
             )}
+
+            <CategoriaPanel
+                mapaId={id}
+                esPropietario={mapa.creadoPor === username}
+                categorias={categorias}
+                onCambio={async () => { await loadCategorias(); await loadMarcadores(); }}
+            />
 
             <div className="detalle__info">
                 {mapa.descricion && (
