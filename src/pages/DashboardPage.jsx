@@ -1,34 +1,12 @@
 // DashboardPage.jsx
 //
 // Protected page — only reachable if authenticated (ProtectedRoute wraps it).
-// Shows:
-//   - Welcome message with the logged-in username
-//   - Token expiration time from JwtResponseDTO
-//   - Sprint 1 debug section with truncated token values
-//
-// The debug section MUST be removed before any production deployment.
+// Shows a welcome message and quick links to the main Sprint 3 sections.
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { getAccessToken, getRefreshToken } from '../services/axiosInstance';
 import '../assets/styles/dashboard.css';
-
-// Truncate a token string for safe display — never log full tokens
-function truncate(token, head = 20, tail = 10) {
-    if (!token) return '—';
-    if (token.length <= head + tail + 3) return token;
-    return `${token.slice(0, head)}…${token.slice(-tail)}`;
-}
-
-function formatExpiry(isoString) {
-    if (!isoString) return 'Unknown';
-    try {
-        return new Date(isoString).toLocaleString();
-    } catch {
-        return isoString;
-    }
-}
 
 export default function DashboardPage() {
     const { username, tokenExpiration, isLoggingOut, logout } = useAuth();
@@ -39,6 +17,15 @@ export default function DashboardPage() {
         navigate('/login', { replace: true });
     }
 
+    function formatExpiry(isoString) {
+        if (!isoString) return 'Unknown';
+        try {
+            return new Date(isoString).toLocaleString();
+        } catch {
+            return isoString;
+        }
+    }
+
     return (
         <div className="dashboard">
             {/* ---- Topbar ---- */}
@@ -47,13 +34,59 @@ export default function DashboardPage() {
                     <div className="dashboard__brand-dot" />
                     Explora Map
                 </div>
-                <button
-                    className="dashboard__logout"
-                    onClick={handleLogout}
-                    disabled={isLoggingOut}
-                >
-                    {isLoggingOut ? 'Logging out…' : 'Log out'}
-                </button>
+                <nav style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <Link
+                        to="/mapas"
+                        style={{
+                            fontSize: 'var(--font-size-sm)',
+                            fontWeight: 500,
+                            color: 'var(--color-text-secondary)',
+                            textDecoration: 'none',
+                            padding: '4px 10px',
+                            borderRadius: 'var(--radius-sm)',
+                            transition: 'color 150ms, background 150ms',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.color = 'var(--color-primary)';
+                            e.currentTarget.style.background = 'var(--color-primary-light)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.color = 'var(--color-text-secondary)';
+                            e.currentTarget.style.background = 'transparent';
+                        }}
+                    >
+                        Os meus mapas
+                    </Link>
+                    <Link
+                        to="/convites"
+                        style={{
+                            fontSize: 'var(--font-size-sm)',
+                            fontWeight: 500,
+                            color: 'var(--color-text-secondary)',
+                            textDecoration: 'none',
+                            padding: '4px 10px',
+                            borderRadius: 'var(--radius-sm)',
+                            transition: 'color 150ms, background 150ms',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.color = 'var(--color-primary)';
+                            e.currentTarget.style.background = 'var(--color-primary-light)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.color = 'var(--color-text-secondary)';
+                            e.currentTarget.style.background = 'transparent';
+                        }}
+                    >
+                        Convites
+                    </Link>
+                    <button
+                        className="dashboard__logout"
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                    >
+                        {isLoggingOut ? 'Logging out…' : 'Log out'}
+                    </button>
+                </nav>
             </header>
 
             {/* ---- Main content ---- */}
@@ -61,7 +94,7 @@ export default function DashboardPage() {
                 {/* Welcome card */}
                 <section className="dashboard__welcome">
                     <h1 className="dashboard__welcome-heading">
-                        Welcome, <span>{username || 'traveller'}</span> 👋
+                        Welcome, <span>{username || 'traveller'}</span>
                     </h1>
                     <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-md)' }}>
                         You are authenticated. Your maps are ready.
@@ -72,62 +105,53 @@ export default function DashboardPage() {
                     </div>
                 </section>
 
-                {/* Auth status + debug info */}
+                {/* Quick navigation */}
                 <section className="dashboard__auth-status">
                     <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, marginBottom: 'var(--space-4)', letterSpacing: '-0.01em' }}>
-                        Authentication status
+                        Quick navigation
                     </h2>
-
-                    {/* --------------------------------------------------------
-              SPRINT 1 DEBUG INFO — REMOVE BEFORE PRODUCTION
-              Displays truncated token values to confirm the full
-              auth flow is working end-to-end against the backend.
-              -------------------------------------------------------- */}
-                    <div className="debug-banner" aria-label="Debug information — Sprint 1 only">
-                        ⚠ Sprint 1 debug info — remove before production
+                    <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
+                        <Link
+                            to="/mapas"
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 'var(--space-2)',
+                                padding: 'var(--space-3) var(--space-6)',
+                                background: 'var(--color-primary)',
+                                color: '#fff',
+                                borderRadius: 'var(--radius-md)',
+                                fontWeight: 600,
+                                fontSize: 'var(--font-size-sm)',
+                                textDecoration: 'none',
+                                transition: 'background 150ms',
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--color-primary-hover)')}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--color-primary)')}
+                        >
+                            Os meus mapas
+                        </Link>
+                        <Link
+                            to="/convites"
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 'var(--space-2)',
+                                padding: 'var(--space-3) var(--space-6)',
+                                background: 'var(--color-primary-light)',
+                                color: 'var(--color-primary)',
+                                borderRadius: 'var(--radius-md)',
+                                fontWeight: 600,
+                                fontSize: 'var(--font-size-sm)',
+                                textDecoration: 'none',
+                                transition: 'background 150ms',
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = '#ddd6fe')}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--color-primary-light)')}
+                        >
+                            Convites
+                        </Link>
                     </div>
-
-                    <table className="token-table">
-                        <thead>
-                            <tr>
-                                <th>Property</th>
-                                <th>Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Status</td>
-                                <td>
-                                    <span className="status-ok">● Authenticated</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Username</td>
-                                <td>
-                                    <span className="token-value">{username || '—'}</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Token expiry</td>
-                                <td>
-                                    <span className="token-value">{formatExpiry(tokenExpiration)}</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Access token</td>
-                                <td>
-                                    <span className="token-value">{truncate(getAccessToken())}</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Refresh token</td>
-                                <td>
-                                    <span className="token-value">{truncate(getRefreshToken())}</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    {/* END SPRINT 1 DEBUG INFO */}
                 </section>
             </main>
         </div>
