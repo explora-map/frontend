@@ -12,58 +12,60 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { register } from '../services/authApi';
 import FormInput from '../components/FormInput';
+import usePasswordStrength from '../hooks/usePasswordStrength';
 import '../assets/styles/auth.css';
 
-// ---- Validation rules (matching backend constraints) ---- //
-function validate(fields) {
+function validate(fields, t) {
     const errors = {};
 
     if (!fields.nome.trim()) {
-        errors.nome = 'Name is required.';
+        errors.nome = t('auth.rexistro.validNomeObrigatorio');
     } else if (fields.nome.trim().length < 3) {
-        errors.nome = 'Name must be at least 3 characters.';
+        errors.nome = t('auth.rexistro.validNomeCurto');
     } else if (fields.nome.trim().length > 20) {
-        errors.nome = 'Name must be 20 characters or fewer.';
+        errors.nome = t('auth.rexistro.validNomeLongo');
     }
 
     if (!fields.username.trim()) {
-        errors.username = 'Username is required.';
+        errors.username = t('auth.rexistro.validUsernameObrigatorio');
     } else if (fields.username.trim().length < 4) {
-        errors.username = 'Username must be at least 4 characters.';
+        errors.username = t('auth.rexistro.validUsernameCurto');
     } else if (fields.username.trim().length > 20) {
-        errors.username = 'Username must be 20 characters or fewer.';
+        errors.username = t('auth.rexistro.validUsernameLongo');
     }
 
     if (!fields.correo.trim()) {
-        errors.correo = 'Email is required.';
+        errors.correo = t('auth.rexistro.validCorreoObrigatorio');
     } else if (fields.correo.trim().length < 8) {
-        errors.correo = 'Email must be at least 8 characters.';
+        errors.correo = t('auth.rexistro.validCorreoCurto');
     } else if (fields.correo.trim().length > 50) {
-        errors.correo = 'Email must be 50 characters or fewer.';
+        errors.correo = t('auth.rexistro.validCorreoLongo');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.correo.trim())) {
-        errors.correo = 'Enter a valid email address.';
+        errors.correo = t('auth.rexistro.validCorreoFormato');
     }
 
     if (!fields.password) {
-        errors.password = 'Password is required.';
+        errors.password = t('auth.rexistro.validClaveObrigatoria');
     } else if (fields.password.length < 8) {
-        errors.password = 'Password must be at least 8 characters.';
+        errors.password = t('auth.rexistro.validClaveCurta');
     } else if (fields.password.length > 40) {
-        errors.password = 'Password must be 40 characters or fewer.';
+        errors.password = t('auth.rexistro.validClaveLonga');
     }
 
     if (!fields.confirmPassword) {
-        errors.confirmPassword = 'Please confirm your password.';
+        errors.confirmPassword = t('auth.rexistro.validConfirmarClaveObrigatoria');
     } else if (fields.password !== fields.confirmPassword) {
-        errors.confirmPassword = 'Passwords do not match.';
+        errors.confirmPassword = t('auth.rexistro.validClavesNonCoiniciden');
     }
 
     return errors;
 }
 
 export default function RegisterPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const [fields, setFields] = useState({
@@ -79,8 +81,15 @@ export default function RegisterPage() {
     const [touched, setTouched] = useState({});
     const [serverError, setServerError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [rexistrado, setRexistrado] = useState(false);
 
-    const errors = validate(fields);
+    const passwordStrength = usePasswordStrength(fields.password ?? '', {
+        weak: t('contrasinal.debil'),
+        moderate: t('contrasinal.moderado'),
+        strong: t('contrasinal.forte'),
+    });
+
+    const errors = validate(fields, t);
     // Only show an error if the field has been touched OR we've tried to submit
     const [submitAttempted, setSubmitAttempted] = useState(false);
     const visibleErrors = Object.fromEntries(
@@ -118,10 +127,8 @@ export default function RegisterPage() {
                 password: fields.password,
             });
 
-            // Registration succeeded → go to login with a success message
-            navigate('/login', {
-                state: { successMessage: 'Account created! You can now log in.' },
-            });
+            // Registration succeeded → show email verification prompt
+            setRexistrado(true);
         } catch (err) {
             // Parse backend 400 error messages.
             // The Spring Boot backend returns either a string or a structured body.
@@ -135,18 +142,42 @@ export default function RegisterPage() {
                 } else if (responseData?.error) {
                     setServerError(responseData.error);
                 } else {
-                    setServerError(
-                        'Registration failed. The username or email may already be taken.',
-                    );
+                    setServerError(t('auth.rexistro.errorDuplicado'));
                 }
             } else {
-                setServerError(
-                    'An unexpected error occurred. Please try again later.',
-                );
+                setServerError(t('auth.rexistro.errorXenerico'));
             }
         } finally {
             setIsSubmitting(false);
         }
+    }
+
+    if (rexistrado) {
+        return (
+            <div className="auth-page">
+                <div className="auth-card">
+                    <div className="verificar-card__icona verificar-card__icona--ok" style={{ margin: '0 auto' }} aria-hidden="true">
+                        <span style={{ display: 'inline-flex', width: '32px', height: '32px', position: 'relative' }}>
+                            <span style={{ position: 'absolute', top: '60%', left: '15%', width: '30%', height: '3px', backgroundColor: 'currentColor', borderRadius: '2px', transform: 'rotate(45deg)', transformOrigin: 'left center' }} />
+                            <span style={{ position: 'absolute', top: '45%', left: '35%', width: '55%', height: '3px', backgroundColor: 'currentColor', borderRadius: '2px', transform: 'rotate(-45deg)', transformOrigin: 'left center' }} />
+                        </span>
+                    </div>
+                    <h1 className="auth-card__titulo" style={{ textAlign: 'center' }}>
+                        Revisa o teu correo
+                    </h1>
+                    <p style={{ textAlign: 'center', fontSize: 'var(--text-sm)', color: 'var(--color-neutral-600)', lineHeight: 'var(--leading-relaxed)' }}>
+                        Enviámosche un correo de verificación. Preme na ligazón para activar a túa conta.
+                    </p>
+                    <button
+                        className="btn btn--secondary"
+                        style={{ width: '100%' }}
+                        onClick={() => navigate('/login')}
+                    >
+                        Ir ao login
+                    </button>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -157,9 +188,9 @@ export default function RegisterPage() {
                     <span className="auth-card__logo-name">Explora Map</span>
                 </div>
 
-                <h1 className="auth-card__title">Create an account</h1>
+                <h1 className="auth-card__title">{t('auth.rexistro.titulo')}</h1>
                 <p className="auth-card__subtitle">
-                    Start creating and sharing your custom maps.
+                    {t('auth.rexistro.subtitulo')}
                 </p>
 
                 {serverError && (
@@ -171,13 +202,13 @@ export default function RegisterPage() {
                 <form className="auth-form" onSubmit={handleSubmit} noValidate>
                     <FormInput
                         id="nome"
-                        label="Full name"
+                        label={t('auth.rexistro.campaNome')}
                         type="text"
                         value={fields.nome}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={visibleErrors.nome}
-                        placeholder="Ada Lovelace"
+                        placeholder={t('auth.rexistro.placeholderNome')}
                         autoComplete="name"
                         required
                         disabled={isSubmitting}
@@ -185,13 +216,13 @@ export default function RegisterPage() {
 
                     <FormInput
                         id="username"
-                        label="Username"
+                        label={t('auth.rexistro.campoUsuaria')}
                         type="text"
                         value={fields.username}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={visibleErrors.username}
-                        placeholder="adalove"
+                        placeholder={t('auth.rexistro.placeholderUsuaria')}
                         autoComplete="username"
                         required
                         disabled={isSubmitting}
@@ -199,13 +230,13 @@ export default function RegisterPage() {
 
                     <FormInput
                         id="correo"
-                        label="Email address"
+                        label={t('auth.rexistro.campoCorreo')}
                         type="email"
                         value={fields.correo}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={visibleErrors.correo}
-                        placeholder="ada@example.com"
+                        placeholder={t('auth.rexistro.placeholderCorreo')}
                         autoComplete="email"
                         required
                         disabled={isSubmitting}
@@ -213,27 +244,47 @@ export default function RegisterPage() {
 
                     <FormInput
                         id="password"
-                        label="Password"
+                        label={t('auth.rexistro.campoClave')}
                         type="password"
                         value={fields.password}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={visibleErrors.password}
-                        placeholder="8–40 characters"
+                        placeholder={t('auth.rexistro.placeholderClave')}
                         autoComplete="new-password"
                         required
                         disabled={isSubmitting}
                     />
 
+                    {passwordStrength.visible && (
+                        <div className="password-strength" aria-live="polite" aria-atomic="true">
+                            <div className="password-strength__bar-track">
+                                <div
+                                    className="password-strength__bar-fill"
+                                    style={{
+                                        width: `${passwordStrength.pct}%`,
+                                        backgroundColor: passwordStrength.color,
+                                    }}
+                                />
+                            </div>
+                            <span
+                                className="password-strength__label"
+                                style={{ color: passwordStrength.color }}
+                            >
+                                {passwordStrength.label}
+                            </span>
+                        </div>
+                    )}
+
                     <FormInput
                         id="confirmPassword"
-                        label="Confirm password"
+                        label={t('auth.rexistro.campoConfirmarClave')}
                         type="password"
                         value={fields.confirmPassword}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={visibleErrors.confirmPassword}
-                        placeholder="Repeat your password"
+                        placeholder={t('auth.rexistro.placeholderConfirmarClave')}
                         autoComplete="new-password"
                         required
                         disabled={isSubmitting}
@@ -247,17 +298,17 @@ export default function RegisterPage() {
                         {isSubmitting ? (
                             <>
                                 <span className="spinner" aria-hidden="true" />
-                                Creating account…
+                                {t('auth.rexistro.cargando')}
                             </>
                         ) : (
-                            'Create account'
+                            t('auth.rexistro.botonRexistrar')
                         )}
                     </button>
                 </form>
 
                 <p className="auth-footer">
-                    Already have an account?{' '}
-                    <Link to="/login">Log in</Link>
+                    {t('auth.rexistro.textoFooter')}{' '}
+                    <Link to="/login">{t('auth.rexistro.ligazonLoginTexto')}</Link>
                 </p>
             </div>
         </div>

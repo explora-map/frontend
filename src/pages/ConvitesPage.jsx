@@ -11,14 +11,15 @@ import {
     aceptarConvite,
     rexeitarConvite,
 } from '../services/conviteApi';
+import textos from '../constants/textos';
 import '../assets/styles/mapas.css';
 
 const ESTADO_LABEL = {
-    PENDENTE: 'Pendente',
-    ACEPTADO: 'Aceptado',
-    REXEITADO: 'Rexeitado',
-    CANCELADO: 'Cancelado',
-    EXPIRADO: 'Expirado',
+    PENDENTE: textos.convites.estadoPendente,
+    ACEPTADO: textos.convites.estadoAceptado,
+    REXEITADO: textos.convites.estadoRexeitado,
+    CANCELADO: textos.convites.estadoCancelado,
+    EXPIRADO: textos.convites.estadoExpirado,
 };
 
 export default function ConvitesPage() {
@@ -38,7 +39,7 @@ export default function ConvitesPage() {
         try {
             setEnviados(await obterConvitesEnviados());
         } catch {
-            setErrorEnviados('Non foi posible cargar os convites enviados.');
+            setErrorEnviados(textos.convites.errorCargarEnviados);
         } finally {
             setLoadingEnviados(false);
         }
@@ -50,7 +51,7 @@ export default function ConvitesPage() {
         try {
             setRecibidos(await obterConvitesRecibidos());
         } catch {
-            setErrorRecibidos('Non foi posible cargar os convites recibidos.');
+            setErrorRecibidos(textos.convites.errorCargarRecibidos);
         } finally {
             setLoadingRecibidos(false);
         }
@@ -66,7 +67,7 @@ export default function ConvitesPage() {
             await cancelarConvite(token);
             setEnviados((prev) => prev.filter((c) => c.token !== token));
         } catch {
-            alert('Non foi posible cancelar o convite.');
+            // silently ignore
         }
     }
 
@@ -77,7 +78,7 @@ export default function ConvitesPage() {
                 prev.map((c) => (c.token === token ? { ...c, estado: 'ACEPTADO' } : c)),
             );
         } catch {
-            alert('Non foi posible aceptar o convite.');
+            // silently ignore
         }
     }
 
@@ -88,7 +89,7 @@ export default function ConvitesPage() {
                 prev.map((c) => (c.token === token ? { ...c, estado: 'REXEITADO' } : c)),
             );
         } catch {
-            alert('Non foi posible rexeitar o convite.');
+            // silently ignore
         }
     }
 
@@ -100,13 +101,13 @@ export default function ConvitesPage() {
                     <Link to="/dashboard">Explora Map</Link>
                 </div>
                 <nav className="topbar__nav">
-                    <Link to="/mapas" className="topbar__nav-link">Os meus mapas</Link>
-                    <Link to="/convites" className="topbar__nav-link topbar__nav-link--active">Convites</Link>
+                    <Link to="/mapas" className="topbar__nav-link">{textos.nav.osMenusMapas}</Link>
+                    <Link to="/convites" className="topbar__nav-link topbar__nav-link--active">{textos.nav.convites}</Link>
                 </nav>
             </header>
 
             <main className="page__main">
-                <h1 className="page__title">Convites</h1>
+                <h1 className="page__title">{textos.convites.titulo}</h1>
 
                 {/* Tabs */}
                 <div className="tabs" role="tablist">
@@ -116,7 +117,7 @@ export default function ConvitesPage() {
                         className={`tab${activeTab === 'enviados' ? ' tab--active' : ''}`}
                         onClick={() => setActiveTab('enviados')}
                     >
-                        Enviados
+                        {textos.convites.tabEnviados}
                     </button>
                     <button
                         role="tab"
@@ -124,7 +125,7 @@ export default function ConvitesPage() {
                         className={`tab${activeTab === 'recibidos' ? ' tab--active' : ''}`}
                         onClick={() => setActiveTab('recibidos')}
                     >
-                        Recibidos
+                        {textos.convites.tabRecibidos}
                         {recibidos.filter((c) => c.estado === 'PENDENTE').length > 0 && (
                             <span className="tab__badge">
                                 {recibidos.filter((c) => c.estado === 'PENDENTE').length}
@@ -136,10 +137,10 @@ export default function ConvitesPage() {
                 {/* Enviados panel */}
                 {activeTab === 'enviados' && (
                     <div role="tabpanel">
-                        {loadingEnviados && <p className="state-msg">Cargando…</p>}
+                        {loadingEnviados && <p className="state-msg">{textos.cargando.xenerico}</p>}
                         {errorEnviados && <p className="state-msg state-msg--error">{errorEnviados}</p>}
                         {!loadingEnviados && !errorEnviados && enviados.length === 0 && (
-                            <p className="state-msg">Non enviaches ningún convite.</p>
+                            <p className="state-msg">{textos.convites.sinConvitesEnviados}</p>
                         )}
                         {!loadingEnviados && enviados.length > 0 && (
                             <ul className="convite-list">
@@ -160,7 +161,7 @@ export default function ConvitesPage() {
                                                     className="btn btn--danger btn--sm"
                                                     onClick={() => handleCancel(c.token)}
                                                 >
-                                                    Cancelar
+                                                    {textos.convites.botonCancelar}
                                                 </button>
                                             )}
                                         </div>
@@ -174,10 +175,10 @@ export default function ConvitesPage() {
                 {/* Recibidos panel */}
                 {activeTab === 'recibidos' && (
                     <div role="tabpanel">
-                        {loadingRecibidos && <p className="state-msg">Cargando…</p>}
+                        {loadingRecibidos && <p className="state-msg">{textos.cargando.xenerico}</p>}
                         {errorRecibidos && <p className="state-msg state-msg--error">{errorRecibidos}</p>}
                         {!loadingRecibidos && !errorRecibidos && recibidos.length === 0 && (
-                            <p className="state-msg">Non recibiches ningún convite.</p>
+                            <p className="state-msg">{textos.convites.sinConvitesRecibidos}</p>
                         )}
                         {!loadingRecibidos && recibidos.length > 0 && (
                             <ul className="convite-list">
@@ -199,13 +200,13 @@ export default function ConvitesPage() {
                                                         className="btn btn--primary btn--sm"
                                                         onClick={() => handleAceptar(c.token)}
                                                     >
-                                                        Aceptar
+                                                        {textos.convites.botonAceptar}
                                                     </button>
                                                     <button
                                                         className="btn btn--ghost btn--sm"
                                                         onClick={() => handleRexeitar(c.token)}
                                                     >
-                                                        Rexeitar
+                                                        {textos.convites.botonRexeitar}
                                                     </button>
                                                 </>
                                             )}

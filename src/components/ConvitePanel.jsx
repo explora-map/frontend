@@ -4,13 +4,14 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { enviarConvite, obterConvitesEnviados, cancelarConvite } from '../services/conviteApi';
+import textos from '../constants/textos';
 
 const ESTADO_LABEL = {
-    PENDENTE: 'Pendente',
-    ACEPTADO: 'Aceptado',
-    REXEITADO: 'Rexeitado',
-    CANCELADO: 'Cancelado',
-    EXPIRADO: 'Expirado',
+    PENDENTE: textos.convites.estadoPendente,
+    ACEPTADO: textos.convites.estadoAceptado,
+    REXEITADO: textos.convites.estadoRexeitado,
+    CANCELADO: textos.convites.estadoCancelado,
+    EXPIRADO: textos.convites.estadoExpirado,
 };
 
 export default function ConvitePanel({ mapaId }) {
@@ -30,7 +31,7 @@ export default function ConvitePanel({ mapaId }) {
             const all = await obterConvitesEnviados();
             setConvites(all.filter((c) => c.mapaId === mapaId));
         } catch {
-            setFetchError('Non foi posible cargar os convites.');
+            setFetchError(textos.convites.errorCargarPanel);
         } finally {
             setLoading(false);
         }
@@ -50,12 +51,12 @@ export default function ConvitePanel({ mapaId }) {
         setSendSuccess('');
         try {
             await enviarConvite(mapaId, trimmed);
-            setSendSuccess(`Convite enviado a ${trimmed}.`);
+            setSendSuccess(textos.convites.conviteEnviado(trimmed));
             setUsername('');
             await loadConvites();
         } catch (err) {
             setSendError(
-                err.response?.data?.message || 'Non foi posible enviar o convite.',
+                err.response?.data?.message || textos.convites.errorEnviar,
             );
         } finally {
             setSending(false);
@@ -67,43 +68,43 @@ export default function ConvitePanel({ mapaId }) {
             await cancelarConvite(token);
             setConvites((prev) => prev.filter((c) => c.token !== token));
         } catch {
-            alert('Non foi posible cancelar o convite.');
+            // silently ignore — the invite remains visible if the request fails
         }
     }
 
     return (
         <div className="convite-panel">
-            <h3 className="convite-panel__title">Convidar usuario</h3>
+            <h3 className="convite-panel__title">{textos.convites.tituloPanel}</h3>
 
             <form className="convite-panel__form" onSubmit={handleSend}>
                 <input
                     className="convite-panel__input"
                     type="text"
-                    placeholder="Nome de usuario"
+                    placeholder={textos.convites.placeholderUsuaria}
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     disabled={sending}
-                    aria-label="Nome de usuario a convidar"
+                    aria-label={textos.convites.ariaConvidar}
                 />
                 <button
                     className="convite-panel__send-btn"
                     type="submit"
                     disabled={sending || !username.trim()}
                 >
-                    {sending ? 'Enviando…' : 'Enviar'}
+                    {sending ? textos.convites.enviando : textos.convites.botonEnviar}
                 </button>
             </form>
 
             {sendError && <p className="convite-panel__msg convite-panel__msg--error">{sendError}</p>}
             {sendSuccess && <p className="convite-panel__msg convite-panel__msg--success">{sendSuccess}</p>}
 
-            <h4 className="convite-panel__subtitle">Convites enviados</h4>
+            <h4 className="convite-panel__subtitle">{textos.convites.subtituloEnviados}</h4>
 
-            {loading && <p className="convite-panel__state">Cargando…</p>}
+            {loading && <p className="convite-panel__state">{textos.convites.cargandoPanel}</p>}
             {fetchError && <p className="convite-panel__msg convite-panel__msg--error">{fetchError}</p>}
 
             {!loading && !fetchError && convites.length === 0 && (
-                <p className="convite-panel__state">Non hai convites enviados para este mapa.</p>
+                <p className="convite-panel__state">{textos.convites.sinConvitesMapa}</p>
             )}
 
             {!loading && convites.length > 0 && (
@@ -118,9 +119,9 @@ export default function ConvitePanel({ mapaId }) {
                                 <button
                                     className="convite-panel__cancel-btn"
                                     onClick={() => handleCancel(c.token)}
-                                    title="Cancelar convite"
+                                    title={textos.convites.titleCancelar}
                                 >
-                                    Cancelar
+                                    {textos.convites.botonCancelar}
                                 </button>
                             )}
                         </li>

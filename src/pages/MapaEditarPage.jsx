@@ -8,6 +8,7 @@ import { useAuth } from '../hooks/useAuth';
 import { obterMapaPorId, editarMapa } from '../services/mapaApi';
 import FormInput from '../components/FormInput';
 import MapViewer from '../components/MapViewer';
+import textos from '../constants/textos';
 import '../assets/styles/mapas.css';
 
 export default function MapaEditarPage() {
@@ -45,16 +46,16 @@ export default function MapaEditarPage() {
                 setLat(mapa.latitude);
                 setLng(mapa.lonxitude);
             })
-            .catch(() => setFetchError('Non foi posible cargar o mapa.'))
+            .catch(() => setFetchError(textos.mapas.errorCargarMapa))
             .finally(() => setLoadingMap(false));
     }, [id, username, navigate]);
 
     function validate() {
         const e = {};
-        if (!nome.trim()) e.nome = 'O nome é obrigatorio.';
-        else if (nome.trim().length > 100) e.nome = 'O nome non pode superar 100 caracteres.';
-        if (!nomeLocalizacion.trim()) e.nomeLocalizacion = 'A localización é obrigatoria.';
-        else if (nomeLocalizacion.trim().length > 200) e.nomeLocalizacion = 'A localización non pode superar 200 caracteres.';
+        if (!nome.trim()) e.nome = textos.mapas.validNomeObrigatorio;
+        else if (nome.trim().length > 100) e.nome = textos.mapas.validNomeLongo;
+        if (!nomeLocalizacion.trim()) e.nomeLocalizacion = textos.mapas.validLocalizacionObrigatoria;
+        else if (nomeLocalizacion.trim().length > 200) e.nomeLocalizacion = textos.mapas.validLocalizacionLonga;
         return e;
     }
 
@@ -85,7 +86,7 @@ export default function MapaEditarPage() {
             navigate(`/mapas/${id}`);
         } catch (err) {
             setServerError(
-                err.response?.data?.message || 'Non foi posible gardar os cambios.',
+                err.response?.data?.message || textos.mapas.errorEditarMapa,
             );
         } finally {
             setSubmitting(false);
@@ -95,7 +96,7 @@ export default function MapaEditarPage() {
     if (loadingMap) {
         return (
             <PageShell id={id}>
-                <p className="state-msg">Cargando mapa…</p>
+                <p className="state-msg">{textos.cargando.mapa}</p>
             </PageShell>
         );
     }
@@ -111,9 +112,9 @@ export default function MapaEditarPage() {
     return (
         <PageShell id={id}>
             <div className="page__back">
-                <Link to={`/mapas/${id}`} className="back-link">← Volver ao mapa</Link>
+                <Link to={`/mapas/${id}`} className="back-link">{textos.mapas.voltarAoMapa}</Link>
             </div>
-            <h1 className="page__title">Editar mapa</h1>
+            <h1 className="page__title">{textos.mapas.tituloPaxinaEditar}</h1>
 
             {serverError && (
                 <div className="alert alert--error">{serverError}</div>
@@ -122,60 +123,60 @@ export default function MapaEditarPage() {
             <form className="mapa-form" onSubmit={handleSubmit} noValidate>
                 <FormInput
                     id="nome"
-                    label="Nome"
+                    label={textos.mapas.campoNomeLabel}
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
                     onBlur={() => {
-                        if (!nome.trim()) setErrors((p) => ({ ...p, nome: 'O nome é obrigatorio.' }));
+                        if (!nome.trim()) setErrors((p) => ({ ...p, nome: textos.mapas.validNomeObrigatorio }));
                         else setErrors((p) => ({ ...p, nome: undefined }));
                     }}
                     error={errors.nome}
-                    placeholder="Nome do mapa"
+                    placeholder={textos.mapas.placeholderNome}
                     required
                 />
 
                 <div className="field">
-                    <label htmlFor="descricion" className="field__label">Descrición</label>
+                    <label htmlFor="descricion" className="field__label">{textos.mapas.campoDescripcion}</label>
                     <textarea
                         id="descricion"
                         className="field__textarea"
                         value={descricion}
                         onChange={(e) => setDescricion(e.target.value)}
-                        placeholder="Descrición opcional…"
+                        placeholder={textos.mapas.placeholderDescripcion}
                         rows={3}
                     />
                 </div>
 
                 <FormInput
                     id="nomeLocalizacion"
-                    label="Nome da localización"
+                    label={textos.mapas.campoNomeLocalizacion}
                     value={nomeLocalizacion}
                     onChange={(e) => setNomeLocalizacion(e.target.value)}
                     onBlur={() => {
-                        if (!nomeLocalizacion.trim()) setErrors((p) => ({ ...p, nomeLocalizacion: 'A localización é obrigatoria.' }));
+                        if (!nomeLocalizacion.trim()) setErrors((p) => ({ ...p, nomeLocalizacion: textos.mapas.validLocalizacionObrigatoria }));
                         else setErrors((p) => ({ ...p, nomeLocalizacion: undefined }));
                     }}
                     error={errors.nomeLocalizacion}
-                    placeholder="Ex: Santiago de Compostela"
+                    placeholder={textos.mapas.placeholderNomeLocalizacion}
                     required
                 />
 
                 <div className="field">
-                    <label htmlFor="tipo" className="field__label">Visibilidade</label>
+                    <label htmlFor="tipo" className="field__label">{textos.mapas.campoVisibilidade}</label>
                     <select
                         id="tipo"
                         className="field__select"
                         value={tipo}
                         onChange={(e) => setTipo(e.target.value)}
                     >
-                        <option value="PUBLICO">Público</option>
-                        <option value="PRIVADO">Privado</option>
+                        <option value="PUBLICO">{textos.mapas.opcionPublico}</option>
+                        <option value="PRIVADO">{textos.mapas.opcionPrivado}</option>
                     </select>
                 </div>
 
                 <div className="field">
-                    <label className="field__label">Localización no mapa</label>
-                    <p className="field__hint">Arrastra o marcador ou fai clic para cambiar a localización.</p>
+                    <label className="field__label">{textos.mapas.etiquetaLocalizacion}</label>
+                    <p className="field__hint">{textos.mapas.axudaLocalizacionEditar}</p>
                     <MapViewer
                         latitude={lat}
                         lonxitude={lng}
@@ -198,14 +199,14 @@ export default function MapaEditarPage() {
                         onClick={() => navigate(`/mapas/${id}`)}
                         disabled={submitting}
                     >
-                        Cancelar
+                        {textos.mapas.botonCancelar}
                     </button>
                     <button
                         type="submit"
                         className="btn btn--primary"
                         disabled={submitting}
                     >
-                        {submitting ? 'Gardando…' : 'Gardar cambios'}
+                        {submitting ? textos.cargando.gardando : textos.mapas.botonGardarCambios}
                     </button>
                 </div>
             </form>
@@ -222,8 +223,8 @@ function PageShell({ id, children }) {
                     <Link to="/dashboard">Explora Map</Link>
                 </div>
                 <nav className="topbar__nav">
-                    <Link to="/mapas" className="topbar__nav-link">Os meus mapas</Link>
-                    <Link to="/convites" className="topbar__nav-link">Convites</Link>
+                    <Link to="/mapas" className="topbar__nav-link">{textos.nav.osMenusMapas}</Link>
+                    <Link to="/convites" className="topbar__nav-link">{textos.nav.convites}</Link>
                 </nav>
             </header>
             <main className="page__main page__main--narrow">{children}</main>

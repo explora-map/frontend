@@ -53,3 +53,11 @@ export async function logout(refreshToken) {
     const response = await publicAxios.post('/logout', { refreshToken });
     return response.data;
 }
+
+// ------------------------------------------------------------------ //
+//  VERIFY EMAIL
+// ------------------------------------------------------------------ //
+export async function verificarConta(token) {
+    const response = await publicAxios.get(`/verificar?token=${encodeURIComponent(token)}`);
+    return response.data;
+}

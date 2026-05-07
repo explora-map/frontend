@@ -24,6 +24,27 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({ iconUrl: markerIcon, shadowUrl: markerShadow });
 
+function crearIconoMarcador(cor = '#7C52E8') {
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
+          <path
+            d="M14 2C8.477 2 4 6.477 4 12c0 7.418 8.667 20.167 9.04 20.708a1.167 1.167 0 0 0 1.92 0C15.333 32.167 24 19.418 24 12c0-5.523-4.477-10-10-10z"
+            fill="white"
+            stroke="${cor}"
+            stroke-width="2.5"
+          />
+          <circle cx="14" cy="12" r="4" fill="${cor}" />
+        </svg>
+    `;
+    return L.divIcon({
+        html: svg,
+        className: '',
+        iconSize: [28, 36],
+        iconAnchor: [14, 36],
+        popupAnchor: [0, -36],
+    });
+}
+
 export default function MapViewer({
     latitude,
     lonxitude,
@@ -99,7 +120,10 @@ export default function MapViewer({
         if (!mapRef.current) return;
         marcadoresRefs.current.forEach((m) => m.remove());
         marcadoresRefs.current = marcadores.map((item) =>
-            L.marker([item.latitude, item.lonxitude])
+            L.marker(
+                [item.latitude, item.lonxitude],
+                { icon: crearIconoMarcador(item.cor || item.categoriaCor || '#7C52E8') },
+            )
                 .addTo(mapRef.current)
                 .bindPopup(item.nome),
         );

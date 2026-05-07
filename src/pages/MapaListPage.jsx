@@ -4,13 +4,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
 import { obterMeusMaps } from '../services/mapaApi';
 import MapaCard from '../components/MapaCard';
+import textos from '../constants/textos';
 import '../assets/styles/mapas.css';
 
 export default function MapaListPage() {
-    const { username } = useAuth();
     const navigate = useNavigate();
 
     const [mapas, setMapas] = useState([]);
@@ -24,7 +23,7 @@ export default function MapaListPage() {
             const data = await obterMeusMaps();
             setMapas(data);
         } catch {
-            setError('Non foi posible cargar os teus mapas. Inténtao de novo.');
+            setError(textos.mapas.errorCargar);
         } finally {
             setLoading(false);
         }
@@ -34,12 +33,12 @@ export default function MapaListPage() {
         loadMapas();
     }, [loadMapas]);
 
-    function handleDeleted(id) {
-        setMapas((prev) => prev.filter((m) => m.id !== id));
+    function handleEliminar(mapaId) {
+        setMapas((prev) => prev.filter((m) => m.id !== mapaId));
     }
 
-    function handleVisibilityChanged(updated) {
-        setMapas((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
+    function handleVisibilidadeCambiada(mapaActualizado) {
+        setMapas((prev) => prev.map((m) => (m.id === mapaActualizado.id ? mapaActualizado : m)));
     }
 
     return (
@@ -51,34 +50,34 @@ export default function MapaListPage() {
                     <Link to="/dashboard">Explora Map</Link>
                 </div>
                 <nav className="topbar__nav">
-                    <Link to="/mapas" className="topbar__nav-link topbar__nav-link--active">Os meus mapas</Link>
-                    <Link to="/convites" className="topbar__nav-link">Convites</Link>
+                    <Link to="/mapas" className="topbar__nav-link topbar__nav-link--active">{textos.nav.osMenusMapas}</Link>
+                    <Link to="/convites" className="topbar__nav-link">{textos.nav.convites}</Link>
                 </nav>
             </header>
 
             <main className="page__main">
                 <div className="page__header">
-                    <h1 className="page__title">Os meus mapas</h1>
+                    <h1 className="page__title">{textos.mapas.titulo}</h1>
                     <button
                         className="btn btn--primary"
                         onClick={() => navigate('/mapas/novo')}
                     >
-                        + Novo mapa
+                        {textos.mapas.botonNovo}
                     </button>
                 </div>
 
-                {loading && <p className="state-msg">Cargando mapas…</p>}
+                {loading && <p className="state-msg">{textos.cargando.mapas}</p>}
 
                 {error && <p className="state-msg state-msg--error">{error}</p>}
 
                 {!loading && !error && mapas.length === 0 && (
                     <div className="empty-state">
-                        <p>Aínda non tes mapas.</p>
+                        <p>{textos.mapas.sinMapasSimple}</p>
                         <button
                             className="btn btn--primary"
                             onClick={() => navigate('/mapas/novo')}
                         >
-                            Crea o teu primeiro mapa
+                            {textos.mapas.crearPrimeiro}
                         </button>
                     </div>
                 )}
@@ -89,9 +88,8 @@ export default function MapaListPage() {
                             <MapaCard
                                 key={mapa.id}
                                 mapa={mapa}
-                                currentUsername={username}
-                                onDeleted={handleDeleted}
-                                onVisibilityChanged={handleVisibilityChanged}
+                                onEliminar={handleEliminar}
+                                onVisibilidadeCambiada={handleVisibilidadeCambiada}
                             />
                         ))}
                     </div>

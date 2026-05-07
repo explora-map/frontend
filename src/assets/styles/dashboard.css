@@ -1,15 +1,24 @@
 .dashboard {
+    /* Aliases para variables antigas usadas en estilos inline do JSX */
+    --color-primary:        var(--color-primary-500);
+    --color-primary-hover:  var(--color-primary-600);
+    --color-primary-light:  var(--color-primary-100);
+    --color-text-secondary: var(--color-neutral-500);
+    --font-size-sm:         var(--text-sm);
+    --font-size-md:         var(--text-base);
+    --font-size-lg:         var(--text-lg);
+
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--color-background);
+    background: var(--color-bg);
 }
 
 /* ---- Topbar ---- */
 .dashboard__topbar {
     height: 56px;
     background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-neutral-200);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -25,8 +34,8 @@
     align-items: center;
     gap: var(--space-2);
     font-weight: 700;
-    font-size: var(--font-size-lg);
-    color: var(--color-text-primary);
+    font-size: var(--text-lg);
+    color: var(--color-neutral-900);
     letter-spacing: -0.02em;
 }
 
@@ -34,34 +43,44 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: var(--color-primary);
+    background: var(--color-primary-500);
 }
 
 .dashboard__logout {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
     padding: var(--space-2) var(--space-4);
-    background: transparent;
-    border: 1.5px solid var(--color-border);
+    background-color: transparent;
+    border: 1.5px solid var(--color-neutral-200);
     border-radius: var(--radius-md);
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    transition: border-color 150ms, color 150ms, background 150ms;
+    color: var(--color-neutral-500);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    font-family: var(--font-ui);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    transition:
+        border-color     var(--duration-normal) var(--ease-default),
+        color            var(--duration-normal) var(--ease-default),
+        background-color var(--duration-normal) var(--ease-default);
 }
 
 .dashboard__logout:hover {
     border-color: var(--color-error);
     color: var(--color-error);
-    background: var(--color-error-light);
+    background-color: var(--color-error-bg);
 }
 
 .dashboard__logout:focus-visible {
-    outline: 3px solid var(--color-primary);
+    outline: 3px solid var(--color-primary-500);
     outline-offset: 3px;
 }
 
 .dashboard__logout:disabled {
     opacity: 0.5;
-    cursor: not-allowed;
+    pointer-events: none;
 }
 
 /* ---- Main content ---- */
@@ -79,33 +98,33 @@
 /* ---- Welcome card ---- */
 .dashboard__welcome {
     background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-neutral-200);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
     box-shadow: var(--shadow-sm);
 }
 
 .dashboard__welcome-heading {
-    font-size: var(--font-size-xl);
+    font-size: var(--text-xl);
     font-weight: 700;
-    color: var(--color-text-primary);
+    color: var(--color-neutral-900);
     letter-spacing: -0.02em;
     margin-bottom: var(--space-2);
 }
 
 .dashboard__welcome-heading span {
-    color: var(--color-primary);
+    color: var(--color-primary-500);
 }
 
 .dashboard__expiry {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    background: var(--color-primary-light);
-    color: var(--color-primary);
+    background: var(--color-primary-100);
+    color: var(--color-primary-500);
     border-radius: var(--radius-sm);
     padding: var(--space-1) var(--space-3);
-    font-size: var(--font-size-sm);
+    font-size: var(--text-sm);
     font-weight: 500;
     margin-top: var(--space-3);
 }
@@ -114,23 +133,23 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--color-primary);
+    background: var(--color-primary-500);
     flex-shrink: 0;
 }
 
 /* ---- Auth status card ---- */
 .dashboard__auth-status {
     background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-neutral-200);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
     box-shadow: var(--shadow-sm);
 }
 
 .dashboard__auth-status h3 {
-    font-size: var(--font-size-md);
+    font-size: var(--text-base);
     font-weight: 600;
-    color: var(--color-text-primary);
+    color: var(--color-neutral-900);
     margin-bottom: var(--space-4);
     display: flex;
     align-items: center;
@@ -141,7 +160,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-1);
-    background: var(--color-success-light);
+    background: var(--color-success-bg);
     color: var(--color-success);
     border-radius: 9999px;
     padding: 2px var(--space-2);
@@ -155,7 +174,7 @@
 .token-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: var(--font-size-sm);
+    font-size: var(--text-sm);
 }
 
 .token-table th {
@@ -164,30 +183,30 @@
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
+    color: var(--color-neutral-500);
     padding: var(--space-2) var(--space-3);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-neutral-200);
 }
 
 .token-table td {
     padding: var(--space-3);
-    border-bottom: 1px solid var(--color-border);
-    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-neutral-200);
+    color: var(--color-neutral-500);
     vertical-align: top;
 }
 
 .token-table td:first-child {
     font-weight: 500;
-    color: var(--color-text-primary);
+    color: var(--color-neutral-900);
     white-space: nowrap;
     width: 140px;
 }
 
 .token-value {
-    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-family: var(--font-code);
     font-size: 12px;
-    background: var(--color-background);
-    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    border: 1px solid var(--color-neutral-200);
     border-radius: var(--radius-sm);
     padding: 2px var(--space-2);
     word-break: break-all;
@@ -197,12 +216,12 @@
 
 /* ---- Debug banner ---- */
 .debug-banner {
-    background: #FFF7ED;
-    border: 1.5px dashed #F59E0B;
+    background: var(--color-warning-bg);
+    border: 1.5px dashed var(--color-warning-border);
     border-radius: var(--radius-sm);
     padding: var(--space-2) var(--space-4);
-    font-size: var(--font-size-sm);
-    color: #92400E;
+    font-size: var(--text-sm);
+    color: var(--color-warning);
     font-weight: 500;
     display: flex;
     align-items: center;

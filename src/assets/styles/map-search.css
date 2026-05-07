@@ -1,0 +1,145 @@
+/* ============================================================
+   map-search.css
+   Barra de busca de enderezos con Nominatim.
+   ============================================================ */
+
+.map-search {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+}
+
+.map-search__input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: rgba(247, 245, 251, 0.95);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--color-neutral-300);
+    border-radius: var(--radius-full);
+    padding: var(--space-2) var(--space-3);
+    gap: var(--space-2);
+    box-shadow: var(--shadow-md);
+    transition:
+        border-color var(--duration-normal) var(--ease-default),
+        box-shadow   var(--duration-normal) var(--ease-default);
+}
+
+.map-search__input-wrapper:focus-within {
+    border-color: var(--color-primary-500);
+    box-shadow: var(--shadow-focus);
+}
+
+.map-search__icona-busca {
+    color: var(--color-neutral-400);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.map-search__input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: var(--text-sm);
+    color: var(--color-neutral-800);
+    outline: none;
+    min-width: 0;
+    font-family: var(--font-ui);
+}
+
+.map-search__input::placeholder {
+    color: var(--color-neutral-400);
+}
+
+.map-search__input::-webkit-search-cancel-button {
+    display: none;
+}
+
+.map-search__spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--color-neutral-200);
+    border-top-color: var(--color-primary-500);
+    border-radius: var(--radius-full);
+    animation: spin 0.6s linear infinite;
+    flex-shrink: 0;
+}
+
+.map-search__btn-limpar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-full);
+    color: var(--color-neutral-400);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+        color            var(--duration-fast) var(--ease-default),
+        background-color var(--duration-fast) var(--ease-default);
+}
+
+.map-search__btn-limpar:hover {
+    color: var(--color-neutral-700);
+    background-color: var(--color-neutral-200);
+}
+
+.map-search__resultados {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 0;
+    right: 0;
+    background-color: var(--color-surface);
+    border: var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-dropdown);
+    overflow: hidden;
+    animation: menu-in var(--duration-normal) var(--ease-spring);
+    max-height: 280px;
+    overflow-y: auto;
+    list-style: none;
+}
+
+.map-search__resultado-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-default);
+    border-bottom: var(--border-default);
+}
+
+.map-search__resultado-item:last-child {
+    border-bottom: none;
+}
+
+.map-search__resultado-item:hover,
+.map-search__resultado-item:focus {
+    background-color: var(--color-primary-50);
+    outline: none;
+}
+
+.map-search__resultado-icona {
+    color: var(--color-primary-400);
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.map-search__resultado-texto {
+    font-size: var(--text-sm);
+    color: var(--color-neutral-700);
+    line-height: var(--leading-relaxed);
+}
+
+.map-search__erro {
+    font-size: var(--text-xs);
+    color: var(--color-neutral-500);
+    padding: var(--space-2) var(--space-3);
+    text-align: center;
+}

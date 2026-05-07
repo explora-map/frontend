@@ -6,6 +6,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import textos from '../constants/textos';
 import '../assets/styles/dashboard.css';
 
 export default function DashboardPage() {
@@ -18,7 +19,7 @@ export default function DashboardPage() {
     }
 
     function formatExpiry(isoString) {
-        if (!isoString) return 'Unknown';
+        if (!isoString) return textos.dashboard.descoñecido;
         try {
             return new Date(isoString).toLocaleString();
         } catch {
@@ -55,7 +56,7 @@ export default function DashboardPage() {
                             e.currentTarget.style.background = 'transparent';
                         }}
                     >
-                        Os meus mapas
+                        {textos.nav.osMenusMapas}
                     </Link>
                     <Link
                         to="/convites"
@@ -77,14 +78,14 @@ export default function DashboardPage() {
                             e.currentTarget.style.background = 'transparent';
                         }}
                     >
-                        Convites
+                        {textos.nav.convites}
                     </Link>
                     <button
                         className="dashboard__logout"
                         onClick={handleLogout}
                         disabled={isLoggingOut}
                     >
-                        {isLoggingOut ? 'Logging out…' : 'Log out'}
+                        {isLoggingOut ? textos.nav.pechando : textos.nav.pecharSesion}
                     </button>
                 </nav>
             </header>
@@ -94,21 +95,21 @@ export default function DashboardPage() {
                 {/* Welcome card */}
                 <section className="dashboard__welcome">
                     <h1 className="dashboard__welcome-heading">
-                        Welcome, <span>{username || 'traveller'}</span>
+                        {textos.dashboard.benvida} <span>{username || textos.dashboard.viaxeira}</span>
                     </h1>
                     <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-md)' }}>
-                        You are authenticated. Your maps are ready.
+                        {textos.dashboard.subtitulo}
                     </p>
                     <div className="dashboard__expiry">
                         <span className="dashboard__expiry-dot" />
-                        Token expires: {formatExpiry(tokenExpiration)}
+                        {textos.dashboard.expiracioToken} {formatExpiry(tokenExpiration)}
                     </div>
                 </section>
 
                 {/* Quick navigation */}
                 <section className="dashboard__auth-status">
                     <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, marginBottom: 'var(--space-4)', letterSpacing: '-0.01em' }}>
-                        Quick navigation
+                        {textos.dashboard.navegacionRapida}
                     </h2>
                     <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
                         <Link
@@ -129,7 +130,7 @@ export default function DashboardPage() {
                             onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--color-primary-hover)')}
                             onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--color-primary)')}
                         >
-                            Os meus mapas
+                            {textos.nav.osMenusMapas}
                         </Link>
                         <Link
                             to="/convites"
@@ -149,7 +150,7 @@ export default function DashboardPage() {
                             onMouseEnter={(e) => (e.currentTarget.style.background = '#ddd6fe')}
                             onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--color-primary-light)')}
                         >
-                            Convites
+                            {textos.nav.convites}
                         </Link>
                     </div>
                 </section>

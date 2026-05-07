@@ -1,0 +1,182 @@
+.config-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.config-page__titulo {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-neutral-900);
+  letter-spacing: var(--tracking-tight);
+}
+
+.config-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.config-section__titulo {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  border-bottom: var(--border-default);
+  padding-bottom: var(--space-3);
+}
+
+.config-section__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Language selector */
+.idioma-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.idioma-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-default);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-normal) var(--ease-default),
+    background-color var(--duration-normal) var(--ease-default),
+    box-shadow var(--duration-normal) var(--ease-default);
+  text-align: left;
+  font-family: var(--font-ui);
+}
+
+.idioma-option:hover {
+  border-color: var(--color-primary-400);
+  background-color: var(--color-primary-50);
+}
+
+.idioma-option--activo {
+  border-color: var(--color-primary-500);
+  background-color: var(--color-primary-50);
+  box-shadow: var(--shadow-focus);
+}
+
+.idioma-option__bandeira {
+  font-size: var(--text-xl);
+  line-height: 1;
+}
+
+.idioma-option__nome {
+  flex: 1;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-neutral-800);
+}
+
+.idioma-option__check {
+  color: var(--color-primary-500);
+  display: flex;
+  align-items: center;
+}
+
+/* Theme selector */
+.tema-selector {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.tema-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-6);
+  border: var(--border-default);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  cursor: pointer;
+  transition: border-color var(--duration-normal) var(--ease-default);
+  font-family: var(--font-ui);
+  position: relative;
+}
+
+.tema-option--activo {
+  border-color: var(--color-primary-500);
+  background-color: var(--color-primary-50);
+}
+
+.tema-option--proximamente {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tema-option__icona {
+  color: var(--color-neutral-600);
+  display: flex;
+}
+
+.tema-option--activo .tema-option__icona {
+  color: var(--color-primary-500);
+}
+
+.tema-option__nome {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-neutral-700);
+}
+
+.tema-option__badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--color-neutral-200);
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  font-weight: var(--font-medium);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-family: var(--font-ui);
+  white-space: nowrap;
+}
+
+/* Feedback messages */
+.config-feedback {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+}
+
+.config-feedback--ok {
+  color: var(--color-success);
+  background-color: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+}
+
+.config-feedback--erro {
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+}
+
+@media (max-width: 640px) {
+  .config-page {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .tema-selector {
+    flex-direction: column;
+  }
+}

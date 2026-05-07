@@ -9,32 +9,34 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { login as apiLogin } from '../services/authApi';
 import { useAuth } from '../hooks/useAuth';
 import FormInput from '../components/FormInput';
 import '../assets/styles/auth.css';
 
-function validate(fields) {
+function validate(fields, t) {
     const errors = {};
 
     if (!fields.username.trim()) {
-        errors.username = 'Username is required.';
+        errors.username = t('auth.login.validNomeObrigatorio');
     } else if (fields.username.trim().length < 3) {
-        errors.username = 'Username must be at least 3 characters.';
+        errors.username = t('auth.login.validNomeCurto');
     } else if (fields.username.trim().length > 50) {
-        errors.username = 'Username must be 50 characters or fewer.';
+        errors.username = t('auth.login.validNomeLongo');
     }
 
     if (!fields.password) {
-        errors.password = 'Password is required.';
+        errors.password = t('auth.login.validClaveObrigatoria');
     } else if (fields.password.length < 8) {
-        errors.password = 'Password must be at least 8 characters.';
+        errors.password = t('auth.login.validClaveCurta');
     }
 
     return errors;
 }
 
 export default function LoginPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
     const { login } = useAuth();
@@ -50,7 +52,7 @@ export default function LoginPage() {
     const [serverError, setServerError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const errors = validate(fields);
+    const errors = validate(fields, t);
     const visibleErrors = Object.fromEntries(
         Object.entries(errors).filter(
             ([key]) => touched[key] || submitAttempted,
@@ -87,10 +89,13 @@ export default function LoginPage() {
             // Navigate to the originally requested route or dashboard
             navigate(from, { replace: true });
         } catch (err) {
-            if (err.response?.status === 401 || err.response?.status === 400) {
-                setServerError('Invalid username or password.');
+            if (err.response?.status === 403) {
+                // Account not verified — show backend message directly
+                setServerError(err.response?.data?.message || t('auth.login.errorCredenciais'));
+            } else if (err.response?.status === 401 || err.response?.status === 400) {
+                setServerError(t('auth.login.errorCredenciais'));
             } else {
-                setServerError('An unexpected error occurred. Please try again later.');
+                setServerError(t('auth.login.errorXenerico'));
             }
         } finally {
             setIsSubmitting(false);
@@ -105,8 +110,8 @@ export default function LoginPage() {
                     <span className="auth-card__logo-name">Explora Map</span>
                 </div>
 
-                <h1 className="auth-card__title">Welcome back</h1>
-                <p className="auth-card__subtitle">Log in to your account.</p>
+                <h1 className="auth-card__title">{t('auth.login.benvida')}</h1>
+                <p className="auth-card__subtitle">{t('auth.login.subtitulo')}</p>
 
                 {successMessage && (
                     <div className="auth-alert auth-alert--success" role="status">
@@ -123,13 +128,13 @@ export default function LoginPage() {
                 <form className="auth-form" onSubmit={handleSubmit} noValidate>
                     <FormInput
                         id="username"
-                        label="Username"
+                        label={t('auth.login.campoUsuaria')}
                         type="text"
                         value={fields.username}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={visibleErrors.username}
-                        placeholder="Your username"
+                        placeholder={t('auth.login.placeholderUsuaria')}
                         autoComplete="username"
                         required
                         disabled={isSubmitting}
@@ -137,13 +142,13 @@ export default function LoginPage() {
 
                     <FormInput
                         id="password"
-                        label="Password"
+                        label={t('auth.login.campoClave')}
                         type="password"
                         value={fields.password}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={visibleErrors.password}
-                        placeholder="Your password"
+                        placeholder={t('auth.login.placeholderClave')}
                         autoComplete="current-password"
                         required
                         disabled={isSubmitting}
@@ -157,17 +162,17 @@ export default function LoginPage() {
                         {isSubmitting ? (
                             <>
                                 <span className="spinner" aria-hidden="true" />
-                                Logging in…
+                                {t('auth.login.cargando')}
                             </>
                         ) : (
-                            'Log in'
+                            t('auth.login.botonEntrar')
                         )}
                     </button>
                 </form>
 
                 <p className="auth-footer">
-                    Don't have an account?{' '}
-                    <Link to="/register">Create one</Link>
+                    {t('auth.login.textoFooter')}{' '}
+                    <Link to="/rexistro">{t('auth.login.ligazonRexistroTexto')}</Link>
                 </p>
             </div>
         </div>

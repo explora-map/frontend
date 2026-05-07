@@ -1,10 +1,14 @@
 // App.jsx
 // Router setup. All routes defined here.
-// ProtectedRoute wraps any page that requires authentication.
+// AppLayout provides Sidebar + Notificacions for all routes that need it.
+// ProtectedRoute guards authenticated routes using nested <Outlet />.
 
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './store/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import AppLayout from './components/AppLayout';
+import VisualizarMapasPanel from './components/VisualizarMapasPanel';
 
 // Sprint 2 pages
 import RegisterPage from './pages/RegisterPage';
@@ -18,83 +22,54 @@ import MapaDetallePage from './pages/MapaDetallePage';
 import MapaEditarPage from './pages/MapaEditarPage';
 import ConvitesPage from './pages/ConvitesPage';
 
-function Protected({ children }) {
-    return <ProtectedRoute>{children}</ProtectedRoute>;
-}
+// Sprint 5 pages
+import MapaPrincipalPage from './pages/MapaPrincipalPage';
+
+// Sprint 6 pages
+import ConfiguracionPage from './pages/ConfiguracionPage';
+import PerfilPage from './pages/PerfilPage';
+import VerificarPage from './pages/VerificarPage';
 
 export default function App() {
+    const [panelVisualizar, setPanelVisualizar] = useState(false);
+
     return (
         <BrowserRouter>
-            {/*
-                AuthProvider wraps the entire router so that all pages
-                and the ProtectedRoute component can access auth state.
-            */}
             <AuthProvider>
+                {/* Panel renderizado fóra das rutas para persistir entre navegacións */}
+                <VisualizarMapasPanel
+                    isOpen={panelVisualizar}
+                    onClose={() => setPanelVisualizar(false)}
+                />
+
                 <Routes>
-                    {/* Public routes */}
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/login"    element={<LoginPage />} />
+                    {/* Rutas públicas sen layout */}
+                    <Route path="/login"     element={<LoginPage />} />
+                    <Route path="/rexistro"  element={<RegisterPage />} />
+                    <Route path="/verificar" element={<VerificarPage />} />
 
-                    {/* Protected routes — Sprint 2 */}
-                    <Route
-                        path="/dashboard"
-                        element={
-                            <Protected>
-                                <DashboardPage />
-                            </Protected>
-                        }
-                    />
+                    {/* Ruta pública con layout (Sidebar visible sen autenticación) */}
+                    <Route element={<AppLayout onVisualizarClick={() => setPanelVisualizar(prev => !prev)} />}>
+                        <Route path="/" element={<MapaPrincipalPage />} />
+                    </Route>
 
-                    {/* Protected routes — Sprint 3: maps */}
-                    <Route
-                        path="/mapas"
-                        element={
-                            <Protected>
-                                <MapaListPage />
-                            </Protected>
-                        }
-                    />
-                    <Route
-                        path="/mapas/novo"
-                        element={
-                            <Protected>
-                                <MapaCrearPage />
-                            </Protected>
-                        }
-                    />
-                    {/*
-                        /mapas/novo must be declared before /mapas/:id so that
-                        React Router does not treat "novo" as a dynamic segment.
-                    */}
-                    <Route
-                        path="/mapas/:id"
-                        element={
-                            <Protected>
-                                <MapaDetallePage />
-                            </Protected>
-                        }
-                    />
-                    <Route
-                        path="/mapas/:id/editar"
-                        element={
-                            <Protected>
-                                <MapaEditarPage />
-                            </Protected>
-                        }
-                    />
+                    {/* Rutas protexidas con layout */}
+                    <Route element={<ProtectedRoute />}>
+                        <Route element={<AppLayout onVisualizarClick={() => setPanelVisualizar(prev => !prev)} />}>
+                            <Route path="/dashboard"        element={<DashboardPage />} />
+                            <Route path="/mapas"            element={<MapaListPage />} />
+                            {/* /mapas/novo antes de /mapas/:id para evitar conflito de segmento */}
+                            <Route path="/mapas/novo"       element={<MapaCrearPage />} />
+                            <Route path="/mapas/:id"        element={<MapaDetallePage />} />
+                            <Route path="/mapas/:id/editar" element={<MapaEditarPage />} />
+                            <Route path="/convites"         element={<ConvitesPage />} />
+                            <Route path="/configuracion"    element={<ConfiguracionPage />} />
+                            <Route path="/perfil"           element={<PerfilPage />} />
+                        </Route>
+                    </Route>
 
-                    {/* Protected routes — Sprint 3: invitations */}
-                    <Route
-                        path="/convites"
-                        element={
-                            <Protected>
-                                <ConvitesPage />
-                            </Protected>
-                        }
-                    />
-
-                    {/* Default redirect */}
-                    <Route path="*" element={<Navigate to="/login" replace />} />
+                    {/* Calquera ruta descoñecida vai ao mapa público */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </AuthProvider>
         </BrowserRouter>

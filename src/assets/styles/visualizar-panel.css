@@ -1,0 +1,230 @@
+/* ============================================================
+   visualizar-panel.css
+   Drawer de visualización de mapas + toggle switches + skeleton.
+   ============================================================ */
+
+.visualizar-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+    background-color: var(--color-surface);
+    border-left: var(--border-default);
+    box-shadow: var(--shadow-xl);
+    z-index: var(--z-sidebar);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform var(--duration-slow) var(--ease-default);
+}
+
+.visualizar-panel--open {
+    transform: translateX(0);
+}
+
+.visualizar-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4);
+    border-bottom: var(--border-default);
+    flex-shrink: 0;
+}
+
+.visualizar-panel__titulo {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--color-neutral-900);
+}
+
+.visualizar-panel__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+/* ---- Mapa item ---- */
+.mapa-toggle-item {
+    border: var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.mapa-toggle-item__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background-color: var(--color-surface-elevated);
+}
+
+.mapa-toggle-item__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mapa-toggle-item__nome {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-neutral-800);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mapa-toggle-item__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+}
+
+.mapa-toggle-item__count {
+    font-size: var(--text-xs);
+    color: var(--color-neutral-500);
+}
+
+.mapa-toggle-item__categorias {
+    padding: var(--space-2) var(--space-3) var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    border-top: var(--border-default);
+    background-color: var(--color-surface);
+}
+
+.categoria-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-default);
+    width: 100%;
+    text-align: left;
+}
+
+.categoria-toggle:hover {
+    background-color: var(--color-neutral-100);
+}
+
+.categoria-toggle__cor {
+    width: 10px;
+    height: 10px;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+    transition: opacity var(--duration-normal) var(--ease-default);
+}
+
+.categoria-toggle__nome {
+    font-size: var(--text-xs);
+    color: var(--color-neutral-600);
+    flex: 1;
+    transition: opacity var(--duration-normal) var(--ease-default);
+}
+
+/* ---- Toggle switch ---- */
+.toggle-switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-neutral-300);
+    transition: background-color var(--duration-normal) var(--ease-default);
+    flex-shrink: 0;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.toggle-switch--on {
+    background-color: var(--color-primary-500);
+}
+
+.toggle-switch__thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-xs);
+    transition: transform var(--duration-normal) var(--ease-spring);
+}
+
+.toggle-switch--on .toggle-switch__thumb {
+    transform: translateX(16px);
+}
+
+/* ---- Skeleton loader ---- */
+.visualizar-panel__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.skeleton-item {
+    height: 64px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(
+        90deg,
+        var(--color-neutral-100) 25%,
+        var(--color-neutral-200) 50%,
+        var(--color-neutral-100) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes skeleton-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ---- Spinner pequeno ---- */
+.spinner-sm {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--color-neutral-200);
+    border-top-color: var(--color-primary-500);
+    border-radius: var(--radius-full);
+    animation: spin 0.6s linear infinite;
+    margin: var(--space-2) auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ---- Mobile: bottom sheet ---- */
+@media (max-width: 640px) {
+    .visualizar-panel {
+        width: 100%;
+        top: auto;
+        height: 70vh;
+        border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+        transform: translateY(100%);
+    }
+
+    .visualizar-panel--open {
+        transform: translateY(0);
+    }
+}
+
+/* ---- Botón de pechar ---- */
+.visualizar-panel__btn-pechar {
+    color: var(--color-error);
+    border-color: transparent;
+}
+
+.visualizar-panel__btn-pechar:hover {
+    background-color: var(--color-error-bg);
+    border-color: var(--color-error-border);
+    color: var(--color-error);
+}

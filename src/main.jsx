@@ -1,19 +1,23 @@
-// main.jsx
-// React entry point. Imports global CSS before mounting the app
-// so that CSS custom properties are available to all components.
-
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import React, { Suspense } from 'react';
+import ReactDOM from 'react-dom/client';
+import './i18n';
 import './assets/styles/global.css';
 import './assets/styles/auth.css';
 import './assets/styles/dashboard.css';
+import './assets/styles/confirm-dialog.css';
+import './assets/styles/sidebar.css';
+import './assets/styles/visualizar-panel.css';
+import './assets/styles/notificacions.css';
+import './assets/styles/map-search.css';
+import './assets/styles/configuracion.css';
+import './assets/styles/perfil.css';
+import './assets/styles/verificar.css';
 import App from './App';
 
-const container = document.getElementById('root');
-const root = createRoot(container);
-
-root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'Inter,sans-serif', color: '#453F60' }}>Cargando…</div>}>
+      <App />
+    </Suspense>
+  </React.StrictMode>,
 );

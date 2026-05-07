@@ -1,0 +1,210 @@
+// Sidebar.jsx
+// Panel lateral fixo con navegación principal.
+// Expandible/colapsable. Adapta os items segundo o estado de autenticación.
+// O item "Visualizar mapas" abre un panel drawer en vez de navegar.
+
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../hooks/useAuth';
+import useSidebarStore from '../store/useSidebarStore';
+
+/* ---- Iconas SVG inline (Feather-style, 24×24) ---- */
+
+const ChevronIcon = () => (
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={16} height={16}>
+        <polyline points="15 18 9 12 15 6" />
+    </svg>
+);
+
+const GlobeIcon = () => (
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={20} height={20}>
+        <circle cx="12" cy="12" r="10" />
+        <line x1="2" y1="12" x2="22" y2="12" />
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+);
+
+const LoginIcon = () => (
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={20} height={20}>
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+        <polyline points="10 17 15 12 10 7" />
+        <line x1="15" y1="12" x2="3" y2="12" />
+    </svg>
+);
+
+const LayersIcon = () => (
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={20} height={20}>
+        <polygon points="12 2 2 7 12 12 22 7 12 2" />
+        <polyline points="2 17 12 22 22 17" />
+        <polyline points="2 12 12 17 22 12" />
+    </svg>
+);
+
+const PinIcon = () => (
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={20} height={20}>
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+        <circle cx="12" cy="10" r="3" />
+    </svg>
+);
+
+const SettingsIcon = () => (
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={20} height={20}>
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+);
+
+/* ---- Compoñente principal ---- */
+
+export default function Sidebar({ onVisualizarClick }) {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { isAuthenticated, username } = useAuth();
+    const expanded      = useSidebarStore((state) => state.expanded);
+    const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
+
+    const soNaInicio = location.pathname === '/';
+
+    function isActive(ruta) {
+        return location.pathname === ruta;
+    }
+
+    function handleItemClick(ruta) {
+        if (ruta === '/mapas-visualizar' && onVisualizarClick) {
+            onVisualizarClick();
+        } else {
+            navigate(ruta);
+        }
+    }
+
+    const itemsNoAuth = [
+        { ruta: '/login', label: t('nav.iniciarSesion'), icona: <LoginIcon /> },
+        { ruta: '/',      label: t('nav.explorarMapas'), icona: <GlobeIcon /> },
+    ];
+
+    const itemsAuth = [
+        { ruta: '/',                 label: t('nav.explorarMapas'),   icona: <GlobeIcon /> },
+        { ruta: '/mapas-visualizar', label: t('nav.visualizarMapas'), icona: <LayersIcon /> },
+        { ruta: '/mapas',            label: t('nav.osMenusMapas'),    icona: <PinIcon /> },
+        { ruta: '/configuracion',    label: t('nav.configuracion'),   icona: <SettingsIcon /> },
+    ];
+
+    const items = isAuthenticated ? itemsAuth : itemsNoAuth;
+
+    return (
+        <aside
+            className={`sidebar ${expanded ? 'sidebar--expanded' : 'sidebar--collapsed'}`}
+            aria-label="Navegación principal"
+        >
+            <div
+                className="sidebar__logo"
+                onClick={() => navigate('/')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={e => e.key === 'Enter' && navigate('/')}
+                aria-label="Explora — ir á páxina principal"
+            >
+                <div className="sidebar__logo-icona" aria-hidden="true">
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                    >
+                        <circle cx="12" cy="10" r="3" fill="var(--color-primary-500)" />
+                        <path
+                            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"
+                            fill="var(--color-primary-100)"
+                            stroke="var(--color-primary-500)"
+                            strokeWidth="1.5"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </div>
+                {expanded && (
+                    <span className="sidebar__logo-texto" aria-hidden="true">Explora</span>
+                )}
+            </div>
+            <div className="sidebar__logo-separador" aria-hidden="true" />
+
+            <button
+                className="sidebar__toggle"
+                onClick={toggleSidebar}
+                aria-label={expanded ? 'Colapsar menú' : 'Expandir menú'}
+            >
+                <ChevronIcon />
+            </button>
+
+            <nav className="sidebar__nav">
+                <ul className="sidebar__list">
+                    {isAuthenticated && (
+                        <li
+                            className="sidebar__item sidebar__item--avatar"
+                            onClick={() => navigate('/perfil')}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={e => e.key === 'Enter' && navigate('/perfil')}
+                            style={{ cursor: 'pointer' }}
+                            aria-label={`Perfil de ${username}`}
+                        >
+                            <div className="sidebar__avatar" title={username}>
+                                <span className="sidebar__avatar-inicial">
+                                    {username?.[0]?.toUpperCase()}
+                                </span>
+                            </div>
+                            {expanded && (
+                                <span className="sidebar__label sidebar__label--username">
+                                    {username}
+                                </span>
+                            )}
+                        </li>
+                    )}
+
+                    {items.map(({ ruta, label, icona }) => {
+                        if (ruta === '/mapas-visualizar') {
+                            if (!soNaInicio) return null;
+                            return (
+                                <li key={ruta} className="sidebar__item">
+                                    <button
+                                        className={`sidebar__link ${isActive(ruta) ? 'sidebar__link--active' : ''}`}
+                                        onClick={() => onVisualizarClick ? onVisualizarClick() : null}
+                                        title={!expanded ? label : undefined}
+                                        aria-label={label}
+                                    >
+                                        <span className="sidebar__icon" aria-hidden="true">
+                                            {icona}
+                                        </span>
+                                        {expanded && (
+                                            <span className="sidebar__label">{label}</span>
+                                        )}
+                                    </button>
+                                </li>
+                            );
+                        }
+                        return (
+                            <li key={ruta} className="sidebar__item">
+                                <button
+                                    className={`sidebar__link ${isActive(ruta) ? 'sidebar__link--active' : ''}`}
+                                    onClick={() => handleItemClick(ruta)}
+                                    title={!expanded ? label : undefined}
+                                    aria-label={label}
+                                >
+                                    <span className="sidebar__icon" aria-hidden="true">
+                                        {icona}
+                                    </span>
+                                    {expanded && (
+                                        <span className="sidebar__label">{label}</span>
+                                    )}
+                                </button>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </nav>
+        </aside>
+    );
+}
