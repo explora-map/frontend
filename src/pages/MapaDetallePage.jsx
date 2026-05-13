@@ -12,6 +12,7 @@ import MapViewer from '../components/MapViewer';
 import ConvitePanel from '../components/ConvitePanel';
 import CategoriaPanel from '../components/CategoriaPanel';
 import MembroPanel from '../components/MembroPanel';
+import HistorialPanel from '../components/HistorialPanel';
 import ConfirmDialog from '../components/ConfirmDialog';
 import FormModal from '../components/FormModal';
 import textos from '../constants/textos';
@@ -510,6 +511,13 @@ export default function MapaDetallePage() {
                 onCambio={async () => { await loadCategorias(); await loadMarcadores(); }}
             />
 
+            {mapa.tipo === 'PUBLICO' && (
+                <HistorialPanel
+                    mapaId={mapa.id}
+                    usuarioActual={username}
+                />
+            )}
+
             <div className="detalle__info">
                 {mapa.descricion && (
                     <p className="detalle__descricion">{mapa.descricion}</p>
@@ -537,6 +545,13 @@ export default function MapaDetallePage() {
 
             {mapa.tipo === 'PRIVADO' && (
                 <MembroPanel mapaId={mapa.id} creadoPor={mapa.creadoPor} />
+            )}
+
+            {mapa.tipo === 'PRIVADO' && (
+                <HistorialPanel
+                    mapaId={mapa.id}
+                    usuarioActual={username}
+                />
             )}
 
             {/* ---- Create marker modal ---- */}

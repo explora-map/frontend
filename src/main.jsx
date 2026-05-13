@@ -12,6 +12,7 @@ import './assets/styles/map-search.css';
 import './assets/styles/configuracion.css';
 import './assets/styles/perfil.css';
 import './assets/styles/verificar.css';
+import './assets/styles/historial.css';
 import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
