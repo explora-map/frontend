@@ -157,10 +157,7 @@ export default function RegisterPage() {
             <div className="auth-page">
                 <div className="auth-card">
                     <div className="verificar-card__icona verificar-card__icona--ok" style={{ margin: '0 auto' }} aria-hidden="true">
-                        <span style={{ display: 'inline-flex', width: '32px', height: '32px', position: 'relative' }}>
-                            <span style={{ position: 'absolute', top: '60%', left: '15%', width: '30%', height: '3px', backgroundColor: 'currentColor', borderRadius: '2px', transform: 'rotate(45deg)', transformOrigin: 'left center' }} />
-                            <span style={{ position: 'absolute', top: '45%', left: '35%', width: '55%', height: '3px', backgroundColor: 'currentColor', borderRadius: '2px', transform: 'rotate(-45deg)', transformOrigin: 'left center' }} />
-                        </span>
+                        <span className="tick-icon" />
                     </div>
                     <h1 className="auth-card__titulo" style={{ textAlign: 'center' }}>
                         Revisa o teu correo

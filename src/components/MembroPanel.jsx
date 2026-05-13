@@ -3,7 +3,8 @@ import { listarMembros, cambiarRol, eliminarMembro } from '../services/mapaMembr
 import { useAuth } from '../hooks/useAuth';
 import ConfirmDialog from './ConfirmDialog';
 
-const ROLES = ['MEMBRO', 'COLABORADORA', 'ADMIN_MAPA'];
+const ROLES_PRIVADO = ['MEMBRO', 'COLABORADORA', 'ADMIN_MAPA'];
+const ROLES_PUBLICO = ['COLABORADORA', 'ADMIN_MAPA'];
 
 const ROL_LABEL = {
     MEMBRO: 'Membro',
@@ -11,9 +12,10 @@ const ROL_LABEL = {
     ADMIN_MAPA: 'Administrador',
 };
 
-export default function MembroPanel({ mapaId, creadoPor }) {
+export default function MembroPanel({ mapaId, creadoPor, tipoMapa }) {
     const { username } = useAuth();
     const esPropietario = username === creadoPor;
+    const roles = tipoMapa === 'PUBLICO' ? ROLES_PUBLICO : ROLES_PRIVADO;
 
     const [membros, setMembros] = useState([]);
     const [cargando, setCargando] = useState(true);
@@ -123,7 +125,7 @@ export default function MembroPanel({ mapaId, creadoPor }) {
                                         disabled={rolGardando === m.username}
                                         aria-label={`Rol de ${m.username}`}
                                     >
-                                        {ROLES.map((r) => (
+                                        {roles.map((r) => (
                                             <option key={r} value={r}>{ROL_LABEL[r]}</option>
                                         ))}
                                     </select>

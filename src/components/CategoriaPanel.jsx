@@ -54,7 +54,8 @@ function SelectorCor({ cor, onChange, disabled }) {
     );
 }
 
-export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCambio }) {
+export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCambio, podeCrear, podeEditarCalquera, usernameActual }) {
+    const canCreate = podeCrear ?? esPropietario;
     const [erro, setErro] = useState('');
 
     const [categoriaEditando, setCategoriaEditando] = useState(null);
@@ -160,7 +161,9 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                                     style={{ backgroundColor: cat.cor, width: 16, height: 16 }}
                                 />
                                 <span className="categoria-panel__nome">{cat.nome}</span>
-                                {esPropietario && (
+                                {(podeEditarCalquera !== undefined
+                                    ? (podeEditarCalquera || cat.creadoPor === usernameActual)
+                                    : esPropietario) && (
                                     <>
                                         <button
                                             className="btn btn--secondary btn--sm"
@@ -186,7 +189,7 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                     </ul>
                 )}
 
-                {esPropietario && (
+                {canCreate && (
                     <button
                         className="btn btn--primary btn--sm"
                         onClick={() => setMostrarForm(true)}

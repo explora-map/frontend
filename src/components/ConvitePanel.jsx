@@ -6,6 +6,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { enviarConvite, obterConvitesEnviados, cancelarConvite } from '../services/conviteApi';
 import textos from '../constants/textos';
 
+const ROLES_PRIVADO = ['MEMBRO', 'COLABORADORA', 'ADMIN_MAPA'];
+const ROLES_PUBLICO = ['COLABORADORA', 'ADMIN_MAPA'];
+
+const ROL_LABEL = {
+    MEMBRO:       'Membro',
+    COLABORADORA: 'Colaboradora',
+    ADMIN_MAPA:   'Administradora',
+};
+
 const ESTADO_LABEL = {
     PENDENTE: textos.convites.estadoPendente,
     ACEPTADO: textos.convites.estadoAceptado,
@@ -14,8 +23,12 @@ const ESTADO_LABEL = {
     EXPIRADO: textos.convites.estadoExpirado,
 };
 
-export default function ConvitePanel({ mapaId }) {
+export default function ConvitePanel({ mapaId, tipoMapa }) {
+    const roles = tipoMapa === 'PUBLICO' ? ROLES_PUBLICO : ROLES_PRIVADO;
     const [username, setUsername] = useState('');
+    const [rolConvite, setRolConvite] = useState(
+        tipoMapa === 'PUBLICO' ? 'COLABORADORA' : 'MEMBRO'
+    );
     const [sending, setSending] = useState(false);
     const [sendError, setSendError] = useState('');
     const [sendSuccess, setSendSuccess] = useState('');
@@ -50,7 +63,7 @@ export default function ConvitePanel({ mapaId }) {
         setSendError('');
         setSendSuccess('');
         try {
-            await enviarConvite(mapaId, trimmed);
+            await enviarConvite(mapaId, trimmed, rolConvite);
             setSendSuccess(textos.convites.conviteEnviado(trimmed));
             setUsername('');
             await loadConvites();
@@ -86,6 +99,17 @@ export default function ConvitePanel({ mapaId }) {
                     disabled={sending}
                     aria-label={textos.convites.ariaConvidar}
                 />
+                <select
+                    className="convite-panel__rol-select"
+                    value={rolConvite}
+                    onChange={(e) => setRolConvite(e.target.value)}
+                    disabled={sending}
+                    aria-label="Rol do convite"
+                >
+                    {roles.map((r) => (
+                        <option key={r} value={r}>{ROL_LABEL[r]}</option>
+                    ))}
+                </select>
                 <button
                     className="convite-panel__send-btn"
                     type="submit"

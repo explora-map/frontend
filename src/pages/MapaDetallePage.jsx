@@ -8,6 +8,7 @@ import { useAuth } from '../hooks/useAuth';
 import { obterMapaPorId, eliminarMapa, cambiarVisibilidade } from '../services/mapaApi';
 import { listarMarcadores, crearMarcador, editarMarcador, eliminarMarcador } from '../services/marcadorApi';
 import { listarCategorias } from '../services/categoriaApi';
+import { listarMembros } from '../services/mapaMembroApi';
 import MapViewer from '../components/MapViewer';
 import ConvitePanel from '../components/ConvitePanel';
 import CategoriaPanel from '../components/CategoriaPanel';
@@ -145,6 +146,15 @@ function AddressSearchField({ onSelect }) {
     );
 }
 
+// ---- Rol efectivo ----
+
+function calcularRolEfectivo(mapa, membros, username) {
+    if (mapa.creadoPor === username) return 'PROPIETARIA';
+    const membro = membros.find(m => m.username === username);
+    if (!membro) return 'VISITANTE';
+    return membro.rol;
+}
+
 // ---- Main page component ----
 
 export default function MapaDetallePage() {
@@ -159,6 +169,8 @@ export default function MapaDetallePage() {
     const [toggling, setToggling] = useState(false);
     const [categorias, setCategorias] = useState([]);
     const [marcadores, setMarcadores] = useState([]);
+    const [membros, setMembros] = useState([]);
+    const [rolEfectivo, setRolEfectivo] = useState(null);
 
     // Create marker form state
     const [mostrarFormMarcador, setMostrarFormMarcador] = useState(false);
@@ -204,6 +216,15 @@ export default function MapaDetallePage() {
         }
     }, [id]);
 
+    const loadMembros = useCallback(async () => {
+        try {
+            const data = await listarMembros(id);
+            setMembros(data);
+        } catch {
+            setMembros([]);
+        }
+    }, [id]);
+
     useEffect(() => {
         setLoading(true);
         setError('');
@@ -213,9 +234,20 @@ export default function MapaDetallePage() {
             .finally(() => setLoading(false));
         loadMarcadores();
         loadCategorias();
-    }, [id, loadMarcadores, loadCategorias]);
+        loadMembros();
+    }, [id, loadMarcadores, loadCategorias, loadMembros]);
 
     const isOwner = mapa?.creadoPor === username;
+
+    useEffect(() => {
+        if (mapa && membros !== null) {
+            setRolEfectivo(calcularRolEfectivo(mapa, membros, username));
+        }
+    }, [mapa, membros, username]);
+
+    const podeCrear = ['PROPIETARIA', 'ADMIN_MAPA', 'COLABORADORA'].includes(rolEfectivo);
+    const podeEditarCalquera = ['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo);
+    const podeXestionarMembros = ['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo);
 
     function toggleCategoria(catId) {
         setCategoriasFiltro(prev => {
@@ -376,8 +408,19 @@ export default function MapaDetallePage() {
         ? new Date(mapa.dataCreacion).toLocaleString()
         : '—';
 
-    // Click handler active only when no modal is open and user is owner
-    const mapClickHandler = isOwner && !mostrarFormMarcador && !marcadorEditando
+    const textoRol = {
+        'PROPIETARIA':  'Propietaria',
+        'ADMIN_MAPA':   'Administradora',
+        'COLABORADORA': 'Colaboradora',
+        'MEMBRO':       'Membro',
+        'VISITANTE':    null,
+    };
+    const rolClase = ['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo)
+        ? 'badge--publico'
+        : 'badge--privado';
+
+    // Click handler active only when no modal is open and user can create markers
+    const mapClickHandler = podeCrear && !mostrarFormMarcador && !marcadorEditando
         ? handleMapClick
         : null;
 
@@ -393,6 +436,11 @@ export default function MapaDetallePage() {
                     <span className={`badge badge--tipo badge--${mapa.tipo === 'PUBLICO' ? 'publico' : 'privado'}`}>
                         {mapa.tipo === 'PUBLICO' ? 'Público' : 'Privado'}
                     </span>
+                    {textoRol[rolEfectivo] && (
+                        <span className={`badge badge--tipo ${rolClase}`}>
+                            {textoRol[rolEfectivo]}
+                        </span>
+                    )}
                 </div>
 
                 {isOwner && (
@@ -421,7 +469,7 @@ export default function MapaDetallePage() {
                 )}
             </div>
 
-            {isOwner && (
+            {podeCrear && (
                 <div className="detalle__marcadores-actions">
                     <button
                         className="btn btn--secondary btn--sm"
@@ -475,7 +523,7 @@ export default function MapaDetallePage() {
                                 <span className="marcador-item__coords">
                                     Lat: {marcador.latitude.toFixed(4)} · Lng: {marcador.lonxitude.toFixed(4)}
                                 </span>
-                                {marcador.creadoPor === username && (
+                                {(podeEditarCalquera || marcador.creadoPor === username) && (
                                     <>
                                         <button
                                             className="btn btn--ghost btn--sm"
@@ -509,9 +557,12 @@ export default function MapaDetallePage() {
                 esPropietario={mapa.creadoPor === username}
                 categorias={categorias}
                 onCambio={async () => { await loadCategorias(); await loadMarcadores(); }}
+                podeCrear={podeCrear}
+                podeEditarCalquera={podeEditarCalquera}
+                usernameActual={username}
             />
 
-            {mapa.tipo === 'PUBLICO' && (
+            {['PROPIETARIA', 'ADMIN_MAPA', 'COLABORADORA'].includes(rolEfectivo) && (
                 <HistorialPanel
                     mapaId={mapa.id}
                     usuarioActual={username}
@@ -539,20 +590,14 @@ export default function MapaDetallePage() {
 
             {isOwner && (
                 <div className="detalle__invitations">
-                    <ConvitePanel mapaId={mapa.id} />
+                    <ConvitePanel mapaId={mapa.id} tipoMapa={mapa.tipo} />
                 </div>
             )}
 
-            {mapa.tipo === 'PRIVADO' && (
-                <MembroPanel mapaId={mapa.id} creadoPor={mapa.creadoPor} />
+            {podeXestionarMembros && (
+                <MembroPanel mapaId={mapa.id} creadoPor={mapa.creadoPor} tipoMapa={mapa.tipo} />
             )}
 
-            {mapa.tipo === 'PRIVADO' && (
-                <HistorialPanel
-                    mapaId={mapa.id}
-                    usuarioActual={username}
-                />
-            )}
 
             {/* ---- Create marker modal ---- */}
             {mostrarFormMarcador && (

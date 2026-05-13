@@ -5,7 +5,14 @@ import { useTranslation } from 'react-i18next';
 import ConfirmDialog from './ConfirmDialog';
 import { cambiarVisibilidade, eliminarMapa } from '../services/mapaApi';
 
-export default function MapaCard({ mapa, onEliminar, onVisibilidadeCambiada, accionExtra }) {
+const textoRol = {
+  'PROPIETARIA':  'Propietaria',
+  'ADMIN_MAPA':   'Administradora',
+  'COLABORADORA': 'Colaboradora',
+  'MEMBRO':       'Membro',
+};
+
+export default function MapaCard({ mapa, onEliminar, onVisibilidadeCambiada, accionExtra, rolEfectivo }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [menuAberto, setMenuAberto] = useState(false);
@@ -102,6 +109,11 @@ export default function MapaCard({ mapa, onEliminar, onVisibilidadeCambiada, acc
         <span className={`badge badge--${mapa.tipo === 'PUBLICO' ? 'publico' : 'privado'}`}>
           {mapa.tipo === 'PUBLICO' ? t('mapas.etiquetaPublico') : t('mapas.etiquetaPrivado')}
         </span>
+        {rolEfectivo && textoRol[rolEfectivo] && (
+          <span className={`badge badge--${['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo) ? 'publico' : 'privado'}`}>
+            {textoRol[rolEfectivo]}
+          </span>
+        )}
 
         <div style={{ position: 'relative' }}>
           <button

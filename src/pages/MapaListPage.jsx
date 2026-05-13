@@ -159,6 +159,7 @@ export default function MapaListPage() {
                                         mapa={mapa}
                                         onEliminar={handleEliminar}
                                         onVisibilidadeCambiada={handleVisibilidadeCambiada}
+                                        rolEfectivo="PROPIETARIA"
                                     />
                                 ))}
                             </div>
@@ -178,7 +179,11 @@ export default function MapaListPage() {
                         {!loadingColab && mapasColab.length > 0 && (
                             <div className="mapa-grid">
                                 {mapasColab.map((mapa) => (
-                                    <MapaCard key={mapa.id} mapa={mapa} />
+                                    <MapaCard
+                                        key={mapa.id}
+                                        mapa={mapa}
+                                        rolEfectivo={mapa.rolEfectivo || 'COLABORADORA'}
+                                    />
                                 ))}
                             </div>
                         )}

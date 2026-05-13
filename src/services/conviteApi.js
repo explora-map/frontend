@@ -3,8 +3,8 @@
 
 import axiosInstance from './axiosInstance';
 
-export async function enviarConvite(mapaId, usernameConvidada) {
-    const res = await axiosInstance.post('/convites/novo', { mapaId, usernameConvidada });
+export async function enviarConvite(mapaId, usernameConvidada, rol) {
+    const res = await axiosInstance.post('/convites/novo', { mapaId, usernameConvidada, rol });
     return res.data;
 }
 
