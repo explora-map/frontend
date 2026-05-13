@@ -24,6 +24,28 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({ iconUrl: markerIcon, shadowUrl: markerShadow });
 
+function crearIconoProvisional() {
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36" opacity="0.8">
+          <path
+            d="M14 2C8.477 2 4 6.477 4 12c0 7.418 8.667 20.167 9.04 20.708a1.167 1.167 0 0 0 1.92 0C15.333 32.167 24 19.418 24 12c0-5.523-4.477-10-10-10z"
+            fill="white"
+            stroke="#9E97BB"
+            stroke-width="2.5"
+            stroke-dasharray="5 3"
+          />
+          <circle cx="14" cy="12" r="4" fill="#9E97BB" />
+        </svg>
+    `;
+    return L.divIcon({
+        html: svg,
+        className: '',
+        iconSize: [28, 36],
+        iconAnchor: [14, 36],
+        popupAnchor: [0, -36],
+    });
+}
+
 function crearIconoMarcador(cor = '#7C52E8') {
     const svg = `
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
@@ -54,11 +76,13 @@ export default function MapViewer({
     markerDraggable = false,
     height = '400px',
     marcadores = [],
+    provisionalMarker = null,
 }) {
     const containerRef = useRef(null);
     const mapRef = useRef(null);
     const markerRef = useRef(null);
     const marcadoresRefs = useRef([]);
+    const provisionalMarkerRef = useRef(null);
 
     // Initialise the map once on mount
     useEffect(() => {
@@ -91,6 +115,7 @@ export default function MapViewer({
             map.remove();
             mapRef.current = null;
             markerRef.current = null;
+            provisionalMarkerRef.current = null;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -103,11 +128,6 @@ export default function MapViewer({
         if (onLocationSelect) {
             map.on('click', (e) => {
                 onLocationSelect({ lat: e.latlng.lat, lng: e.latlng.lng });
-                if (markerRef.current) {
-                    markerRef.current.setLatLng([e.latlng.lat, e.latlng.lng]);
-                } else {
-                    markerRef.current = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
-                }
             });
         }
         return () => {
@@ -128,6 +148,26 @@ export default function MapViewer({
                 .bindPopup(item.nome),
         );
     }, [marcadores]);
+
+    // Provisional marker: shown while a new marker is being placed (grey, dashed outline)
+    useEffect(() => {
+        if (!mapRef.current) return;
+        if (provisionalMarker) {
+            const { lat, lng } = provisionalMarker;
+            if (provisionalMarkerRef.current) {
+                provisionalMarkerRef.current.setLatLng([lat, lng]);
+            } else {
+                provisionalMarkerRef.current = L.marker(
+                    [lat, lng],
+                    { icon: crearIconoProvisional(), zIndexOffset: 500 },
+                ).addTo(mapRef.current);
+            }
+            mapRef.current.panTo([lat, lng]);
+        } else {
+            provisionalMarkerRef.current?.remove();
+            provisionalMarkerRef.current = null;
+        }
+    }, [provisionalMarker]);
 
     // Keep marker in sync when coordinates change from outside (edit page pre-fill)
     useEffect(() => {

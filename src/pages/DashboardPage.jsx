@@ -1,160 +1,59 @@
-// DashboardPage.jsx
-//
-// Protected page — only reachable if authenticated (ProtectedRoute wraps it).
-// Shows a welcome message and quick links to the main Sprint 3 sections.
-
-import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
-import textos from '../constants/textos';
-import '../assets/styles/dashboard.css';
 
 export default function DashboardPage() {
-    const { username, tokenExpiration, isLoggingOut, logout } = useAuth();
+    const { username } = useAuth();
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
-    async function handleLogout() {
-        await logout();
-        navigate('/login', { replace: true });
-    }
-
-    function formatExpiry(isoString) {
-        if (!isoString) return textos.dashboard.descoñecido;
-        try {
-            return new Date(isoString).toLocaleString();
-        } catch {
-            return isoString;
-        }
-    }
+    const tarxetas = [
+        {
+            ruta: '/mapas',
+            titulo: t('dashboard.mapas.titulo'),
+            descriccion: t('dashboard.mapas.descriccion'),
+            btn: t('dashboard.mapas.btn'),
+            aria: t('dashboard.mapas.aria'),
+        },
+        {
+            ruta: '/',
+            titulo: t('dashboard.explorar.titulo'),
+            descriccion: t('dashboard.explorar.descriccion'),
+            btn: t('dashboard.explorar.btn'),
+            aria: t('dashboard.explorar.aria'),
+        },
+        {
+            ruta: '/convites',
+            titulo: t('dashboard.convites.titulo'),
+            descriccion: t('dashboard.convites.descriccion'),
+            btn: t('dashboard.convites.btn'),
+            aria: t('dashboard.convites.aria'),
+        },
+    ];
 
     return (
         <div className="dashboard">
-            {/* ---- Topbar ---- */}
-            <header className="dashboard__topbar">
-                <div className="dashboard__brand">
-                    <div className="dashboard__brand-dot" />
-                    Explora Map
-                </div>
-                <nav style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <Link
-                        to="/mapas"
-                        style={{
-                            fontSize: 'var(--font-size-sm)',
-                            fontWeight: 500,
-                            color: 'var(--color-text-secondary)',
-                            textDecoration: 'none',
-                            padding: '4px 10px',
-                            borderRadius: 'var(--radius-sm)',
-                            transition: 'color 150ms, background 150ms',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.color = 'var(--color-primary)';
-                            e.currentTarget.style.background = 'var(--color-primary-light)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.color = 'var(--color-text-secondary)';
-                            e.currentTarget.style.background = 'transparent';
-                        }}
+            <h1 className="dashboard__benvida">
+                {t('dashboard.benvida', { username: username || '' })}
+            </h1>
+            <div className="dashboard__tarxetas">
+                {tarxetas.map(({ ruta, titulo, descriccion, btn, aria }) => (
+                    <article
+                        key={ruta}
+                        className="dashboard__tarxeta"
+                        aria-label={aria}
                     >
-                        {textos.nav.osMenusMapas}
-                    </Link>
-                    <Link
-                        to="/convites"
-                        style={{
-                            fontSize: 'var(--font-size-sm)',
-                            fontWeight: 500,
-                            color: 'var(--color-text-secondary)',
-                            textDecoration: 'none',
-                            padding: '4px 10px',
-                            borderRadius: 'var(--radius-sm)',
-                            transition: 'color 150ms, background 150ms',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.color = 'var(--color-primary)';
-                            e.currentTarget.style.background = 'var(--color-primary-light)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.color = 'var(--color-text-secondary)';
-                            e.currentTarget.style.background = 'transparent';
-                        }}
-                    >
-                        {textos.nav.convites}
-                    </Link>
-                    <button
-                        className="dashboard__logout"
-                        onClick={handleLogout}
-                        disabled={isLoggingOut}
-                    >
-                        {isLoggingOut ? textos.nav.pechando : textos.nav.pecharSesion}
-                    </button>
-                </nav>
-            </header>
-
-            {/* ---- Main content ---- */}
-            <main className="dashboard__main">
-                {/* Welcome card */}
-                <section className="dashboard__welcome">
-                    <h1 className="dashboard__welcome-heading">
-                        {textos.dashboard.benvida} <span>{username || textos.dashboard.viaxeira}</span>
-                    </h1>
-                    <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-md)' }}>
-                        {textos.dashboard.subtitulo}
-                    </p>
-                    <div className="dashboard__expiry">
-                        <span className="dashboard__expiry-dot" />
-                        {textos.dashboard.expiracioToken} {formatExpiry(tokenExpiration)}
-                    </div>
-                </section>
-
-                {/* Quick navigation */}
-                <section className="dashboard__auth-status">
-                    <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, marginBottom: 'var(--space-4)', letterSpacing: '-0.01em' }}>
-                        {textos.dashboard.navegacionRapida}
-                    </h2>
-                    <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-                        <Link
-                            to="/mapas"
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 'var(--space-2)',
-                                padding: 'var(--space-3) var(--space-6)',
-                                background: 'var(--color-primary)',
-                                color: '#fff',
-                                borderRadius: 'var(--radius-md)',
-                                fontWeight: 600,
-                                fontSize: 'var(--font-size-sm)',
-                                textDecoration: 'none',
-                                transition: 'background 150ms',
-                            }}
-                            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--color-primary-hover)')}
-                            onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--color-primary)')}
+                        <h2 className="dashboard__tarxeta-titulo">{titulo}</h2>
+                        <p className="dashboard__tarxeta-descriccion">{descriccion}</p>
+                        <button
+                            className="dashboard__tarxeta-btn"
+                            onClick={() => navigate(ruta)}
                         >
-                            {textos.nav.osMenusMapas}
-                        </Link>
-                        <Link
-                            to="/convites"
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 'var(--space-2)',
-                                padding: 'var(--space-3) var(--space-6)',
-                                background: 'var(--color-primary-light)',
-                                color: 'var(--color-primary)',
-                                borderRadius: 'var(--radius-md)',
-                                fontWeight: 600,
-                                fontSize: 'var(--font-size-sm)',
-                                textDecoration: 'none',
-                                transition: 'background 150ms',
-                            }}
-                            onMouseEnter={(e) => (e.currentTarget.style.background = '#ddd6fe')}
-                            onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--color-primary-light)')}
-                        >
-                            {textos.nav.convites}
-                        </Link>
-                    </div>
-                </section>
-            </main>
+                            {btn}
+                        </button>
+                    </article>
+                ))}
+            </div>
         </div>
     );
 }

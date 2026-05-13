@@ -2,7 +2,7 @@
 // Protected page at /mapas/:id.
 // Shows map detail with a Leaflet map. If owner: edit/delete/visibility/invitations.
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { obterMapaPorId, eliminarMapa, cambiarVisibilidade } from '../services/mapaApi';
@@ -11,9 +11,140 @@ import { listarCategorias } from '../services/categoriaApi';
 import MapViewer from '../components/MapViewer';
 import ConvitePanel from '../components/ConvitePanel';
 import CategoriaPanel from '../components/CategoriaPanel';
+import MembroPanel from '../components/MembroPanel';
 import ConfirmDialog from '../components/ConfirmDialog';
+import FormModal from '../components/FormModal';
 import textos from '../constants/textos';
 import '../assets/styles/mapas.css';
+
+// ---- Address search field used inside marker modals ----
+function AddressSearchField({ onSelect }) {
+    const [query, setQuery] = useState('');
+    const [results, setResults] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+    const debounceRef = useRef(null);
+    const wrapperRef = useRef(null);
+    const listRef = useRef(null);
+
+    useEffect(() => {
+        function handleOutside(e) {
+            if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+                setOpen(false);
+            }
+        }
+        document.addEventListener('mousedown', handleOutside);
+        return () => document.removeEventListener('mousedown', handleOutside);
+    }, []);
+
+    function handleChange(e) {
+        const val = e.target.value;
+        setQuery(val);
+        clearTimeout(debounceRef.current);
+        if (val.trim().length < 3) {
+            setResults([]);
+            setOpen(false);
+            return;
+        }
+        debounceRef.current = setTimeout(async () => {
+            setLoading(true);
+            try {
+                const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(val)}&format=json&limit=5`;
+                const res = await fetch(url, { headers: { 'User-Agent': 'ExploraMap/1.0' } });
+                const data = await res.json();
+                setResults(data);
+                setOpen(data.length > 0);
+            } catch {
+                setResults([]);
+                setOpen(false);
+            } finally {
+                setLoading(false);
+            }
+        }, 400);
+    }
+
+    function select(resultado) {
+        setQuery(resultado.display_name.split(',').slice(0, 2).join(','));
+        setResults([]);
+        setOpen(false);
+        onSelect({
+            lat: parseFloat(resultado.lat),
+            lng: parseFloat(resultado.lon),
+        });
+    }
+
+    function handleInputKeyDown(e) {
+        if (e.key === 'ArrowDown' && open && results.length > 0) {
+            e.preventDefault();
+            listRef.current?.querySelector('[role="option"]')?.focus();
+        }
+        if (e.key === 'Escape') setOpen(false);
+    }
+
+    function handleOptionKeyDown(e, resultado, index) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            select(resultado);
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            const opts = listRef.current?.querySelectorAll('[role="option"]');
+            opts?.[index + 1]?.focus();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (index === 0) {
+                wrapperRef.current?.querySelector('input')?.focus();
+            } else {
+                const opts = listRef.current?.querySelectorAll('[role="option"]');
+                opts?.[index - 1]?.focus();
+            }
+        } else if (e.key === 'Escape') {
+            setOpen(false);
+            wrapperRef.current?.querySelector('input')?.focus();
+        }
+    }
+
+    return (
+        <div className="marcador-busca" ref={wrapperRef}>
+            <input
+                className="modal-input"
+                type="text"
+                value={query}
+                onChange={handleChange}
+                onKeyDown={handleInputKeyDown}
+                placeholder="Buscar enderezo..."
+                aria-label="Buscar enderezo"
+                aria-expanded={open}
+                aria-haspopup="listbox"
+                aria-autocomplete="list"
+                autoComplete="off"
+                disabled={loading}
+            />
+            {open && results.length > 0 && (
+                <ul
+                    ref={listRef}
+                    className="marcador-busca__dropdown"
+                    role="listbox"
+                    aria-label="Resultados da busca de enderezo"
+                >
+                    {results.map((r, i) => (
+                        <li
+                            key={r.place_id}
+                            role="option"
+                            className="marcador-busca__option"
+                            tabIndex={0}
+                            onClick={() => select(r)}
+                            onKeyDown={(e) => handleOptionKeyDown(e, r, i)}
+                        >
+                            {r.display_name.split(',').slice(0, 3).join(',')}
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
+}
+
+// ---- Main page component ----
 
 export default function MapaDetallePage() {
     const { id } = useParams();
@@ -27,18 +158,25 @@ export default function MapaDetallePage() {
     const [toggling, setToggling] = useState(false);
     const [categorias, setCategorias] = useState([]);
     const [marcadores, setMarcadores] = useState([]);
+
+    // Create marker form state
     const [mostrarFormMarcador, setMostrarFormMarcador] = useState(false);
-    const [categoriaId, setCategoriaId] = useState('');
+    const [coordsMarcador, setCoordsMarcador] = useState(null);
     const [nomeMarcador, setNomeMarcador] = useState('');
     const [descMarcador, setDescMarcador] = useState('');
-    const [coordsMarcador, setCoordsMarcador] = useState(null);
+    const [categoriaId, setCategoriaId] = useState('');
     const [erroMarcador, setErroMarcador] = useState('');
     const [gardandoMarcador, setGardandoMarcador] = useState(false);
+
+    // Filter state
     const [categoriasFiltro, setCategoriasFiltro] = useState(new Set());
+
+    // Edit marker form state
     const [marcadorEditando, setMarcadorEditando] = useState(null);
     const [nomeEdit, setNomeEdit] = useState('');
     const [descEdit, setDescEdit] = useState('');
     const [categoriaIdEdit, setCategoriaIdEdit] = useState('');
+    const [coordsEditOverride, setCoordsEditOverride] = useState(null);
     const [erroEdit, setErroEdit] = useState('');
     const [gardandoEdit, setGardandoEdit] = useState(false);
 
@@ -78,13 +216,13 @@ export default function MapaDetallePage() {
 
     const isOwner = mapa?.creadoPor === username;
 
-    function toggleCategoria(categoriaId) {
+    function toggleCategoria(catId) {
         setCategoriasFiltro(prev => {
             const novo = new Set(prev);
-            if (novo.has(categoriaId)) {
-                novo.delete(categoriaId);
+            if (novo.has(catId)) {
+                novo.delete(catId);
             } else {
-                novo.add(categoriaId);
+                novo.add(catId);
             }
             return novo;
         });
@@ -124,6 +262,12 @@ export default function MapaDetallePage() {
         }
     }
 
+    // Clicking the map (while modal is closed) places provisional pin and opens create modal
+    const handleMapClick = useCallback(({ lat, lng }) => {
+        setCoordsMarcador({ lat, lng });
+        setMostrarFormMarcador(true);
+    }, []);
+
     function resetFormMarcador() {
         setNomeMarcador('');
         setDescMarcador('');
@@ -134,9 +278,18 @@ export default function MapaDetallePage() {
         setCategoriaId('');
     }
 
+    function resetEditMarcador() {
+        setMarcadorEditando(null);
+        setNomeEdit('');
+        setDescEdit('');
+        setCategoriaIdEdit('');
+        setCoordsEditOverride(null);
+        setErroEdit('');
+    }
+
     async function handleCrearMarcador() {
         if (!coordsMarcador) {
-            setErroMarcador('Debes seleccionar unha localización no mapa.');
+            setErroMarcador('Debes seleccionar unha localización (busca un enderezo ou preme no mapa).');
             return;
         }
         if (!nomeMarcador.trim()) {
@@ -172,15 +325,11 @@ export default function MapaDetallePage() {
             await editarMarcador(marcadorEditando.id, {
                 nome: nomeEdit,
                 descricion: descEdit,
-                latitude: marcadorEditando.latitude,
-                lonxitude: marcadorEditando.lonxitude,
+                latitude: coordsEditOverride?.lat ?? marcadorEditando.latitude,
+                lonxitude: coordsEditOverride?.lng ?? marcadorEditando.lonxitude,
                 categoriaId: categoriaIdEdit ? Number(categoriaIdEdit) : null,
             });
-            setMarcadorEditando(null);
-            setNomeEdit('');
-            setDescEdit('');
-            setCategoriaIdEdit('');
-            setErroEdit('');
+            resetEditMarcador();
             await loadMarcadores();
         } catch (err) {
             setErroEdit(err.response?.data?.message || 'Erro ao gardar');
@@ -226,6 +375,11 @@ export default function MapaDetallePage() {
         ? new Date(mapa.dataCreacion).toLocaleString()
         : '—';
 
+    // Click handler active only when no modal is open and user is owner
+    const mapClickHandler = isOwner && !mostrarFormMarcador && !marcadorEditando
+        ? handleMapClick
+        : null;
+
     return (
         <PageShell>
             <div className="page__back">
@@ -266,7 +420,7 @@ export default function MapaDetallePage() {
                 )}
             </div>
 
-            {isOwner && !mostrarFormMarcador && (
+            {isOwner && (
                 <div className="detalle__marcadores-actions">
                     <button
                         className="btn btn--secondary btn--sm"
@@ -294,88 +448,15 @@ export default function MapaDetallePage() {
             )}
 
             <MapViewer
-                latitude={mostrarFormMarcador && coordsMarcador ? coordsMarcador.lat : mapa.latitude}
-                lonxitude={mostrarFormMarcador && coordsMarcador ? coordsMarcador.lng : mapa.lonxitude}
+                latitude={mapa.latitude}
+                lonxitude={mapa.lonxitude}
                 zoom={13}
-                marker={mostrarFormMarcador ? coordsMarcador !== null : true}
+                marker
                 height="400px"
                 marcadores={marcadoresFiltrados}
-                {...(mostrarFormMarcador && { onLocationSelect: (coords) => setCoordsMarcador(coords) })}
+                provisionalMarker={coordsMarcador}
+                onLocationSelect={mapClickHandler}
             />
-
-            {mostrarFormMarcador && (
-                <div className="form-marcador">
-                    <p className="form-marcador__hint">
-                        {coordsMarcador
-                            ? `Localización seleccionada: ${coordsMarcador.lat.toFixed(4)}, ${coordsMarcador.lng.toFixed(4)}`
-                            : 'Preme no mapa para seleccionar a localización'}
-                    </p>
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="nomeMarcador">Nome *</label>
-                        <input
-                            id="nomeMarcador"
-                            className="form-input"
-                            type="text"
-                            value={nomeMarcador}
-                            onChange={(e) => setNomeMarcador(e.target.value)}
-                            disabled={gardandoMarcador}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="descMarcador">Descrición (opcional)</label>
-                        <textarea
-                            id="descMarcador"
-                            className="form-input form-textarea"
-                            value={descMarcador}
-                            onChange={(e) => setDescMarcador(e.target.value)}
-                            disabled={gardandoMarcador}
-                            rows={3}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="categoriaId">Categoría (opcional)</label>
-                        <select
-                            id="categoriaId"
-                            className="form-input"
-                            value={categoriaId}
-                            onChange={(e) => setCategoriaId(e.target.value)}
-                            disabled={gardandoMarcador}
-                        >
-                            <option value="">Sen categoría</option>
-                            {categorias.map((categoria) => (
-                                <option key={categoria.id} value={categoria.id}>
-                                    [{categoria.cor}] {categoria.nome}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    {erroMarcador && <p className="form-error">{erroMarcador}</p>}
-                    <div className="form-marcador__btns">
-                        <button
-                            className="btn btn--primary btn--sm"
-                            onClick={handleCrearMarcador}
-                            disabled={gardandoMarcador}
-                        >
-                            {gardandoMarcador ? 'Gardando…' : 'Gardar'}
-                        </button>
-                        <button
-                            className="btn btn--ghost btn--sm"
-                            onClick={() => {
-                                setMostrarFormMarcador(false);
-                                setNomeMarcador('');
-                                setDescMarcador('');
-                                setCoordsMarcador(null);
-                                setErroMarcador('');
-                                setGardandoMarcador(false);
-                                setCategoriaId('');
-                            }}
-                            disabled={gardandoMarcador}
-                        >
-                            Cancelar
-                        </button>
-                    </div>
-                </div>
-            )}
 
             {marcadores.length > 0 && (
                 <div className="detalle__marcadores">
@@ -383,94 +464,37 @@ export default function MapaDetallePage() {
                     <ul className="marcadores-lista">
                         {marcadores.map((marcador) => (
                             <li key={marcador.id} className="marcador-item">
-                                {marcadorEditando?.id === marcador.id ? (
+                                <span className="marcador-item__nome">{marcador.nome}</span>
+                                {marcador.categoriaNome && (
+                                    <span>
+                                        <span style={{ backgroundColor: marcador.categoriaCor, width: 12, height: 12, display: 'inline-block', borderRadius: '50%', marginRight: 6 }} />
+                                        <span style={{ color: 'grey' }}>{marcador.categoriaNome}</span>
+                                    </span>
+                                )}
+                                <span className="marcador-item__coords">
+                                    Lat: {marcador.latitude.toFixed(4)} · Lng: {marcador.lonxitude.toFixed(4)}
+                                </span>
+                                {marcador.creadoPor === username && (
                                     <>
-                                        <input
-                                            className="form-input"
-                                            type="text"
-                                            value={nomeEdit}
-                                            onChange={(e) => setNomeEdit(e.target.value)}
-                                            disabled={gardandoEdit}
-                                            aria-label="Nome do marcador"
-                                        />
-                                        <textarea
-                                            className="form-input form-textarea"
-                                            value={descEdit}
-                                            onChange={(e) => setDescEdit(e.target.value)}
-                                            disabled={gardandoEdit}
-                                            rows={2}
-                                            aria-label="Descrición do marcador"
-                                        />
-                                        <select
-                                            className="form-input"
-                                            value={categoriaIdEdit}
-                                            onChange={(e) => setCategoriaIdEdit(e.target.value)}
-                                            disabled={gardandoEdit}
-                                            aria-label="Categoría do marcador"
-                                        >
-                                            <option value="">Sen categoría</option>
-                                            {categorias.map((cat) => (
-                                                <option key={cat.id} value={cat.id}>
-                                                    [{cat.cor}] {cat.nome}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        {erroEdit && <p className="form-error">{erroEdit}</p>}
-                                        <button
-                                            className="btn btn--primary btn--sm"
-                                            onClick={handleEditarMarcador}
-                                            disabled={gardandoEdit}
-                                        >
-                                            {gardandoEdit ? 'Gardando…' : 'Gardar'}
-                                        </button>
                                         <button
                                             className="btn btn--ghost btn--sm"
                                             onClick={() => {
-                                                setMarcadorEditando(null);
-                                                setNomeEdit('');
-                                                setDescEdit('');
-                                                setCategoriaIdEdit('');
+                                                setMarcadorEditando(marcador);
+                                                setNomeEdit(marcador.nome);
+                                                setDescEdit(marcador.descricion || '');
+                                                setCategoriaIdEdit(marcador.categoriaId || '');
+                                                setCoordsEditOverride(null);
                                                 setErroEdit('');
                                             }}
-                                            disabled={gardandoEdit}
                                         >
-                                            Cancelar
+                                            Editar
                                         </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <span className="marcador-item__nome">{marcador.nome}</span>
-                                        {marcador.categoriaNome && (
-                                            <span>
-                                                <span style={{ backgroundColor: marcador.categoriaCor, width: 12, height: 12, display: 'inline-block', borderRadius: '50%', marginRight: 6 }} />
-                                                <span style={{ color: 'grey' }}>{marcador.categoriaNome}</span>
-                                            </span>
-                                        )}
-                                        <span className="marcador-item__coords">
-                                            Lat: {marcador.latitude.toFixed(4)} · Lng: {marcador.lonxitude.toFixed(4)}
-                                        </span>
-                                        {marcador.creadoPor === username && (
-                                            <>
-                                                <button
-                                                    className="btn btn--ghost btn--sm"
-                                                    onClick={() => {
-                                                        setMarcadorEditando(marcador);
-                                                        setNomeEdit(marcador.nome);
-                                                        setDescEdit(marcador.descricion || '');
-                                                        setCategoriaIdEdit(marcador.categoriaId || '');
-                                                        setErroEdit('');
-                                                    }}
-                                                >
-                                                    Editar
-                                                </button>
-                                                <button
-                                                    className="btn btn--danger btn--sm"
-                                                    onClick={() => solicitarEliminarMarcador(marcador)}
-                                                >
-                                                    Eliminar
-                                                </button>
-                                            </>
-                                        )}
+                                        <button
+                                            className="btn btn--danger btn--sm"
+                                            onClick={() => solicitarEliminarMarcador(marcador)}
+                                        >
+                                            Eliminar
+                                        </button>
                                     </>
                                 )}
                             </li>
@@ -509,6 +533,155 @@ export default function MapaDetallePage() {
                 <div className="detalle__invitations">
                     <ConvitePanel mapaId={mapa.id} />
                 </div>
+            )}
+
+            {mapa.tipo === 'PRIVADO' && (
+                <MembroPanel mapaId={mapa.id} creadoPor={mapa.creadoPor} />
+            )}
+
+            {/* ---- Create marker modal ---- */}
+            {mostrarFormMarcador && (
+                <FormModal title="Engadir marcador" onClose={resetFormMarcador}>
+                    <p className="marcador-busca__coords-info">
+                        {coordsMarcador
+                            ? `Lat: ${coordsMarcador.lat.toFixed(4)}, Lng: ${coordsMarcador.lng.toFixed(4)}`
+                            : 'Selecciona un enderezo ou pecha o modal e preme no mapa'}
+                    </p>
+                    <div className="modal-field">
+                        <label className="modal-label">Enderezo</label>
+                        <AddressSearchField
+                            onSelect={({ lat, lng }) => setCoordsMarcador({ lat, lng })}
+                        />
+                    </div>
+                    <div className="modal-field">
+                        <label className="modal-label">Nome *</label>
+                        <input
+                            className={`modal-input${erroMarcador && !nomeMarcador.trim() ? ' modal-input--error' : ''}`}
+                            type="text"
+                            value={nomeMarcador}
+                            onChange={(e) => setNomeMarcador(e.target.value)}
+                            disabled={gardandoMarcador}
+                            aria-label="Nome do marcador"
+                        />
+                    </div>
+                    <div className="modal-field">
+                        <label className="modal-label">Descrición (opcional)</label>
+                        <textarea
+                            className="modal-input"
+                            value={descMarcador}
+                            onChange={(e) => setDescMarcador(e.target.value)}
+                            disabled={gardandoMarcador}
+                            rows={3}
+                            aria-label="Descrición do marcador"
+                        />
+                    </div>
+                    <div className="modal-field">
+                        <label className="modal-label">Categoría (opcional)</label>
+                        <select
+                            className="modal-input"
+                            value={categoriaId}
+                            onChange={(e) => setCategoriaId(e.target.value)}
+                            disabled={gardandoMarcador}
+                            aria-label="Categoría do marcador"
+                        >
+                            <option value="">Sen categoría</option>
+                            {categorias.map((cat) => (
+                                <option key={cat.id} value={cat.id}>{cat.nome}</option>
+                            ))}
+                        </select>
+                    </div>
+                    {erroMarcador && <p className="modal-error">{erroMarcador}</p>}
+                    <div className="modal-actions">
+                        <button
+                            type="button"
+                            className="modal-btn-cancelar"
+                            onClick={resetFormMarcador}
+                            disabled={gardandoMarcador}
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="button"
+                            className="modal-btn-gardar"
+                            onClick={handleCrearMarcador}
+                            disabled={gardandoMarcador}
+                        >
+                            {gardandoMarcador ? 'Gardando…' : 'Gardar'}
+                        </button>
+                    </div>
+                </FormModal>
+            )}
+
+            {/* ---- Edit marker modal ---- */}
+            {marcadorEditando && (
+                <FormModal title="Editar marcador" onClose={resetEditMarcador}>
+                    <p className="marcador-busca__coords-info">
+                        Lat: {(coordsEditOverride?.lat ?? marcadorEditando.latitude).toFixed(4)},
+                        {' '}Lng: {(coordsEditOverride?.lng ?? marcadorEditando.lonxitude).toFixed(4)}
+                    </p>
+                    <div className="modal-field">
+                        <label className="modal-label">Cambiar localización (opcional)</label>
+                        <AddressSearchField
+                            onSelect={({ lat, lng }) => setCoordsEditOverride({ lat, lng })}
+                        />
+                    </div>
+                    <div className="modal-field">
+                        <label className="modal-label">Nome *</label>
+                        <input
+                            className={`modal-input${erroEdit && !nomeEdit.trim() ? ' modal-input--error' : ''}`}
+                            type="text"
+                            value={nomeEdit}
+                            onChange={(e) => setNomeEdit(e.target.value)}
+                            disabled={gardandoEdit}
+                            aria-label="Nome do marcador"
+                        />
+                    </div>
+                    <div className="modal-field">
+                        <label className="modal-label">Descrición (opcional)</label>
+                        <textarea
+                            className="modal-input"
+                            value={descEdit}
+                            onChange={(e) => setDescEdit(e.target.value)}
+                            disabled={gardandoEdit}
+                            rows={3}
+                            aria-label="Descrición do marcador"
+                        />
+                    </div>
+                    <div className="modal-field">
+                        <label className="modal-label">Categoría (opcional)</label>
+                        <select
+                            className="modal-input"
+                            value={categoriaIdEdit}
+                            onChange={(e) => setCategoriaIdEdit(e.target.value)}
+                            disabled={gardandoEdit}
+                            aria-label="Categoría do marcador"
+                        >
+                            <option value="">Sen categoría</option>
+                            {categorias.map((cat) => (
+                                <option key={cat.id} value={cat.id}>{cat.nome}</option>
+                            ))}
+                        </select>
+                    </div>
+                    {erroEdit && <p className="modal-error">{erroEdit}</p>}
+                    <div className="modal-actions">
+                        <button
+                            type="button"
+                            className="modal-btn-cancelar"
+                            onClick={resetEditMarcador}
+                            disabled={gardandoEdit}
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="button"
+                            className="modal-btn-gardar"
+                            onClick={handleEditarMarcador}
+                            disabled={gardandoEdit}
+                        >
+                            {gardandoEdit ? 'Gardando…' : 'Gardar'}
+                        </button>
+                    </div>
+                </FormModal>
             )}
 
             <ConfirmDialog

@@ -4,7 +4,7 @@
 // O item "Visualizar mapas" abre un panel drawer en vez de navegar.
 
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import useSidebarStore from '../store/useSidebarStore';
@@ -98,13 +98,11 @@ export default function Sidebar({ onVisualizarClick }) {
             className={`sidebar ${expanded ? 'sidebar--expanded' : 'sidebar--collapsed'}`}
             aria-label="Navegación principal"
         >
-            <div
+            <Link
+                to="/"
                 className="sidebar__logo"
-                onClick={() => navigate('/')}
-                role="button"
-                tabIndex={0}
-                onKeyDown={e => e.key === 'Enter' && navigate('/')}
-                aria-label="Explora — ir á páxina principal"
+                aria-label="Ir á páxina principal"
+                style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}
             >
                 <div className="sidebar__logo-icona" aria-hidden="true">
                     <svg
@@ -128,7 +126,7 @@ export default function Sidebar({ onVisualizarClick }) {
                 {expanded && (
                     <span className="sidebar__logo-texto" aria-hidden="true">Explora</span>
                 )}
-            </div>
+            </Link>
             <div className="sidebar__logo-separador" aria-hidden="true" />
 
             <button
@@ -142,25 +140,22 @@ export default function Sidebar({ onVisualizarClick }) {
             <nav className="sidebar__nav">
                 <ul className="sidebar__list">
                     {isAuthenticated && (
-                        <li
-                            className="sidebar__item sidebar__item--avatar"
-                            onClick={() => navigate('/perfil')}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={e => e.key === 'Enter' && navigate('/perfil')}
-                            style={{ cursor: 'pointer' }}
-                            aria-label={`Perfil de ${username}`}
-                        >
-                            <div className="sidebar__avatar" title={username}>
-                                <span className="sidebar__avatar-inicial">
+                        <li className="sidebar__item sidebar__item--avatar">
+                            <Link
+                                to="/perfil"
+                                className="sidebar__link"
+                                aria-label="Ir ao perfil"
+                                style={{ textDecoration: 'none', cursor: 'pointer' }}
+                            >
+                                <span className="sidebar__avatar" aria-hidden="true" title={username}>
                                     {username?.[0]?.toUpperCase()}
                                 </span>
-                            </div>
-                            {expanded && (
-                                <span className="sidebar__label sidebar__label--username">
-                                    {username}
-                                </span>
-                            )}
+                                {expanded && (
+                                    <span className="sidebar__label sidebar__label--username">
+                                        {username}
+                                    </span>
+                                )}
+                            </Link>
                         </li>
                     )}
 

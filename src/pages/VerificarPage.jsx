@@ -60,10 +60,7 @@ export default function VerificarPage() {
         {estado === 'ok' && (
           <>
             <div className="verificar-card__icona verificar-card__icona--ok" aria-hidden="true">
-              <span style={{ display:'inline-flex', width:'32px', height:'32px', position:'relative' }}>
-                <span style={{ position:'absolute', top:'60%', left:'15%', width:'30%', height:'3px', backgroundColor:'currentColor', borderRadius:'2px', transform:'rotate(45deg)', transformOrigin:'left center' }} />
-                <span style={{ position:'absolute', top:'45%', left:'35%', width:'55%', height:'3px', backgroundColor:'currentColor', borderRadius:'2px', transform:'rotate(-45deg)', transformOrigin:'left center' }} />
-              </span>
+              <span className="tick-icon" />
             </div>
             <h1 className="verificar-card__titulo">Conta verificada</h1>
             <p className="verificar-card__texto">{mensaxe}</p>

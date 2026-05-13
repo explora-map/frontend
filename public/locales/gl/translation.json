@@ -190,5 +190,26 @@
     "baleiro": "Non hai notificacións.",
     "conviteTitulo": "Convite para colaborar",
     "conviteMensaxe": "{{remitente}} convidoute ao mapa \"{{mapa}}\""
+  },
+  "dashboard": {
+    "benvida": "Benvida, {{username}}",
+    "mapas": {
+      "titulo": "Os meus mapas",
+      "descriccion": "Xestiona os teus mapas e colaboracións",
+      "btn": "Ir aos mapas",
+      "aria": "Acceso rápido a Os meus mapas"
+    },
+    "explorar": {
+      "titulo": "Explorar",
+      "descriccion": "Descobre mapas públicos preto de ti",
+      "btn": "Explorar mapa",
+      "aria": "Acceso rápido a Explorar"
+    },
+    "convites": {
+      "titulo": "Convites",
+      "descriccion": "Revisa os convites pendentes",
+      "btn": "Ver convites",
+      "aria": "Acceso rápido a Convites"
+    }
   }
 }

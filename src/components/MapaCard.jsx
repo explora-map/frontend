@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import ConfirmDialog from './ConfirmDialog';
 import { cambiarVisibilidade, eliminarMapa } from '../services/mapaApi';
 
-export default function MapaCard({ mapa, onEliminar, onVisibilidadeCambiada }) {
+export default function MapaCard({ mapa, onEliminar, onVisibilidadeCambiada, accionExtra }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [menuAberto, setMenuAberto] = useState(false);
@@ -138,6 +138,12 @@ export default function MapaCard({ mapa, onEliminar, onVisibilidadeCambiada }) {
         )}
         {erro && <p className="form-error" style={{ marginTop: '8px' }}>{erro}</p>}
       </div>
+
+      {accionExtra && (
+        <div className="mapa-card__footer">
+          {accionExtra}
+        </div>
+      )}
 
       {menuAberto && ReactDOM.createPortal(
         <ul

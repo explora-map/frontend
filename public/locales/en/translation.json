@@ -190,5 +190,26 @@
     "baleiro": "No notifications.",
     "conviteTitulo": "Invitation to collaborate",
     "conviteMensaxe": "{{remitente}} invited you to the map \"{{mapa}}\""
+  },
+  "dashboard": {
+    "benvida": "Welcome, {{username}}",
+    "mapas": {
+      "titulo": "My Maps",
+      "descriccion": "Manage your maps and collaborations",
+      "btn": "Go to maps",
+      "aria": "Quick access to My Maps"
+    },
+    "explorar": {
+      "titulo": "Explore",
+      "descriccion": "Discover public maps near you",
+      "btn": "Explore map",
+      "aria": "Quick access to Explore"
+    },
+    "convites": {
+      "titulo": "Invitations",
+      "descriccion": "Review your pending invitations",
+      "btn": "View invitations",
+      "aria": "Quick access to Invitations"
+    }
   }
 }

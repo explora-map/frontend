@@ -38,3 +38,13 @@ export async function obterMapasPublicos(latitude, lonxitude, radio) {
     });
     return res.data;
 }
+
+export async function obterMapasColaboradora() {
+    const res = await axiosInstance.get('/mapas/colaboracións');
+    return res.data;
+}
+
+export async function obterMapasGardados() {
+    const res = await axiosInstance.get('/mapas/gardados');
+    return res.data;
+}
