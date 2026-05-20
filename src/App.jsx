@@ -3,8 +3,8 @@
 // AppLayout provides Sidebar + Notificacions for all routes that need it.
 // ProtectedRoute guards authenticated routes using nested <Outlet />.
 
-import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './store/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/AppLayout';
@@ -13,8 +13,6 @@ import VisualizarMapasPanel from './components/VisualizarMapasPanel';
 // Sprint 2 pages
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
-import DashboardPage from './pages/DashboardPage';
-
 // Sprint 3 pages
 import MapaListPage from './pages/MapaListPage';
 import MapaCrearPage from './pages/MapaCrearPage';
@@ -30,12 +28,25 @@ import ConfiguracionPage from './pages/ConfiguracionPage';
 import PerfilPage from './pages/PerfilPage';
 import VerificarPage from './pages/VerificarPage';
 
+function PanelController({ onPechar }) {
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.pathname !== '/') {
+            onPechar();
+        }
+    }, [location.pathname, onPechar]);
+
+    return null;
+}
+
 export default function App() {
     const [panelVisualizar, setPanelVisualizar] = useState(false);
 
     return (
         <BrowserRouter>
             <AuthProvider>
+                <PanelController onPechar={() => setPanelVisualizar(false)} />
                 {/* Panel renderizado fóra das rutas para persistir entre navegacións */}
                 <VisualizarMapasPanel
                     isOpen={panelVisualizar}
@@ -56,7 +67,7 @@ export default function App() {
                     {/* Rutas protexidas con layout */}
                     <Route element={<ProtectedRoute />}>
                         <Route element={<AppLayout onVisualizarClick={() => setPanelVisualizar(prev => !prev)} />}>
-                            <Route path="/dashboard"        element={<DashboardPage />} />
+                            <Route path="/dashboard"        element={<Navigate to="/" replace />} />
                             <Route path="/mapas"            element={<MapaListPage />} />
                             {/* /mapas/novo antes de /mapas/:id para evitar conflito de segmento */}
                             <Route path="/mapas/novo"       element={<MapaCrearPage />} />

@@ -7,7 +7,8 @@
     "osMenusMapas": "Os meus mapas",
     "visualizarMapas": "Visualizar mapas",
     "configuracion": "Configuración",
-    "perfil": "Perfil"
+    "perfil": "Perfil",
+    "convites": "Convites"
   },
   "auth": {
     "login": {
@@ -88,7 +89,22 @@
     "confirmEliminarMensaxe": "Esta acción é irreversible. Eliminaranse tamén todos os marcadores e categorías asociados.",
     "confirmEliminarBoton": "Eliminar definitivamente",
     "etiquetaPublico": "Público",
-    "etiquetaPrivado": "Privado"
+    "etiquetaPrivado": "Privado",
+    "lapela": {
+      "creados": "Os meus mapas",
+      "colaboracions": "Colaboracións",
+      "gardados": "Gardados"
+    },
+    "cargando": "Cargando...",
+    "baleiro": {
+      "creados": "Aínda non creaches ningún mapa.",
+      "colaboracions": "Aínda non colaboras en ningún mapa.",
+      "gardados": "Aínda non gardaches ningún mapa."
+    },
+    "botonDesgardar": "Desgardar",
+    "erroCargarColaboracions": "Non foi posible cargar os mapas de colaboración.",
+    "erroCargarGardados": "Non foi posible cargar os mapas gardados.",
+    "erroDesgardar": "Non foi posible desgardar o mapa. Tenta de novo."
   },
   "marcadores": {
     "titulo": "Marcadores",
@@ -132,7 +148,14 @@
     "estadoAceptado": "Aceptado",
     "estadoRexeitado": "Rexeitado",
     "estadoCancelado": "Cancelado",
-    "estadoExpirado": "Expirado"
+    "estadoExpirado": "Expirado",
+    "tabEnviados": "Enviados",
+    "tabRecibidos": "Recibidos",
+    "sinConvitesEnviados": "Non enviaches ningún convite.",
+    "sinConvitesRecibidos": "Non tes convites pendentes.",
+    "errorCargarEnviados": "Non foi posible cargar os convites enviados.",
+    "errorCargarRecibidos": "Non foi posible cargar os convites recibidos.",
+    "cargando": "Cargando..."
   },
   "erros": {
     "xenerico": "Produciuse un erro inesperado. Téntao de novo.",
@@ -176,13 +199,18 @@
     "campoNome": "Nome",
     "campoUsuaria": "Nome de usuaria",
     "campoCorreo": "Correo electrónico",
-    "campoClave": "Nova contrasinal",
+    "campoClave": "Novo contrasinal",
+    "placeholderClave": "Deixa en branco para non cambiar",
     "botonGardar": "Gardar cambios",
     "botonEliminarConta": "Eliminar conta",
     "confirmEliminarTitulo": "Eliminar conta",
     "confirmEliminarMensaxe": "Esta acción é irreversible. Perderás todos os teus mapas e datos.",
     "confirmEliminarBoton": "Eliminar definitivamente",
-    "gardado": "Perfil actualizado correctamente."
+    "gardado": "Perfil actualizado correctamente.",
+    "datosPersoais": "Datos persoais",
+    "zonaPerigo": "Zona de perigo",
+    "funcionalidadeNonDisponible": "Funcionalidade non dispoñible aínda.",
+    "convidouteAoMapa": "convidoute ao mapa"
   },
   "notificacions": {
     "titulo": "Notificacións",

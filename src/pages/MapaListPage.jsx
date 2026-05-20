@@ -5,20 +5,21 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { obterMeusMaps, obterMapasColaboradora, obterMapasGardados } from '../services/mapaApi';
 import { desgardarMapa } from '../services/mapaGardadoApi';
 import MapaCard from '../components/MapaCard';
-import textos from '../constants/textos';
 import '../assets/styles/mapas.css';
 
-const LAPELAS = [
-    { id: 'creados',       label: 'Os meus mapas' },
-    { id: 'colaboracións', label: 'Colaboracións' },
-    { id: 'gardados',      label: 'Gardados' },
-];
-
 export default function MapaListPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
+
+    const LAPELAS = [
+        { id: 'creados',       label: t('mapas.lapela.creados') },
+        { id: 'colaboracións', label: t('mapas.lapela.colaboracions') },
+        { id: 'gardados',      label: t('mapas.lapela.gardados') },
+    ];
 
     const [lapela, setLapela] = useState('creados');
     const cargadas = useRef(new Set());
@@ -42,7 +43,7 @@ export default function MapaListPage() {
             const data = await obterMeusMaps();
             setMapasCreados(data);
         } catch {
-            setErrorCreados(textos.mapas.errorCargar);
+            setErrorCreados(t('mapas.erroCargarColaboracions'));
         } finally {
             setLoadingCreados(false);
         }
@@ -55,7 +56,7 @@ export default function MapaListPage() {
             const data = await obterMapasColaboradora();
             setMapasColab(data);
         } catch {
-            setErrorColab('Non foi posible cargar os mapas de colaboración.');
+            setErrorColab(t('mapas.erroCargarColaboracions'));
         } finally {
             setLoadingColab(false);
         }
@@ -68,7 +69,7 @@ export default function MapaListPage() {
             const data = await obterMapasGardados();
             setMapasGardados(data);
         } catch {
-            setErrorGardados('Non foi posible cargar os mapas gardados.');
+            setErrorGardados(t('mapas.erroCargarGardados'));
         } finally {
             setLoadingGardados(false);
         }
@@ -96,29 +97,18 @@ export default function MapaListPage() {
             await desgardarMapa(mapaId);
             setMapasGardados((prev) => prev.filter((m) => m.id !== mapaId));
         } catch {
-            setErrorGardados('Non foi posible desgardar o mapa. Tenta de novo.');
+            setErrorGardados(t('mapas.erroDesgardar'));
         }
     }
 
     return (
         <div className="page">
-            <header className="topbar">
-                <div className="topbar__brand">
-                    <div className="topbar__brand-dot" />
-                    <Link to="/dashboard">Explora Map</Link>
-                </div>
-                <nav className="topbar__nav">
-                    <Link to="/mapas" className="topbar__nav-link topbar__nav-link--active">{textos.nav.osMenusMapas}</Link>
-                    <Link to="/convites" className="topbar__nav-link">{textos.nav.convites}</Link>
-                </nav>
-            </header>
-
             <main className="page__main">
                 <div className="page__header">
-                    <h1 className="page__title">{textos.mapas.titulo}</h1>
+                    <h1 className="page__title">{t('mapas.lapela.creados')}</h1>
                     {lapela === 'creados' && (
                         <button className="btn btn--primary" onClick={() => navigate('/mapas/novo')}>
-                            {textos.mapas.botonNovo}
+                            {t('mapas.crearMapa')}
                         </button>
                     )}
                 </div>
@@ -139,15 +129,15 @@ export default function MapaListPage() {
 
                 {lapela === 'creados' && (
                     <>
-                        {loadingCreados && <p className="state-msg">Cargando...</p>}
+                        {loadingCreados && <p className="state-msg">{t('mapas.cargando')}</p>}
                         {errorCreados && (
                             <p className="state-msg state-msg--error" role="alert">{errorCreados}</p>
                         )}
                         {!loadingCreados && !errorCreados && mapasCreados.length === 0 && (
                             <div className="empty-state">
-                                <p>Aínda non creaches ningún mapa.</p>
+                                <p>{t('mapas.baleiro.creados')}</p>
                                 <button className="btn btn--primary" onClick={() => navigate('/mapas/novo')}>
-                                    {textos.mapas.crearPrimeiro}
+                                    {t('mapas.baleiro.creados')}
                                 </button>
                             </div>
                         )}
@@ -169,12 +159,12 @@ export default function MapaListPage() {
 
                 {lapela === 'colaboracións' && (
                     <>
-                        {loadingColab && <p className="state-msg">Cargando...</p>}
+                        {loadingColab && <p className="state-msg">{t('mapas.cargando')}</p>}
                         {errorColab && (
                             <p className="state-msg state-msg--error" role="alert">{errorColab}</p>
                         )}
                         {!loadingColab && !errorColab && mapasColab.length === 0 && (
-                            <p className="state-msg">Aínda non colaboras en ningún mapa.</p>
+                            <p className="state-msg">{t('mapas.baleiro.colaboracions')}</p>
                         )}
                         {!loadingColab && mapasColab.length > 0 && (
                             <div className="mapa-grid">
@@ -182,7 +172,7 @@ export default function MapaListPage() {
                                     <MapaCard
                                         key={mapa.id}
                                         mapa={mapa}
-                                        rolEfectivo={mapa.rolEfectivo || 'COLABORADORA'}
+                                        rolEfectivo={mapa.rol || 'COLABORADORA'}
                                     />
                                 ))}
                             </div>
@@ -192,12 +182,12 @@ export default function MapaListPage() {
 
                 {lapela === 'gardados' && (
                     <>
-                        {loadingGardados && <p className="state-msg">Cargando...</p>}
+                        {loadingGardados && <p className="state-msg">{t('mapas.cargando')}</p>}
                         {errorGardados && (
                             <p className="state-msg state-msg--error" role="alert">{errorGardados}</p>
                         )}
                         {!loadingGardados && !errorGardados && mapasGardados.length === 0 && (
-                            <p className="state-msg">Aínda non gardaches ningún mapa.</p>
+                            <p className="state-msg">{t('mapas.baleiro.gardados')}</p>
                         )}
                         {!loadingGardados && mapasGardados.length > 0 && (
                             <div className="mapa-grid">
@@ -210,7 +200,7 @@ export default function MapaListPage() {
                                                 className="btn btn--ghost btn--sm"
                                                 onClick={(e) => { e.stopPropagation(); handleDesgardar(mapa.id); }}
                                             >
-                                                Desgardar
+                                                {t('mapas.botonDesgardar')}
                                             </button>
                                         }
                                     />

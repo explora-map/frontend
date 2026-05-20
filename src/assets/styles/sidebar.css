@@ -63,6 +63,8 @@
 .sidebar__link {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
+    text-align: left;
     gap: var(--space-3);
     width: 100%;
     padding: var(--space-2);
@@ -287,4 +289,18 @@
 
 @media (min-width: 641px) {
     .bottom-nav { display: none; }
+}
+
+.sidebar__link--logout {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    color: var(--color-danger, #dc2626);
+}
+
+.sidebar__link--logout:hover {
+    background: var(--color-danger-bg, #fef2f2);
+    color: var(--color-danger, #dc2626);
 }

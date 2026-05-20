@@ -42,7 +42,7 @@ export default function LoginPage() {
     const { login } = useAuth();
 
     // ProtectedRoute may pass a redirect target in location.state
-    const from = location.state?.from?.pathname || '/dashboard';
+    const from = location.state?.from?.pathname || '/';
     // RegisterPage may pass a success message
     const successMessage = location.state?.successMessage || '';
 

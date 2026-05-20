@@ -70,7 +70,7 @@ export default function BottomNav() {
         { ruta: '/',      label: t('nav.explorarMapas'),   icona: <GlobeIcon /> },
         ...(soNaInicio ? [{ ruta: '/mapas-visualizar', label: t('nav.visualizarMapas'), icona: <LayersIcon /> }] : []),
         { ruta: '/mapas', label: t('nav.osMenusMapas'),    icona: <PinIcon /> },
-        { ruta: '/dashboard', label: t('nav.perfil'),      icona: <UserIcon /> },
+        { ruta: '/perfil', label: t('nav.perfil'),      icona: <UserIcon /> },
     ];
 
     const items = isAuthenticated ? itemsAuth : itemsNoAuth;

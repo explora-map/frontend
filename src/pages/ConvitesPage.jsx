@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     obterConvitesEnviados,
     obterConvitesRecibidos,
@@ -11,18 +12,19 @@ import {
     aceptarConvite,
     rexeitarConvite,
 } from '../services/conviteApi';
-import textos from '../constants/textos';
 import '../assets/styles/mapas.css';
 
-const ESTADO_LABEL = {
-    PENDENTE: textos.convites.estadoPendente,
-    ACEPTADO: textos.convites.estadoAceptado,
-    REXEITADO: textos.convites.estadoRexeitado,
-    CANCELADO: textos.convites.estadoCancelado,
-    EXPIRADO: textos.convites.estadoExpirado,
-};
-
 export default function ConvitesPage() {
+    const { t } = useTranslation();
+
+    const ESTADO_LABEL = {
+        PENDENTE:  t('convites.estadoPendente'),
+        ACEPTADO:  t('convites.estadoAceptado'),
+        REXEITADO: t('convites.estadoRexeitado'),
+        CANCELADO: t('convites.estadoCancelado'),
+        EXPIRADO:  t('convites.estadoExpirado'),
+    };
+
     const [activeTab, setActiveTab] = useState('enviados');
 
     const [enviados, setEnviados] = useState([]);
@@ -39,7 +41,7 @@ export default function ConvitesPage() {
         try {
             setEnviados(await obterConvitesEnviados());
         } catch {
-            setErrorEnviados(textos.convites.errorCargarEnviados);
+            setErrorEnviados(t('convites.errorCargarEnviados'));
         } finally {
             setLoadingEnviados(false);
         }
@@ -51,7 +53,7 @@ export default function ConvitesPage() {
         try {
             setRecibidos(await obterConvitesRecibidos());
         } catch {
-            setErrorRecibidos(textos.convites.errorCargarRecibidos);
+            setErrorRecibidos(t('convites.errorCargarRecibidos'));
         } finally {
             setLoadingRecibidos(false);
         }
@@ -95,19 +97,8 @@ export default function ConvitesPage() {
 
     return (
         <div className="page">
-            <header className="topbar">
-                <div className="topbar__brand">
-                    <div className="topbar__brand-dot" />
-                    <Link to="/dashboard">Explora Map</Link>
-                </div>
-                <nav className="topbar__nav">
-                    <Link to="/mapas" className="topbar__nav-link">{textos.nav.osMenusMapas}</Link>
-                    <Link to="/convites" className="topbar__nav-link topbar__nav-link--active">{textos.nav.convites}</Link>
-                </nav>
-            </header>
-
             <main className="page__main">
-                <h1 className="page__title">{textos.convites.titulo}</h1>
+                <h1 className="page__title">{t('convites.titulo')}</h1>
 
                 {/* Tabs */}
                 <div className="tabs" role="tablist">
@@ -117,7 +108,7 @@ export default function ConvitesPage() {
                         className={`tab${activeTab === 'enviados' ? ' tab--active' : ''}`}
                         onClick={() => setActiveTab('enviados')}
                     >
-                        {textos.convites.tabEnviados}
+                        {t('convites.tabEnviados')}
                     </button>
                     <button
                         role="tab"
@@ -125,7 +116,7 @@ export default function ConvitesPage() {
                         className={`tab${activeTab === 'recibidos' ? ' tab--active' : ''}`}
                         onClick={() => setActiveTab('recibidos')}
                     >
-                        {textos.convites.tabRecibidos}
+                        {t('convites.tabRecibidos')}
                         {recibidos.filter((c) => c.estado === 'PENDENTE').length > 0 && (
                             <span className="tab__badge">
                                 {recibidos.filter((c) => c.estado === 'PENDENTE').length}
@@ -137,10 +128,10 @@ export default function ConvitesPage() {
                 {/* Enviados panel */}
                 {activeTab === 'enviados' && (
                     <div role="tabpanel">
-                        {loadingEnviados && <p className="state-msg">{textos.cargando.xenerico}</p>}
+                        {loadingEnviados && <p className="state-msg">{t('convites.cargando')}</p>}
                         {errorEnviados && <p className="state-msg state-msg--error">{errorEnviados}</p>}
                         {!loadingEnviados && !errorEnviados && enviados.length === 0 && (
-                            <p className="state-msg">{textos.convites.sinConvitesEnviados}</p>
+                            <p className="state-msg">{t('convites.sinConvitesEnviados')}</p>
                         )}
                         {!loadingEnviados && enviados.length > 0 && (
                             <ul className="convite-list">
@@ -161,7 +152,7 @@ export default function ConvitesPage() {
                                                     className="btn btn--danger btn--sm"
                                                     onClick={() => handleCancel(c.token)}
                                                 >
-                                                    {textos.convites.botonCancelar}
+                                                    {t('convites.botonCancelar')}
                                                 </button>
                                             )}
                                         </div>
@@ -175,10 +166,10 @@ export default function ConvitesPage() {
                 {/* Recibidos panel */}
                 {activeTab === 'recibidos' && (
                     <div role="tabpanel">
-                        {loadingRecibidos && <p className="state-msg">{textos.cargando.xenerico}</p>}
+                        {loadingRecibidos && <p className="state-msg">{t('convites.cargando')}</p>}
                         {errorRecibidos && <p className="state-msg state-msg--error">{errorRecibidos}</p>}
                         {!loadingRecibidos && !errorRecibidos && recibidos.length === 0 && (
-                            <p className="state-msg">{textos.convites.sinConvitesRecibidos}</p>
+                            <p className="state-msg">{t('convites.sinConvitesRecibidos')}</p>
                         )}
                         {!loadingRecibidos && recibidos.length > 0 && (
                             <ul className="convite-list">
@@ -200,13 +191,13 @@ export default function ConvitesPage() {
                                                         className="btn btn--primary btn--sm"
                                                         onClick={() => handleAceptar(c.token)}
                                                     >
-                                                        {textos.convites.botonAceptar}
+                                                        {t('convites.botonAceptar')}
                                                     </button>
                                                     <button
                                                         className="btn btn--ghost btn--sm"
                                                         onClick={() => handleRexeitar(c.token)}
                                                     >
-                                                        {textos.convites.botonRexeitar}
+                                                        {t('convites.botonRexeitar')}
                                                     </button>
                                                 </>
                                             )}

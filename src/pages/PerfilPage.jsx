@@ -126,7 +126,7 @@ export default function PerfilPage() {
   function handleEliminarConta() {
     // Endpoint not yet implemented — show message
     setConfirmEliminarOpen(false);
-    setErroForm('Funcionalidade non dispoñible aínda.');
+    setErroForm(t('perfil.funcionalidadeNonDisponible'));
   }
 
   if (cargando) {
@@ -161,7 +161,7 @@ export default function PerfilPage() {
       {/* Profile form */}
       <section className="perfil-section" aria-labelledby="perfil-datos-titulo">
         <h2 id="perfil-datos-titulo" className="perfil-section__titulo">
-          Datos persoais
+          {t('perfil.datosPersoais')}
         </h2>
         <form className="perfil-form" onSubmit={handleGardar} noValidate>
           <div className="form-group">
@@ -220,7 +220,7 @@ export default function PerfilPage() {
               className="form-input"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Deixa en branco para non cambiar"
+              placeholder={t('perfil.placeholderClave')}
               autoComplete="new-password"
             />
             {passwordStrength.visible && (
@@ -286,7 +286,7 @@ export default function PerfilPage() {
               <li key={c.token} className="perfil-convite-item">
                 <div className="perfil-convite-item__info">
                   <p className="perfil-convite-item__texto">
-                    <strong>{c.usernameAnfitrioa}</strong> convidoute ao mapa <strong>{c.mapaNome}</strong>
+                    <strong>{c.usernameAnfitrioa}</strong> {t('perfil.convidouteAoMapa')} <strong>{c.mapaNome}</strong>
                   </p>
                   <p className="perfil-convite-item__data">
                     {new Date(c.dataCreacion).toLocaleDateString('gl-ES')}
@@ -315,7 +315,7 @@ export default function PerfilPage() {
       {/* Danger zone */}
       <section className="perfil-section perfil-section--danger" aria-labelledby="perfil-danger-titulo">
         <h2 id="perfil-danger-titulo" className="perfil-section__titulo perfil-section__titulo--danger">
-          Zona de perigo
+          {t('perfil.zonaPerigo')}
         </h2>
         <div className="perfil-danger-corpo">
           <div className="perfil-danger-info">

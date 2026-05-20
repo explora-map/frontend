@@ -71,11 +71,6 @@
   box-shadow: var(--shadow-focus);
 }
 
-.idioma-option__bandeira {
-  font-size: var(--text-xl);
-  line-height: 1;
-}
-
 .idioma-option__nome {
   flex: 1;
   font-size: var(--text-sm);

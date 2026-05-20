@@ -7,7 +7,8 @@
     "osMenusMapas": "My maps",
     "visualizarMapas": "Visualize maps",
     "configuracion": "Settings",
-    "perfil": "Profile"
+    "perfil": "Profile",
+    "convites": "Invitations"
   },
   "auth": {
     "login": {
@@ -88,7 +89,22 @@
     "confirmEliminarMensaxe": "This action is irreversible. All markers and categories will also be deleted.",
     "confirmEliminarBoton": "Delete permanently",
     "etiquetaPublico": "Public",
-    "etiquetaPrivado": "Private"
+    "etiquetaPrivado": "Private",
+    "lapela": {
+      "creados": "My maps",
+      "colaboracions": "Collaborations",
+      "gardados": "Saved"
+    },
+    "cargando": "Loading...",
+    "baleiro": {
+      "creados": "You haven't created any maps yet.",
+      "colaboracions": "You are not collaborating on any maps yet.",
+      "gardados": "You haven't saved any maps yet."
+    },
+    "botonDesgardar": "Unsave",
+    "erroCargarColaboracions": "Could not load collaboration maps.",
+    "erroCargarGardados": "Could not load saved maps.",
+    "erroDesgardar": "Could not unsave the map. Please try again."
   },
   "marcadores": {
     "titulo": "Markers",
@@ -132,7 +148,14 @@
     "estadoAceptado": "Accepted",
     "estadoRexeitado": "Declined",
     "estadoCancelado": "Cancelled",
-    "estadoExpirado": "Expired"
+    "estadoExpirado": "Expired",
+    "tabEnviados": "Sent",
+    "tabRecibidos": "Received",
+    "sinConvitesEnviados": "You haven't sent any invitations.",
+    "sinConvitesRecibidos": "You have no pending invitations.",
+    "errorCargarEnviados": "Could not load sent invitations.",
+    "errorCargarRecibidos": "Could not load received invitations.",
+    "cargando": "Loading..."
   },
   "erros": {
     "xenerico": "An unexpected error occurred. Please try again.",
@@ -177,12 +200,17 @@
     "campoUsuaria": "Username",
     "campoCorreo": "Email address",
     "campoClave": "New password",
+    "placeholderClave": "Leave blank to keep current password",
     "botonGardar": "Save changes",
     "botonEliminarConta": "Delete account",
     "confirmEliminarTitulo": "Delete account",
     "confirmEliminarMensaxe": "This action is irreversible. You will lose all your maps and data.",
     "confirmEliminarBoton": "Delete permanently",
-    "gardado": "Profile updated successfully."
+    "gardado": "Profile updated successfully.",
+    "datosPersoais": "Personal data",
+    "zonaPerigo": "Danger zone",
+    "funcionalidadeNonDisponible": "Feature not yet available.",
+    "convidouteAoMapa": "invited you to the map"
   },
   "notificacions": {
     "titulo": "Notifications",

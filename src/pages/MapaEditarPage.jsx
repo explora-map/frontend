@@ -217,16 +217,6 @@ export default function MapaEditarPage() {
 function PageShell({ id, children }) {
     return (
         <div className="page">
-            <header className="topbar">
-                <div className="topbar__brand">
-                    <div className="topbar__brand-dot" />
-                    <Link to="/dashboard">Explora Map</Link>
-                </div>
-                <nav className="topbar__nav">
-                    <Link to="/mapas" className="topbar__nav-link">{textos.nav.osMenusMapas}</Link>
-                    <Link to="/convites" className="topbar__nav-link">{textos.nav.convites}</Link>
-                </nav>
-            </header>
             <main className="page__main page__main--narrow">{children}</main>
         </div>
     );

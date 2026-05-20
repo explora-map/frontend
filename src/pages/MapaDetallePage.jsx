@@ -758,16 +758,6 @@ export default function MapaDetallePage() {
 function PageShell({ children }) {
     return (
         <div className="page">
-            <header className="topbar">
-                <div className="topbar__brand">
-                    <div className="topbar__brand-dot" />
-                    <Link to="/dashboard">Explora Map</Link>
-                </div>
-                <nav className="topbar__nav">
-                    <Link to="/mapas" className="topbar__nav-link topbar__nav-link--active">Os meus mapas</Link>
-                    <Link to="/convites" className="topbar__nav-link">Convites</Link>
-                </nav>
-            </header>
             <main className="page__main">{children}</main>
         </div>
     );

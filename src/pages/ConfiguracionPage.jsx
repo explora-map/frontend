@@ -35,7 +35,6 @@ export default function ConfiguracionPage() {
               role="radio"
               aria-checked={idioma === 'gl'}
             >
-              <span className="idioma-option__bandeira" aria-hidden="true">🏴󠁧󠁢󠁳󠁣󠁴󠁿</span>
               <span className="idioma-option__nome">Galego</span>
               {idioma === 'gl' && (
                 <span className="idioma-option__check" aria-hidden="true">
@@ -51,7 +50,6 @@ export default function ConfiguracionPage() {
               role="radio"
               aria-checked={idioma === 'en'}
             >
-              <span className="idioma-option__bandeira" aria-hidden="true">🇬🇧</span>
               <span className="idioma-option__nome">English</span>
               {idioma === 'en' && (
                 <span className="idioma-option__check" aria-hidden="true">
