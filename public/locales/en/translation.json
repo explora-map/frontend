@@ -219,6 +219,14 @@
     "conviteTitulo": "Invitation to collaborate",
     "conviteMensaxe": "{{remitente}} invited you to the map \"{{mapa}}\""
   },
+  "visualizar": {
+    "titulo": "Explore public maps",
+    "buscador": "Search maps near…",
+    "botonBuscar": "Search",
+    "sinResultados": "No maps found in this area.",
+    "errorBusca": "Search failed. Please try again.",
+    "cargando": "Searching maps…"
+  },
   "dashboard": {
     "benvida": "Welcome, {{username}}",
     "mapas": {

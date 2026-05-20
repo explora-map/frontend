@@ -3,8 +3,8 @@
 // categorias and reload are owned by MapaDetallePage and passed as props to keep state in sync.
 
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { crearCategoria, eliminarCategoria, editarCategoria } from '../services/categoriaApi';
-import textos from '../constants/textos';
 import ConfirmDialog from './ConfirmDialog';
 import FormModal from './FormModal';
 
@@ -55,6 +55,7 @@ function SelectorCor({ cor, onChange, disabled }) {
 }
 
 export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCambio, podeCrear, podeEditarCalquera, usernameActual }) {
+    const { t } = useTranslation();
     const canCreate = podeCrear ?? esPropietario;
     const [erro, setErro] = useState('');
 
@@ -90,7 +91,8 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
     async function handleCrear(e) {
         e.preventDefault();
         if (!nome.trim()) {
-            setErroForm(textos.categorias.validNomeObrigatorio);
+            // TODO: add categorias.validNomeObrigatorio to translation files
+            setErroForm('O nome é obrigatorio.');
             return;
         }
 
@@ -101,7 +103,7 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
             resetForm();
             await onCambio();
         } catch (err) {
-            setErroForm(err.response?.data?.message || textos.categorias.errorGardar);
+            setErroForm(err.response?.data?.message || t('erros.xenerico'));
         } finally {
             setGardando(false);
         }
@@ -109,7 +111,8 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
 
     async function handleEditarCategoria() {
         if (!nomeEdit.trim()) {
-            setErroEdit(textos.categorias.validNomeObrigatorio);
+            // TODO: add categorias.validNomeObrigatorio to translation files
+            setErroEdit('O nome é obrigatorio.');
             return;
         }
         setGardandoEdit(true);
@@ -118,7 +121,7 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
             resetEdit();
             await onCambio();
         } catch (err) {
-            setErroEdit(err.response?.data?.message || textos.categorias.errorGardar);
+            setErroEdit(err.response?.data?.message || t('erros.xenerico'));
         } finally {
             setGardandoEdit(false);
         }
@@ -137,19 +140,20 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
             await eliminarCategoria(cat.id);
             await onCambio();
         } catch {
-            setErro(textos.categorias.errorEliminar);
+            setErro(t('erros.xenerico'));
         }
     }
 
     return (
         <>
             <div className="categoria-panel">
-                <h3 className="categoria-panel__title">{textos.categorias.titulo}</h3>
+                <h3 className="categoria-panel__title">{t('categorias.titulo')}</h3>
 
                 {erro && <p className="categoria-panel__msg categoria-panel__msg--error">{erro}</p>}
 
+                {/* TODO: add categorias.sinCategorias to translation files */}
                 {categorias.length === 0 && (
-                    <p className="categoria-panel__state">{textos.categorias.sinCategorias}</p>
+                    <p className="categoria-panel__state">Non hai categorías para este mapa.</p>
                 )}
 
                 {categorias.length > 0 && (
@@ -174,13 +178,14 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                                                 setErroEdit('');
                                             }}
                                         >
-                                            {textos.categorias.botonEditar}
+                                            {/* TODO: add categorias.botonEditar to translation files */}
+                                            Editar
                                         </button>
                                         <button
                                             className="btn btn--danger btn--sm"
                                             onClick={() => solicitarEliminar(cat)}
                                         >
-                                            {textos.categorias.botonEliminar}
+                                            {t('categorias.botonEliminar')}
                                         </button>
                                     </>
                                 )}
@@ -194,28 +199,28 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                         className="btn btn--primary btn--sm"
                         onClick={() => setMostrarForm(true)}
                     >
-                        {textos.categorias.novaCategoria}
+                        {t('categorias.engadirCategoria')}
                     </button>
                 )}
             </div>
 
             {mostrarForm && (
-                <FormModal title={textos.categorias.novaCategoria} onClose={resetForm}>
+                <FormModal title={t('categorias.engadirCategoria')} onClose={resetForm}>
                     <form onSubmit={handleCrear}>
                         <div className="modal-field">
-                            <label className="modal-label">{textos.categorias.campoNome}</label>
+                            <label className="modal-label">{t('categorias.campoNome')}</label>
                             <input
                                 className={`modal-input${erroForm ? ' modal-input--error' : ''}`}
                                 type="text"
-                                placeholder={textos.categorias.placeholderNome}
+                                placeholder={t('categorias.campoNome')}
                                 value={nome}
                                 onChange={(e) => setNome(e.target.value)}
                                 disabled={gardando}
-                                aria-label={textos.categorias.campoNome}
+                                aria-label={t('categorias.campoNome')}
                             />
                         </div>
                         <div className="modal-field">
-                            <label className="modal-label">Cor</label>
+                            <label className="modal-label">{t('categorias.campoCor')}</label>
                             <SelectorCor cor={cor} onChange={setCor} disabled={gardando} />
                         </div>
                         {erroForm && <p className="modal-error">{erroForm}</p>}
@@ -226,14 +231,14 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                                 onClick={resetForm}
                                 disabled={gardando}
                             >
-                                {textos.categorias.botonCancelar}
+                                {t('categorias.botonCancelar')}
                             </button>
                             <button
                                 type="submit"
                                 className="modal-btn-gardar"
                                 disabled={gardando}
                             >
-                                {gardando ? textos.cargando.gardando : textos.categorias.botonGardar}
+                                {gardando ? t('cargando.gardando') : t('categorias.botonGardar')}
                             </button>
                         </div>
                     </form>
@@ -241,21 +246,22 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
             )}
 
             {categoriaEditando && (
-                <FormModal title={textos.categorias.editarCategoria ?? textos.categorias.botonEditar} onClose={resetEdit}>
+                // TODO: add categorias.botonEditar to translation files (used as modal title)
+                <FormModal title="Editar" onClose={resetEdit}>
                     <div className="modal-field">
-                        <label className="modal-label">{textos.categorias.campoNome}</label>
+                        <label className="modal-label">{t('categorias.campoNome')}</label>
                         <input
                             className={`modal-input${erroEdit ? ' modal-input--error' : ''}`}
                             type="text"
-                            placeholder={textos.categorias.placeholderNome}
+                            placeholder={t('categorias.campoNome')}
                             value={nomeEdit}
                             onChange={(e) => setNomeEdit(e.target.value)}
                             disabled={gardandoEdit}
-                            aria-label={textos.categorias.campoNome}
+                            aria-label={t('categorias.campoNome')}
                         />
                     </div>
                     <div className="modal-field">
-                        <label className="modal-label">Cor</label>
+                        <label className="modal-label">{t('categorias.campoCor')}</label>
                         <SelectorCor cor={corEdit} onChange={setCorEdit} disabled={gardandoEdit} />
                     </div>
                     {erroEdit && <p className="modal-error">{erroEdit}</p>}
@@ -266,7 +272,7 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                             onClick={resetEdit}
                             disabled={gardandoEdit}
                         >
-                            {textos.categorias.botonCancelar}
+                            {t('categorias.botonCancelar')}
                         </button>
                         <button
                             type="button"
@@ -274,7 +280,7 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                             onClick={handleEditarCategoria}
                             disabled={gardandoEdit}
                         >
-                            {gardandoEdit ? textos.cargando.gardando : textos.categorias.botonGardar}
+                            {gardandoEdit ? t('cargando.gardando') : t('categorias.botonGardar')}
                         </button>
                     </div>
                 </FormModal>
@@ -282,9 +288,9 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
 
             <ConfirmDialog
                 isOpen={confirmOpen}
-                title={textos.categorias.confirmEliminarTitulo}
-                message={textos.categorias.confirmEliminarMensaxe}
-                confirmLabel={textos.categorias.confirmEliminarBoton}
+                title={t('categorias.confirmEliminarTitulo')}
+                message={t('categorias.confirmEliminarMensaxe')}
+                confirmLabel={t('categorias.confirmEliminarBoton')}
                 variant="danger"
                 onConfirm={executeEliminar}
                 onCancel={() => { setConfirmOpen(false); setAccionPendente(null); }}

@@ -3,11 +3,11 @@
 // para superpoñer os seus marcadores sobre o mapa principal.
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import useMapaVisualStore from '../store/useMapaVisualStore';
 import { obterMeusMaps } from '../services/mapaApi';
 import { listarMarcadores } from '../services/marcadorApi';
 import { listarCategorias } from '../services/categoriaApi';
-import textos from '../constants/textos';
 
 /* ---- Icona X para pechar ---- */
 const CloseIcon = () => (
@@ -20,6 +20,7 @@ const CloseIcon = () => (
 /* ---- Subcompoñente: item dun mapa con toggle e categorías ---- */
 
 function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle }) {
+    const { t } = useTranslation();
     const mapasActivos    = useMapaVisualStore((s) => s.mapasActivos);
     const categoriasActivas = useMapaVisualStore((s) => s.categoriasActivas);
     const toggleCategoria = useMapaVisualStore((s) => s.toggleCategoria);
@@ -45,7 +46,7 @@ function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle }) {
                     <div className="mapa-toggle-item__nome">{mapa.nome}</div>
                     <div className="mapa-toggle-item__meta">
                         <span className={`badge badge--${mapa.tipo === 'PUBLICO' ? 'publico' : 'privado'}`}>
-                            {mapa.tipo === 'PUBLICO' ? textos.mapas.etiquetaPublico : textos.mapas.etiquetaPrivado}
+                            {mapa.tipo === 'PUBLICO' ? t('mapas.etiquetaPublico') : t('mapas.etiquetaPrivado')}
                         </span>
                         {marcadores && (
                             <span className="mapa-toggle-item__count">
@@ -59,7 +60,7 @@ function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle }) {
             {isActivo && (
                 <div className="mapa-toggle-item__categorias">
                     {cargando ? (
-                        <div className="spinner-sm" aria-label={textos.cargando.xenerico} />
+                        <div className="spinner-sm" aria-label={t('cargando.xenerico')} />
                     ) : (
                         (categorias ?? []).map((cat) => {
                             const activa = Boolean(categoriasActivas[String(cat.id)]);
@@ -96,6 +97,7 @@ function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle }) {
 /* ---- Compoñente principal ---- */
 
 export default function VisualizarMapasPanel({ isOpen, onClose }) {
+    const { t } = useTranslation();
     const [mapas, setMapas]                       = useState([]);
     const [cargandoMapas, setCargandoMapas]       = useState(false);
     const [cargandoMarcadores, setCargandoMarcadores] = useState({});
@@ -166,7 +168,7 @@ export default function VisualizarMapasPanel({ isOpen, onClose }) {
             aria-label="Panel de visualización de mapas"
         >
             <div className="visualizar-panel__header">
-                <h2 className="visualizar-panel__titulo">{textos.nav.visualizarMapas}</h2>
+                <h2 className="visualizar-panel__titulo">{t('visualizar.titulo')}</h2>
                 <button
                     className="btn btn--icon visualizar-panel__btn-pechar"
                     onClick={onClose}

@@ -3,28 +3,30 @@
 // Lets the owner invite a user and lists all invitations sent for this map.
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { enviarConvite, obterConvitesEnviados, cancelarConvite } from '../services/conviteApi';
-import textos from '../constants/textos';
 
 const ROLES_PRIVADO = ['MEMBRO', 'COLABORADORA', 'ADMIN_MAPA'];
 const ROLES_PUBLICO = ['COLABORADORA', 'ADMIN_MAPA'];
 
+// TODO: add convites.rolMembro, convites.rolColaboradora, convites.rolAdminMapa to translation files
 const ROL_LABEL = {
     MEMBRO:       'Membro',
     COLABORADORA: 'Colaboradora',
     ADMIN_MAPA:   'Administradora',
 };
 
-const ESTADO_LABEL = {
-    PENDENTE: textos.convites.estadoPendente,
-    ACEPTADO: textos.convites.estadoAceptado,
-    REXEITADO: textos.convites.estadoRexeitado,
-    CANCELADO: textos.convites.estadoCancelado,
-    EXPIRADO: textos.convites.estadoExpirado,
-};
-
 export default function ConvitePanel({ mapaId, tipoMapa }) {
+    const { t } = useTranslation();
     const roles = tipoMapa === 'PUBLICO' ? ROLES_PUBLICO : ROLES_PRIVADO;
+
+    const ESTADO_LABEL = {
+        PENDENTE:  t('convites.estadoPendente'),
+        ACEPTADO:  t('convites.estadoAceptado'),
+        REXEITADO: t('convites.estadoRexeitado'),
+        CANCELADO: t('convites.estadoCancelado'),
+        EXPIRADO:  t('convites.estadoExpirado'),
+    };
     const [username, setUsername] = useState('');
     const [rolConvite, setRolConvite] = useState(
         tipoMapa === 'PUBLICO' ? 'COLABORADORA' : 'MEMBRO'
@@ -44,7 +46,7 @@ export default function ConvitePanel({ mapaId, tipoMapa }) {
             const all = await obterConvitesEnviados();
             setConvites(all.filter((c) => c.mapaId === mapaId));
         } catch {
-            setFetchError(textos.convites.errorCargarPanel);
+            setFetchError(t('erros.xenerico'));
         } finally {
             setLoading(false);
         }
@@ -64,12 +66,13 @@ export default function ConvitePanel({ mapaId, tipoMapa }) {
         setSendSuccess('');
         try {
             await enviarConvite(mapaId, trimmed, rolConvite);
-            setSendSuccess(textos.convites.conviteEnviado(trimmed));
+            // TODO: add convites.conviteEnviado (with {{username}} interpolation) to translation files
+            setSendSuccess(`Convite enviado a ${trimmed}.`);
             setUsername('');
             await loadConvites();
         } catch (err) {
             setSendError(
-                err.response?.data?.message || textos.convites.errorEnviar,
+                err.response?.data?.message || t('erros.xenerico'),
             );
         } finally {
             setSending(false);
@@ -87,17 +90,18 @@ export default function ConvitePanel({ mapaId, tipoMapa }) {
 
     return (
         <div className="convite-panel">
-            <h3 className="convite-panel__title">{textos.convites.tituloPanel}</h3>
+            <h3 className="convite-panel__title">{t('convites.titulo')}</h3>
 
             <form className="convite-panel__form" onSubmit={handleSend}>
+                {/* TODO: add convites.ariaConvidar to translation files */}
                 <input
                     className="convite-panel__input"
                     type="text"
-                    placeholder={textos.convites.placeholderUsuaria}
+                    placeholder={t('convites.campoUsuaria')}
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     disabled={sending}
-                    aria-label={textos.convites.ariaConvidar}
+                    aria-label="Nome de usuaria a convidar"
                 />
                 <select
                     className="convite-panel__rol-select"
@@ -115,20 +119,21 @@ export default function ConvitePanel({ mapaId, tipoMapa }) {
                     type="submit"
                     disabled={sending || !username.trim()}
                 >
-                    {sending ? textos.convites.enviando : textos.convites.botonEnviar}
+                    {sending ? t('cargando.xenerico') : t('convites.botonConvidar')}
                 </button>
             </form>
 
             {sendError && <p className="convite-panel__msg convite-panel__msg--error">{sendError}</p>}
             {sendSuccess && <p className="convite-panel__msg convite-panel__msg--success">{sendSuccess}</p>}
 
-            <h4 className="convite-panel__subtitle">{textos.convites.subtituloEnviados}</h4>
+            <h4 className="convite-panel__subtitle">{t('convites.enviados')}</h4>
 
-            {loading && <p className="convite-panel__state">{textos.convites.cargandoPanel}</p>}
+            {loading && <p className="convite-panel__state">{t('cargando.xenerico')}</p>}
             {fetchError && <p className="convite-panel__msg convite-panel__msg--error">{fetchError}</p>}
 
+            {/* TODO: add convites.sinConvitesMapa to translation files */}
             {!loading && !fetchError && convites.length === 0 && (
-                <p className="convite-panel__state">{textos.convites.sinConvitesMapa}</p>
+                <p className="convite-panel__state">Non hai convites enviados para este mapa.</p>
             )}
 
             {!loading && convites.length > 0 && (
@@ -140,12 +145,13 @@ export default function ConvitePanel({ mapaId, tipoMapa }) {
                                 {ESTADO_LABEL[c.estado] ?? c.estado}
                             </span>
                             {c.estado === 'PENDENTE' && (
+                                {/* TODO: add convites.titleCancelar to translation files */}
                                 <button
                                     className="convite-panel__cancel-btn"
                                     onClick={() => handleCancel(c.token)}
-                                    title={textos.convites.titleCancelar}
+                                    title="Cancelar convite"
                                 >
-                                    {textos.convites.botonCancelar}
+                                    {t('convites.botonCancelar')}
                                 </button>
                             )}
                         </li>

@@ -1,18 +1,22 @@
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import textos from '../constants/textos';
+import { useTranslation } from 'react-i18next';
 import '../assets/styles/confirm-dialog.css';
 
 export default function ConfirmDialog({
     isOpen,
     title,
     message,
-    confirmLabel = textos.confirmar.botonConfirmar,
-    cancelLabel = textos.confirmar.botonCancelar,
+    confirmLabel,
+    cancelLabel,
     variant = 'danger',
     onConfirm,
     onCancel,
 }) {
+    const { t } = useTranslation();
+    const resolvedConfirmLabel = confirmLabel ?? t('confirmar.botonConfirmar');
+    const resolvedCancelLabel = cancelLabel ?? t('confirmar.botonCancelar');
+
     const cancelRef = useRef(null);
     const previousFocusRef = useRef(null);
 
@@ -55,10 +59,10 @@ export default function ConfirmDialog({
                 <p id="confirm-message" className="confirm-dialog__message">{message}</p>
                 <div className="confirm-dialog__actions">
                     <button ref={cancelRef} className="btn btn--ghost" onClick={onCancel}>
-                        {cancelLabel}
+                        {resolvedCancelLabel}
                     </button>
                     <button className={`btn btn--${variant}`} onClick={onConfirm}>
-                        {confirmLabel}
+                        {resolvedConfirmLabel}
                     </button>
                 </div>
             </div>

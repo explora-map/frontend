@@ -4,11 +4,11 @@
 
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { crearMapa } from '../services/mapaApi';
 import FormInput from '../components/FormInput';
 import MapViewer from '../components/MapViewer';
 import MapSearchBar from '../components/MapSearchBar';
-import textos from '../constants/textos';
 import '../assets/styles/mapas.css';
 
 const DEFAULT_LAT = 42.8782;  // Galicia center-ish
@@ -16,6 +16,7 @@ const DEFAULT_LNG = -8.5448;
 
 export default function MapaCrearPage() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [nome, setNome] = useState('');
     const [descricion, setDescricion] = useState('');
@@ -31,11 +32,14 @@ export default function MapaCrearPage() {
 
     function validate() {
         const e = {};
-        if (!nome.trim()) e.nome = textos.mapas.validNomeObrigatorio;
-        else if (nome.trim().length > 100) e.nome = textos.mapas.validNomeLongo;
-        if (!nomeLocalizacion.trim()) e.nomeLocalizacion = textos.mapas.validLocalizacionObrigatoria;
-        else if (nomeLocalizacion.trim().length > 200) e.nomeLocalizacion = textos.mapas.validLocalizacionLonga;
-        if (!coordsPicked) e.coords = textos.mapas.validCoordsObrigatorias;
+        // TODO: add mapas.validNomeObrigatorio, mapas.validNomeLongo to translation files
+        if (!nome.trim()) e.nome = 'O nome é obrigatorio.';
+        else if (nome.trim().length > 100) e.nome = 'O nome non pode superar 100 caracteres.';
+        // TODO: add mapas.validLocalizacionObrigatoria, mapas.validLocalizacionLonga to translation files
+        if (!nomeLocalizacion.trim()) e.nomeLocalizacion = 'A localización é obrigatoria.';
+        else if (nomeLocalizacion.trim().length > 200) e.nomeLocalizacion = 'A localización non pode superar 200 caracteres.';
+        // TODO: add mapas.validCoordsObrigatorias to translation files
+        if (!coordsPicked) e.coords = 'Fai clic no mapa para seleccionar unha localización.';
         return e;
     }
 
@@ -77,7 +81,7 @@ export default function MapaCrearPage() {
             navigate(`/mapas/${mapa.id}`);
         } catch (err) {
             setServerError(
-                err.response?.data?.message || textos.mapas.errorCrearMapa,
+                err.response?.data?.message || t('erros.xenerico'),
             );
         } finally {
             setSubmitting(false);
@@ -88,9 +92,10 @@ export default function MapaCrearPage() {
         <div className="page">
             <main className="page__main page__main--narrow">
                 <div className="page__back">
-                    <Link to="/mapas" className="back-link">{textos.mapas.voltarAosMapas}</Link>
+                    {/* TODO: add mapas.voltarAosMapas to translation files */}
+                    <Link to="/mapas" className="back-link">← Volver aos mapas</Link>
                 </div>
-                <h1 className="page__title">{textos.mapas.tituloPaxinaCrear}</h1>
+                <h1 className="page__title">{t('mapas.crearMapa')}</h1>
 
                 {serverError && (
                     <div className="alert alert--error">{serverError}</div>
@@ -99,60 +104,65 @@ export default function MapaCrearPage() {
                 <form className="mapa-form" onSubmit={handleSubmit} noValidate>
                     <FormInput
                         id="nome"
-                        label={textos.mapas.campoNomeLabel}
+                        label={t('mapas.campoNome')}
                         value={nome}
                         onChange={(e) => setNome(e.target.value)}
                         onBlur={() => {
-                            if (!nome.trim()) setErrors((p) => ({ ...p, nome: textos.mapas.validNomeObrigatorio }));
+                            // TODO: add mapas.validNomeObrigatorio to translation files
+                            if (!nome.trim()) setErrors((p) => ({ ...p, nome: 'O nome é obrigatorio.' }));
                             else setErrors((p) => ({ ...p, nome: undefined }));
                         }}
                         error={errors.nome}
-                        placeholder={textos.mapas.placeholderNome}
+                        placeholder={t('mapas.campoNome')}
                         required
                     />
 
+                    {/* TODO: add mapas.placeholderDescripcion to translation files */}
                     <div className="field">
-                        <label htmlFor="descricion" className="field__label">{textos.mapas.campoDescripcion}</label>
+                        <label htmlFor="descricion" className="field__label">{t('mapas.campoDescripcion')}</label>
                         <textarea
                             id="descricion"
                             className="field__textarea"
                             value={descricion}
                             onChange={(e) => setDescricion(e.target.value)}
-                            placeholder={textos.mapas.placeholderDescripcion}
+                            placeholder="Descrición opcional…"
                             rows={3}
                         />
                     </div>
 
+                    {/* TODO: add mapas.campoNomeLocalizacion, mapas.placeholderNomeLocalizacion to translation files */}
                     <FormInput
                         id="nomeLocalizacion"
-                        label={textos.mapas.campoNomeLocalizacion}
+                        label="Nome da localización"
                         value={nomeLocalizacion}
                         onChange={(e) => setNomeLocalizacion(e.target.value)}
                         onBlur={() => {
-                            if (!nomeLocalizacion.trim()) setErrors((p) => ({ ...p, nomeLocalizacion: textos.mapas.validLocalizacionObrigatoria }));
+                            // TODO: add mapas.validLocalizacionObrigatoria to translation files
+                            if (!nomeLocalizacion.trim()) setErrors((p) => ({ ...p, nomeLocalizacion: 'A localización é obrigatoria.' }));
                             else setErrors((p) => ({ ...p, nomeLocalizacion: undefined }));
                         }}
                         error={errors.nomeLocalizacion}
-                        placeholder={textos.mapas.placeholderNomeLocalizacion}
+                        placeholder="Ex: Santiago de Compostela"
                         required
                     />
 
                     <div className="field">
-                        <label htmlFor="tipo" className="field__label">{textos.mapas.campoVisibilidade}</label>
+                        <label htmlFor="tipo" className="field__label">{t('mapas.campoVisibilidade')}</label>
                         <select
                             id="tipo"
                             className="field__select"
                             value={tipo}
                             onChange={(e) => setTipo(e.target.value)}
                         >
-                            <option value="PUBLICO">{textos.mapas.opcionPublico}</option>
-                            <option value="PRIVADO">{textos.mapas.opcionPrivado}</option>
+                            <option value="PUBLICO">{t('mapas.opcionPublico')}</option>
+                            <option value="PRIVADO">{t('mapas.opcionPrivado')}</option>
                         </select>
                     </div>
 
                     <div className="field">
+                        {/* TODO: add mapas.etiquetaLocalizacion, mapas.axudaLocalizacionCrear to translation files */}
                         <label className="field__label">
-                            {textos.mapas.etiquetaLocalizacion} <span className="field__required" aria-hidden="true"> *</span>
+                            Localización no mapa <span className="field__required" aria-hidden="true"> *</span>
                         </label>
                         <div style={{ marginBottom: 'var(--space-3)' }}>
                             <MapSearchBar
@@ -160,7 +170,7 @@ export default function MapaCrearPage() {
                                 placeholder="Buscar localización do mapa…"
                             />
                         </div>
-                        <p className="field__hint">{textos.mapas.axudaLocalizacionCrear}</p>
+                        <p className="field__hint">Fai clic no mapa para seleccionar a localización.</p>
                         <MapViewer
                             latitude={lat}
                             lonxitude={lng}
@@ -187,14 +197,14 @@ export default function MapaCrearPage() {
                             onClick={() => navigate('/mapas')}
                             disabled={submitting}
                         >
-                            {textos.mapas.botonCancelar}
+                            {t('mapas.botonCancelar')}
                         </button>
                         <button
                             type="submit"
                             className="btn btn--primary"
                             disabled={submitting}
                         >
-                            {submitting ? textos.cargando.gardando : textos.mapas.botonCrear}
+                            {submitting ? t('cargando.gardando') : t('mapas.botonGardar')}
                         </button>
                     </div>
                 </form>

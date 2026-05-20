@@ -219,6 +219,14 @@
     "conviteTitulo": "Convite para colaborar",
     "conviteMensaxe": "{{remitente}} convidoute ao mapa \"{{mapa}}\""
   },
+  "visualizar": {
+    "titulo": "Explorar mapas públicos",
+    "buscador": "Buscar mapas preto de…",
+    "botonBuscar": "Buscar",
+    "sinResultados": "Non se atoparon mapas nesta zona.",
+    "errorBusca": "Non foi posible realizar a busca. Tenta de novo.",
+    "cargando": "Buscando mapas…"
+  },
   "dashboard": {
     "benvida": "Benvida, {{username}}",
     "mapas": {

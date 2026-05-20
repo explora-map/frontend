@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { obterMapaPorId, eliminarMapa, cambiarVisibilidade } from '../services/mapaApi';
 import { listarMarcadores, crearMarcador, editarMarcador, eliminarMarcador } from '../services/marcadorApi';
@@ -16,7 +17,6 @@ import MembroPanel from '../components/MembroPanel';
 import HistorialPanel from '../components/HistorialPanel';
 import ConfirmDialog from '../components/ConfirmDialog';
 import FormModal from '../components/FormModal';
-import textos from '../constants/textos';
 import '../assets/styles/mapas.css';
 
 // ---- Address search field used inside marker modals ----
@@ -161,6 +161,7 @@ export default function MapaDetallePage() {
     const { id } = useParams();
     const { username } = useAuth();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [mapa, setMapa] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -282,7 +283,7 @@ export default function MapaDetallePage() {
                 await eliminarMapa(id);
                 navigate('/mapas');
             } catch {
-                setError(textos.mapas.errorEliminarMapa);
+                setError(t('erros.xenerico'));
                 setDeleting(false);
             }
         } else if (pendente?.tipo === 'marcador') {
@@ -386,14 +387,14 @@ export default function MapaDetallePage() {
 
     const confirmConfig = accionPendente?.tipo === 'mapa'
         ? {
-            title:        textos.mapas.confirmEliminarTitulo,
-            message:      textos.mapas.confirmEliminarMensaxe,
-            confirmLabel: textos.mapas.confirmEliminarBoton,
+            title:        t('mapas.confirmEliminarTitulo'),
+            message:      t('mapas.confirmEliminarMensaxe'),
+            confirmLabel: t('mapas.confirmEliminarBoton'),
           }
         : {
-            title:        textos.marcadores.confirmEliminarTitulo,
-            message:      textos.marcadores.confirmEliminarMensaxe,
-            confirmLabel: textos.marcadores.confirmEliminarBoton,
+            title:        t('marcadores.confirmEliminarTitulo'),
+            message:      t('marcadores.confirmEliminarMensaxe'),
+            confirmLabel: t('marcadores.confirmEliminarBoton'),
           };
 
     const marcadoresFiltrados = marcadores.filter(m =>
