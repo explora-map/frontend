@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import usePasswordStrength from '../hooks/usePasswordStrength';
 import ConfirmDialog from '../components/ConfirmDialog';
-import { obterPerfil, actualizarPerfil } from '../services/perfilApi';
+import { obterPerfil, actualizarPerfil, eliminarConta } from '../services/perfilApi';
 import { obterConvitesRecibidos, aceptarConvite, rexeitarConvite } from '../services/conviteApi';
 
 export default function PerfilPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { username } = useAuth();
+  const { username, logout } = useAuth();
 
   // Profile form state
   const [formData, setFormData] = useState({
@@ -30,6 +30,8 @@ export default function PerfilPage() {
 
   // Delete account dialog
   const [confirmEliminarOpen, setConfirmEliminarOpen] = useState(false);
+  const [eliminando, setEliminando] = useState(false);
+  const [erroEliminar, setErroEliminar] = useState('');
 
   // Password strength
   const passwordStrength = usePasswordStrength(formData.password ?? '', {
@@ -123,10 +125,19 @@ export default function PerfilPage() {
     }
   }
 
-  function handleEliminarConta() {
-    // Endpoint not yet implemented — show message
-    setConfirmEliminarOpen(false);
-    setErroForm(t('perfil.funcionalidadeNonDisponible'));
+  async function handleEliminarConta() {
+    if (eliminando) return;
+    setEliminando(true);
+    setErroEliminar('');
+    try {
+      await eliminarConta();
+      logout();
+      navigate('/login');
+    } catch (err) {
+      setErroEliminar(err.response?.data?.message || t('erros.xenerico'));
+      setConfirmEliminarOpen(false);
+      setEliminando(false);
+    }
   }
 
   if (cargando) {
@@ -324,21 +335,26 @@ export default function PerfilPage() {
           </div>
           <button
             className="btn btn--danger btn--sm"
-            onClick={() => setConfirmEliminarOpen(true)}
+            onClick={() => { setErroEliminar(''); setConfirmEliminarOpen(true); }}
           >
             {t('perfil.botonEliminarConta')}
           </button>
         </div>
+        {erroEliminar && (
+          <p className="config-feedback config-feedback--erro" role="alert">
+            {erroEliminar}
+          </p>
+        )}
       </section>
 
       <ConfirmDialog
         isOpen={confirmEliminarOpen}
         title={t('perfil.confirmEliminarTitulo')}
         message={t('perfil.confirmEliminarMensaxe')}
-        confirmLabel={t('perfil.confirmEliminarBoton')}
+        confirmLabel={eliminando ? t('cargando.eliminando') : t('perfil.confirmEliminarBoton')}
         variant="danger"
         onConfirm={handleEliminarConta}
-        onCancel={() => setConfirmEliminarOpen(false)}
+        onCancel={() => !eliminando && setConfirmEliminarOpen(false)}
       />
     </div>
   );
