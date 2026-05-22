@@ -9,12 +9,6 @@ import { enviarConvite, obterConvitesEnviados, cancelarConvite } from '../servic
 const ROLES_PRIVADO = ['MEMBRO', 'COLABORADORA', 'ADMIN_MAPA'];
 const ROLES_PUBLICO = ['COLABORADORA', 'ADMIN_MAPA'];
 
-// TODO: add convites.rolMembro, convites.rolColaboradora, convites.rolAdminMapa to translation files
-const ROL_LABEL = {
-    MEMBRO:       'Membro',
-    COLABORADORA: 'Colaboradora',
-    ADMIN_MAPA:   'Administradora',
-};
 
 export default function ConvitePanel({ mapaId, tipoMapa }) {
     const { t } = useTranslation();
@@ -111,7 +105,7 @@ export default function ConvitePanel({ mapaId, tipoMapa }) {
                     aria-label="Rol do convite"
                 >
                     {roles.map((r) => (
-                        <option key={r} value={r}>{ROL_LABEL[r]}</option>
+                        <option key={r} value={r}>{t('roles.' + r, { defaultValue: r })}</option>
                     ))}
                 </select>
                 <button
@@ -145,7 +139,6 @@ export default function ConvitePanel({ mapaId, tipoMapa }) {
                                 {ESTADO_LABEL[c.estado] ?? c.estado}
                             </span>
                             {c.estado === 'PENDENTE' && (
-                                {/* TODO: add convites.titleCancelar to translation files */}
                                 <button
                                     className="convite-panel__cancel-btn"
                                     onClick={() => handleCancel(c.token)}

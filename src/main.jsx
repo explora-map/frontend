@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './i18n';
 import './assets/styles/global.css';
 import './assets/styles/auth.css';
-import './assets/styles/dashboard.css';
 import './assets/styles/confirm-dialog.css';
 import './assets/styles/sidebar.css';
 import './assets/styles/visualizar-panel.css';

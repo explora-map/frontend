@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { listarMembros, cambiarRol, eliminarMembro } from '../services/mapaMembroApi';
 import { useAuth } from '../hooks/useAuth';
 import ConfirmDialog from './ConfirmDialog';
@@ -6,13 +7,8 @@ import ConfirmDialog from './ConfirmDialog';
 const ROLES_PRIVADO = ['MEMBRO', 'COLABORADORA', 'ADMIN_MAPA'];
 const ROLES_PUBLICO = ['COLABORADORA', 'ADMIN_MAPA'];
 
-const ROL_LABEL = {
-    MEMBRO: 'Membro',
-    COLABORADORA: 'Colaboradora',
-    ADMIN_MAPA: 'Administrador',
-};
-
 export default function MembroPanel({ mapaId, creadoPor, tipoMapa }) {
+    const { t } = useTranslation();
     const { username } = useAuth();
     const esPropietario = username === creadoPor;
     const roles = tipoMapa === 'PUBLICO' ? ROLES_PUBLICO : ROLES_PRIVADO;
@@ -126,12 +122,12 @@ export default function MembroPanel({ mapaId, creadoPor, tipoMapa }) {
                                         aria-label={`Rol de ${m.username}`}
                                     >
                                         {roles.map((r) => (
-                                            <option key={r} value={r}>{ROL_LABEL[r]}</option>
+                                            <option key={r} value={r}>{t('roles.' + r, { defaultValue: r })}</option>
                                         ))}
                                     </select>
                                 ) : (
                                     <span className="membro-panel__rol-label">
-                                        {ROL_LABEL[m.rol] ?? m.rol}
+                                        {t('roles.' + m.rol, { defaultValue: m.rol })}
                                     </span>
                                 )}
 

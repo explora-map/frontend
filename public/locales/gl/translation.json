@@ -247,5 +247,10 @@
       "btn": "Ver convites",
       "aria": "Acceso rápido a Convites"
     }
+  },
+  "roles": {
+    "MEMBRO": "Membro",
+    "COLABORADORA": "Colaboradora",
+    "ADMIN_MAPA": "Administradora"
   }
 }

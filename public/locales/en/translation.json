@@ -247,5 +247,10 @@
       "btn": "View invitations",
       "aria": "Quick access to Invitations"
     }
+  },
+  "roles": {
+    "MEMBRO": "Member",
+    "COLABORADORA": "Collaborator",
+    "ADMIN_MAPA": "Administrator"
   }
 }

@@ -67,7 +67,6 @@ export default function App() {
                     {/* Rutas protexidas con layout */}
                     <Route element={<ProtectedRoute />}>
                         <Route element={<AppLayout onVisualizarClick={() => setPanelVisualizar(prev => !prev)} />}>
-                            <Route path="/dashboard"        element={<Navigate to="/" replace />} />
                             <Route path="/mapas"            element={<MapaListPage />} />
                             {/* /mapas/novo antes de /mapas/:id para evitar conflito de segmento */}
                             <Route path="/mapas/novo"       element={<MapaCrearPage />} />
