@@ -214,8 +214,15 @@
 }
 
 /* ---- BottomNav e MobileHeader (só móbil) ---- */
+
+/* Ocultar en desktop: o MobileHeader é exclusivo de pantallas móbil */
+.mobile-header {
+    display: none;
+}
+
 @media (max-width: 640px) {
     .mobile-header {
+        display: flex;
         position: fixed;
         top: 0;
         left: 0;

@@ -57,6 +57,13 @@ const BellIcon = () => (
     </svg>
 );
 
+const CompassIcon = () => (
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={20} height={20}>
+        <circle cx="12" cy="12" r="10" />
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+    </svg>
+);
+
 const SettingsIcon = () => (
     <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={20} height={20}>
         <circle cx="12" cy="12" r="3" />
@@ -89,12 +96,14 @@ export default function Sidebar({ onVisualizarClick }) {
     }
 
     const itemsNoAuth = [
-        { ruta: '/login', label: t('nav.iniciarSesion'), icona: <LoginIcon /> },
-        { ruta: '/',      label: t('nav.explorarMapas'), icona: <GlobeIcon /> },
+        { ruta: '/login',    label: t('nav.iniciarSesion'), icona: <LoginIcon /> },
+        { ruta: '/',         label: t('nav.explorar'),      icona: <GlobeIcon /> },
+        { ruta: '/explorar', label: t('nav.explorarMapas'), icona: <CompassIcon /> },
     ];
 
     const itemsAuth = [
-        { ruta: '/',                 label: t('nav.explorarMapas'),   icona: <GlobeIcon /> },
+        { ruta: '/',                 label: t('nav.explorar'),        icona: <GlobeIcon /> },
+        { ruta: '/explorar',         label: t('nav.explorarMapas'),   icona: <CompassIcon /> },
         { ruta: '/mapas-visualizar', label: t('nav.visualizarMapas'), icona: <LayersIcon /> },
         { ruta: '/mapas',            label: t('nav.osMenusMapas'),    icona: <PinIcon /> },
         { ruta: '/convites',         label: t('nav.convites'),        icona: <BellIcon /> },

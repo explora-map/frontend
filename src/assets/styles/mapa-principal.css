@@ -1,0 +1,209 @@
+/* ============================================================
+   mapa-principal.css
+   Panel lateral flotante de cidade en MapaPrincipalPage.
+   ============================================================ */
+
+.panel-cidade {
+    position: absolute;
+    top: 70px;
+    left: 16px;
+    z-index: 1000;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    width: 300px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    padding: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-neutral-200) transparent;
+}
+
+.panel-cidade__cabeceira {
+    padding: 16px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: sticky;
+    top: 0;
+    background: white;
+    border-radius: 16px 16px 0 0;
+    z-index: 1;
+}
+
+.panel-cidade__cabeceira-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.panel-cidade__nome {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: var(--color-neutral-900);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.panel-cidade__tempo {
+    font-size: 14px;
+    color: #666;
+    margin-top: 2px;
+}
+
+.panel-cidade__tempo-principal {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--color-neutral-800);
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.panel-cidade__pechar {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #999;
+    padding: 0;
+    margin-left: 8px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.panel-cidade__pechar:hover {
+    color: var(--color-neutral-700);
+}
+
+.panel-cidade__mapas {
+    padding: 12px 16px;
+}
+
+.panel-cidade__mapas-titulo {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.panel-cidade__mapa-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.panel-cidade__mapa-item:last-child {
+    border-bottom: none;
+}
+
+.panel-cidade__mapa-icona {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.panel-cidade__mapa-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.panel-cidade__mapa-nome {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-neutral-900);
+}
+
+.panel-cidade__mapa-autor {
+    font-size: 12px;
+    color: #999;
+    margin-top: 1px;
+}
+
+.panel-cidade__mapa-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-primary-500);
+    font-size: 14px;
+    white-space: nowrap;
+    padding: 4px 8px;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    transition: background-color var(--duration-fast) var(--ease-default);
+}
+
+.panel-cidade__mapa-btn:hover {
+    background-color: var(--color-primary-50);
+}
+
+.panel-cidade__ver-todos {
+    display: block;
+    text-align: center;
+    padding: 10px 8px 4px;
+    font-size: 13px;
+    color: var(--color-primary-500);
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    font-family: var(--font-ui);
+}
+
+.panel-cidade__ver-todos:hover {
+    text-decoration: underline;
+}
+
+.panel-cidade__mensaxe {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    padding: 16px 0;
+    margin: 0;
+}
+
+.panel-cidade__cargando {
+    text-align: center;
+    color: var(--color-neutral-400);
+    font-size: 14px;
+    padding: 12px 0;
+    margin: 0;
+}
+
+.panel-cidade__directions {
+    padding: 12px 16px 16px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.panel-cidade__directions-btn {
+    display: block;
+    width: 100%;
+    padding: 9px 14px;
+    background: var(--color-primary-500);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    text-align: center;
+    transition: background-color var(--duration-fast) var(--ease-default);
+}
+
+.panel-cidade__directions-btn:hover {
+    background: var(--color-primary-600);
+}
+
+.panel-cidade__directions-form {
+    display: flex;
+    flex-direction: column;
+}

@@ -28,6 +28,9 @@ import ConfiguracionPage from './pages/ConfiguracionPage';
 import PerfilPage from './pages/PerfilPage';
 import VerificarPage from './pages/VerificarPage';
 
+// Sprint 7 pages
+import ExplorarMapasPage from './pages/ExplorarMapasPage';
+
 function PanelController({ onPechar }) {
     const location = useLocation();
 
@@ -59,9 +62,10 @@ export default function App() {
                     <Route path="/rexistro"  element={<RegisterPage />} />
                     <Route path="/verificar" element={<VerificarPage />} />
 
-                    {/* Ruta pública con layout (Sidebar visible sen autenticación) */}
+                    {/* Rutas públicas con layout (Sidebar visible sen autenticación) */}
                     <Route element={<AppLayout onVisualizarClick={() => setPanelVisualizar(prev => !prev)} />}>
-                        <Route path="/" element={<MapaPrincipalPage />} />
+                        <Route path="/"        element={<MapaPrincipalPage />} />
+                        <Route path="/explorar" element={<ExplorarMapasPage />} />
                     </Route>
 
                     {/* Rutas protexidas con layout */}

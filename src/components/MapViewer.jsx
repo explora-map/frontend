@@ -77,6 +77,8 @@ export default function MapViewer({
     height = '400px',
     marcadores = [],
     provisionalMarker = null,
+    zoomPosition = 'topleft',
+    onMapReady,
 }) {
     const containerRef = useRef(null);
     const mapRef = useRef(null);
@@ -88,11 +90,13 @@ export default function MapViewer({
     useEffect(() => {
         if (!containerRef.current) return;
 
-        const map = L.map(containerRef.current).setView(
+        const map = L.map(containerRef.current, { zoomControl: false }).setView(
             [latitude, lonxitude],
             zoom,
         );
+        L.control.zoom({ position: zoomPosition }).addTo(map);
         mapRef.current = map;
+        if (onMapReady) onMapReady(map);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',

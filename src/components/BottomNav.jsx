@@ -40,6 +40,13 @@ const PinIcon = () => (
     </svg>
 );
 
+const CompassIcon = () => (
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={22} height={22}>
+        <circle cx="12" cy="12" r="10" />
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+    </svg>
+);
+
 const UserIcon = () => (
     <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={22} height={22}>
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -60,17 +67,19 @@ export default function BottomNav() {
     }
 
     const itemsNoAuth = [
-        { ruta: '/',      label: t('nav.explorarMapas'), icona: <GlobeIcon /> },
-        { ruta: '/login', label: t('nav.iniciarSesion'), icona: <LoginIcon /> },
+        { ruta: '/',         label: t('nav.explorar'),      icona: <GlobeIcon /> },
+        { ruta: '/explorar', label: t('nav.explorarMapas'), icona: <CompassIcon /> },
+        { ruta: '/login',    label: t('nav.iniciarSesion'), icona: <LoginIcon /> },
     ];
 
     const soNaInicio = location.pathname === '/';
 
     const itemsAuth = [
-        { ruta: '/',      label: t('nav.explorarMapas'),   icona: <GlobeIcon /> },
+        { ruta: '/',         label: t('nav.explorar'),        icona: <GlobeIcon /> },
+        { ruta: '/explorar', label: t('nav.explorarMapas'),   icona: <CompassIcon /> },
         ...(soNaInicio ? [{ ruta: '/mapas-visualizar', label: t('nav.visualizarMapas'), icona: <LayersIcon /> }] : []),
-        { ruta: '/mapas', label: t('nav.osMenusMapas'),    icona: <PinIcon /> },
-        { ruta: '/perfil', label: t('nav.perfil'),      icona: <UserIcon /> },
+        { ruta: '/mapas',    label: t('nav.osMenusMapas'),    icona: <PinIcon /> },
+        { ruta: '/perfil',   label: t('nav.perfil'),          icona: <UserIcon /> },
     ];
 
     const items = isAuthenticated ? itemsAuth : itemsNoAuth;

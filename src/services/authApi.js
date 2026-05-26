@@ -38,7 +38,7 @@ export async function login(credentials) {
 export async function refreshAccessToken(refreshToken) {
     // Sends: RefreshTokenRequestDTO { refreshToken }
     // Returns: JwtResponseDTO with new accessToken + refreshToken
-    const response = await publicAxios.post('/refresh', { refreshToken });
+    const response = await publicAxios.post('/renovar', { refreshToken });
     return response.data;
 }
 
@@ -50,7 +50,7 @@ export async function logout(refreshToken) {
     // Returns: 200 OK (no body)
     // We use publicAxios here because by the time logout is called, the
     // access token may already be expired or cleared.
-    const response = await publicAxios.post('/logout', { refreshToken });
+    const response = await publicAxios.post('/pechar', { refreshToken });
     return response.data;
 }
 

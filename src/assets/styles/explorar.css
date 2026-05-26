@@ -1,0 +1,159 @@
+/* ============================================================
+   explorar.css — Estilos para ExplorarMapasPage (/explorar)
+   ============================================================ */
+
+.explorar-page {
+  padding: var(--space-6);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.explorar-page__cabeceira {
+  margin-bottom: var(--space-6);
+}
+
+.explorar-page__titulo {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-neutral-900);
+}
+
+.explorar-page__subtitulo {
+  color: var(--color-neutral-500);
+  margin-top: var(--space-2);
+}
+
+.explorar-page__buscador {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  max-width: 600px;
+}
+
+.explorar-page__input {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-family: var(--font-ui);
+  color: var(--color-neutral-800);
+  background-color: var(--color-surface);
+  transition: border-color var(--duration-normal) var(--ease-default),
+              box-shadow   var(--duration-normal) var(--ease-default);
+}
+
+.explorar-page__input::placeholder {
+  color: var(--color-neutral-400);
+}
+
+.explorar-page__input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: var(--shadow-focus);
+}
+
+.explorar-page__btn-buscar {
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-primary-500);
+  color: var(--color-neutral-50);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  font-size: var(--text-base);
+  font-family: var(--font-ui);
+  font-weight: var(--font-medium);
+  transition: background-color var(--duration-normal) var(--ease-default);
+  white-space: nowrap;
+}
+
+.explorar-page__btn-buscar:hover {
+  background-color: var(--color-primary-600);
+}
+
+.explorar-page__seccion-titulo {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-neutral-900);
+  margin-bottom: var(--space-4);
+}
+
+.explorar-page__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .explorar-page__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .explorar-page__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.explorar-card {
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--duration-normal) var(--ease-default);
+}
+
+.explorar-card:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.explorar-card__nome {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-neutral-900);
+}
+
+.explorar-card__descricion {
+  font-size: var(--text-sm);
+  color: var(--color-neutral-500);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.explorar-card__meta {
+  font-size: var(--text-xs);
+  color: var(--color-neutral-500);
+  margin-top: auto;
+}
+
+.explorar-card__btn {
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary-500);
+  color: var(--color-neutral-50);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-family: var(--font-ui);
+  font-weight: var(--font-medium);
+  align-self: flex-start;
+  transition: background-color var(--duration-normal) var(--ease-default);
+}
+
+.explorar-card__btn:hover {
+  background-color: var(--color-primary-600);
+}
+
+.explorar-page__mensaxe {
+  color: var(--color-neutral-500);
+  font-size: var(--text-base);
+  padding: var(--space-8) 0;
+}
