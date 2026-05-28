@@ -7,10 +7,12 @@
 import { create } from 'zustand';
 
 const initialState = {
-    mapasActivos:      {},  // { [mapaId]: boolean }
-    categoriasActivas: {},  // { [categoriaId]: boolean }
-    marcadoresPorMapa: {},  // { [mapaId]: marcador[] }
-    categoriasPorMapa: {},  // { [mapaId]: categoria[] }
+    mapasActivos:      {},    // { [mapaId]: boolean }
+    categoriasActivas: {},    // { [categoriaId]: boolean }
+    marcadoresPorMapa: {},    // { [mapaId]: marcador[] }
+    categoriasPorMapa: {},    // { [mapaId]: categoria[] }
+    coordsActuais:     null,  // { lat, lon } | null
+    mapaIdEngadindo:   null,  // string | null — mapa no que se está engadindo marcador
 };
 
 const useMapaVisualStore = create((set, get) => ({
@@ -58,8 +60,17 @@ const useMapaVisualStore = create((set, get) => ({
         categoriasPorMapa: { ...state.categoriasPorMapa, [mapaId]: categorias },
     })),
 
+    setCoords: (lat, lon) => set({ coordsActuais: { lat, lon } }),
+
+    solicitarEngadirMarcador: (mapaId) => set({ mapaIdEngadindo: String(mapaId) }),
+    cancelarSolicitudEngadir: ()       => set({ mapaIdEngadindo: null }),
+
     isMapaActivo:      (mapaId)      => Boolean(get().mapasActivos[mapaId]),
     isCategoriaActiva: (categoriaId) => Boolean(get().categoriasActivas[categoriaId]),
+
+    invalidarMarcadores: () => set(() => ({
+        marcadoresPorMapa: {},
+    })),
 
     resetar: () => set(initialState),
 }));

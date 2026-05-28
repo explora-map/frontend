@@ -8,6 +8,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { obterMeusMaps, obterMapasColaboradora, obterMapasGardados } from '../services/mapaApi';
 import { desgardarMapa } from '../services/mapaGardadoApi';
+import { BookmarkFilledIcon, EyeIcon } from '../components/Iconas';
 import MapaCard from '../components/MapaCard';
 import '../assets/styles/mapas.css';
 
@@ -196,12 +197,22 @@ export default function MapaListPage() {
                                         key={mapa.id}
                                         mapa={mapa}
                                         accionExtra={
-                                            <button
-                                                className="btn btn--ghost btn--sm"
-                                                onClick={(e) => { e.stopPropagation(); handleDesgardar(mapa.id); }}
-                                            >
-                                                {t('mapas.botonDesgardar')}
-                                            </button>
+                                            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); handleDesgardar(mapa.id); }}
+                                                    title={t('mapas.botonDesgardar')}
+                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary-500)', padding: '4px', display: 'flex', alignItems: 'center' }}
+                                                >
+                                                    <BookmarkFilledIcon size={18} />
+                                                </button>
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); navigate(`/mapas/${mapa.id}`); }}
+                                                    title="Ver mapa"
+                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary-500)', padding: '4px', display: 'flex', alignItems: 'center' }}
+                                                >
+                                                    <EyeIcon size={18} />
+                                                </button>
+                                            </div>
                                         }
                                     />
                                 ))}

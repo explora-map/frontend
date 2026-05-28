@@ -5,7 +5,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import useMapaVisualStore from '../store/useMapaVisualStore';
-import { obterMeusMaps } from '../services/mapaApi';
+import { useAuth } from '../hooks/useAuth';
+import { obterMeusMaps, obterColaboracions, obterMapasGardados, obterMapasPublicos } from '../services/mapaApi';
 import { listarMarcadores } from '../services/marcadorApi';
 import { listarCategorias } from '../services/categoriaApi';
 
@@ -19,7 +20,7 @@ const CloseIcon = () => (
 
 /* ---- Subcompoñente: item dun mapa con toggle e categorías ---- */
 
-function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle }) {
+function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle, onEngadirMarcador, username }) {
     const { t } = useTranslation();
     const mapasActivos    = useMapaVisualStore((s) => s.mapasActivos);
     const categoriasActivas = useMapaVisualStore((s) => s.categoriasActivas);
@@ -55,6 +56,17 @@ function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle }) {
                         )}
                     </div>
                 </div>
+
+                {isActivo && username && mapa.creadoPor === username && onEngadirMarcador && (
+                    <button
+                        className="mapa-toggle-item__btn-engadir"
+                        onClick={() => onEngadirMarcador(mapa.id)}
+                        title={t('visualizar.engadirMarcador', 'Engadir marcador')}
+                        aria-label={`Engadir marcador en ${mapa.nome}`}
+                    >
+                        +
+                    </button>
+                )}
             </div>
 
             {isActivo && (
@@ -62,31 +74,62 @@ function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle }) {
                     {cargando ? (
                         <div className="spinner-sm" aria-label={t('cargando.xenerico')} />
                     ) : (
-                        (categorias ?? []).map((cat) => {
-                            const activa = Boolean(categoriasActivas[String(cat.id)]);
-                            return (
-                                <button
-                                    key={cat.id}
-                                    className="categoria-toggle"
-                                    onClick={() => toggleCategoria(String(cat.id))}
-                                    aria-pressed={activa}
-                                >
-                                    <span
-                                        className="categoria-toggle__cor"
-                                        style={{
-                                            backgroundColor: cat.cor,
-                                            opacity: activa ? 1 : 0.3,
-                                        }}
-                                    />
-                                    <span
-                                        className="categoria-toggle__nome"
-                                        style={{ opacity: activa ? 1 : 0.5 }}
+                        <>
+                            {(categorias ?? []).map((cat) => {
+                                const activa = Boolean(categoriasActivas[String(cat.id)]);
+                                return (
+                                    <button
+                                        key={cat.id}
+                                        className="categoria-toggle"
+                                        onClick={() => toggleCategoria(String(cat.id))}
+                                        aria-pressed={activa}
                                     >
-                                        {cat.nome}
-                                    </span>
-                                </button>
-                            );
-                        })
+                                        <span
+                                            className="categoria-toggle__cor"
+                                            style={{
+                                                backgroundColor: cat.cor,
+                                                opacity: activa ? 1 : 0.3,
+                                            }}
+                                        />
+                                        <span
+                                            className="categoria-toggle__nome"
+                                            style={{ opacity: activa ? 1 : 0.5 }}
+                                        >
+                                            {cat.nome}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                            {(() => {
+                                const tenSenCategoria = (marcadores ?? [])
+                                    .some(m => !m.categoriaId);
+                                if (!tenSenCategoria) return null;
+                                const claveEspecial = `${mapa.id}_sen_categoria`;
+                                const activa = categoriasActivas[claveEspecial] !== false;
+                                return (
+                                    <button
+                                        key="sen-categoria"
+                                        className="categoria-toggle"
+                                        onClick={() => toggleCategoria(claveEspecial)}
+                                        aria-pressed={activa}
+                                    >
+                                        <span
+                                            className="categoria-toggle__cor"
+                                            style={{
+                                                backgroundColor: '#888888',
+                                                opacity: activa ? 1 : 0.3,
+                                            }}
+                                        />
+                                        <span
+                                            className="categoria-toggle__nome"
+                                            style={{ opacity: activa ? 1 : 0.5 }}
+                                        >
+                                            Sen categoría
+                                        </span>
+                                    </button>
+                                );
+                            })()}
+                        </>
                     )}
                 </div>
             )}
@@ -96,12 +139,15 @@ function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle }) {
 
 /* ---- Compoñente principal ---- */
 
-export default function VisualizarMapasPanel({ isOpen, onClose }) {
+export default function VisualizarMapasPanel({ isOpen, onClose, lat, lon }) {
     const { t } = useTranslation();
+    const { username } = useAuth();
     const [mapas, setMapas]                       = useState([]);
     const [cargandoMapas, setCargandoMapas]       = useState(false);
     const [cargandoMarcadores, setCargandoMarcadores] = useState({});
 
+    const coordsActuais              = useMapaVisualStore((s) => s.coordsActuais);
+    const solicitarEngadirMarcador   = useMapaVisualStore((s) => s.solicitarEngadirMarcador);
     const marcadoresPorMapa    = useMapaVisualStore((s) => s.marcadoresPorMapa);
     const categoriasPorMapa    = useMapaVisualStore((s) => s.categoriasPorMapa);
     const setMarcadoresMapa    = useMapaVisualStore((s) => s.setMarcadoresMapa);
@@ -116,19 +162,57 @@ export default function VisualizarMapasPanel({ isOpen, onClose }) {
         async function cargarDatos() {
             setCargandoMapas(true);
             try {
-                const mapasCargados = await obterMeusMaps();
-                setMapas(mapasCargados);
+                const [propios, colaboracions, gardados] = await Promise.allSettled([
+                    obterMeusMaps(),
+                    obterColaboracions(),
+                    obterMapasGardados(),
+                ]);
 
-                await Promise.all(mapasCargados.map(async (mapa) => {
+                const extraerValor = (r) => r.status === 'fulfilled' ? r.value : [];
+
+                const idsVistos = new Set();
+                const todosMapas = [];
+
+                for (const mapa of [
+                    ...extraerValor(propios),
+                    ...extraerValor(colaboracions),
+                    ...extraerValor(gardados),
+                ]) {
+                    if (!idsVistos.has(mapa.id)) {
+                        idsVistos.add(mapa.id);
+                        todosMapas.push(mapa);
+                    }
+                }
+
+                // Mapas públicos da zona (usa coords do props ou do store)
+                const latActual = lat ?? coordsActuais?.lat;
+                const lonActual = lon ?? coordsActuais?.lon;
+                if (latActual && lonActual) {
+                    try {
+                        const publicos = await obterMapasPublicos(latActual, lonActual, 50);
+                        for (const mapa of publicos) {
+                            if (!idsVistos.has(mapa.id)) {
+                                idsVistos.add(mapa.id);
+                                todosMapas.push(mapa);
+                            }
+                        }
+                    } catch {
+                        // ignore
+                    }
+                }
+
+                setMapas(todosMapas);
+
+                await Promise.all(todosMapas.map(async (mapa) => {
                     try {
                         const cats = await listarCategorias(mapa.id);
                         setCategoriasMapa(String(mapa.id), cats);
                     } catch {
-                        // ignore per-map category load failure
+                        // ignore
                     }
                 }));
             } catch {
-                // ignore load failure
+                // ignore
             } finally {
                 setCargandoMapas(false);
             }
@@ -141,17 +225,20 @@ export default function VisualizarMapasPanel({ isOpen, onClose }) {
         const id = String(mapaId);
         const estaActivo = isMapaActivo(id);
 
-        if (!estaActivo && !marcadoresPorMapa[id]) {
+        if (!estaActivo) {
             setCargandoMarcadores((prev) => ({ ...prev, [id]: true }));
             try {
                 const data = await listarMarcadores(mapaId);
                 const cats = categoriasPorMapa[id] ?? [];
-                const marcadoresConCor = data.map((m) => {
-                    const categoria = cats.find((c) => String(c.id) === String(m.categoriaId));
-                    return { ...m, cor: categoria?.cor ?? '#7C52E8' };
-                });
+                const marcadoresConCor = data.map((m) => ({
+                    ...m,
+                    cor: m.categoriaCor ?? '#888888'
+                }));
                 setMarcadoresMapa(id, marcadoresConCor);
-                activarTodasCategorias(cats.map((c) => String(c.id)));
+                activarTodasCategorias([
+                    ...cats.map((c) => String(c.id)),
+                    `${id}_sen_categoria`
+                ]);
             } catch {
                 // ignore load failure
             } finally {
@@ -160,6 +247,11 @@ export default function VisualizarMapasPanel({ isOpen, onClose }) {
         }
 
         toggleMapa(id);
+    }
+
+    function handleEngadirMarcador(mapaId) {
+        solicitarEngadirMarcador(mapaId);
+        onClose();
     }
 
     return (
@@ -224,6 +316,8 @@ export default function VisualizarMapasPanel({ isOpen, onClose }) {
                             categorias={categoriasPorMapa[String(mapa.id)]}
                             cargando={Boolean(cargandoMarcadores[String(mapa.id)])}
                             onToggle={handleToggleMapa}
+                            onEngadirMarcador={handleEngadirMarcador}
+                            username={username}
                         />
                     ))
                 )}

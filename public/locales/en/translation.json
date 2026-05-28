@@ -102,7 +102,7 @@
       "colaboracions": "You are not collaborating on any maps yet.",
       "gardados": "You haven't saved any maps yet."
     },
-    "botonDesgardar": "Unsave",
+    "botonDesgardar": "Remove from saved",
     "erroCargarColaboracions": "Could not load collaboration maps.",
     "erroCargarGardados": "Could not load saved maps.",
     "erroDesgardar": "Could not unsave the map. Please try again."

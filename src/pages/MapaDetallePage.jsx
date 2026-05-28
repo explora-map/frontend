@@ -4,9 +4,12 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import useMapaVisualStore from '../store/useMapaVisualStore';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { obterMapaPorId, eliminarMapa, cambiarVisibilidade } from '../services/mapaApi';
+import { gardarMapa, desgardarMapa, obterMapasGardados } from '../services/mapaGardadoApi';
+import { BookmarkIcon, BookmarkFilledIcon } from '../components/Iconas';
 import { listarMarcadores, crearMarcador, editarMarcador, eliminarMarcador } from '../services/marcadorApi';
 import { listarCategorias } from '../services/categoriaApi';
 import { listarMembros } from '../services/mapaMembroApi';
@@ -159,9 +162,15 @@ function calcularRolEfectivo(mapa, membros, username) {
 
 export default function MapaDetallePage() {
     const { id } = useParams();
-    const { username } = useAuth();
+    const { username, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const invalidarMarcadores = useMapaVisualStore(s => s.invalidarMarcadores);
+
+    function handleVolver() {
+        invalidarMarcadores();
+        navigate('/mapas');
+    }
 
     const [mapa, setMapa] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -172,6 +181,7 @@ export default function MapaDetallePage() {
     const [marcadores, setMarcadores] = useState([]);
     const [membros, setMembros] = useState([]);
     const [rolEfectivo, setRolEfectivo] = useState(null);
+    const [gardado, setGardado] = useState(false);
 
     // Create marker form state
     const [mostrarFormMarcador, setMostrarFormMarcador] = useState(false);
@@ -245,6 +255,27 @@ export default function MapaDetallePage() {
             setRolEfectivo(calcularRolEfectivo(mapa, membros, username));
         }
     }, [mapa, membros, username]);
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        obterMapasGardados()
+            .then(data => setGardado(data.some(m => m.id === parseInt(id))))
+            .catch(() => {});
+    }, [id, isAuthenticated]);
+
+    async function toggleGardarDetalle() {
+        try {
+            if (gardado) {
+                await desgardarMapa(id);
+                setGardado(false);
+            } else {
+                await gardarMapa(id);
+                setGardado(true);
+            }
+        } catch (err) {
+            console.log('Erro ao gardar/desgardar:', err);
+        }
+    }
 
     const podeCrear = ['PROPIETARIA', 'ADMIN_MAPA', 'COLABORADORA'].includes(rolEfectivo);
     const podeEditarCalquera = ['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo);
@@ -409,16 +440,11 @@ export default function MapaDetallePage() {
         ? new Date(mapa.dataCreacion).toLocaleString()
         : '—';
 
-    const textoRol = {
-        'PROPIETARIA':  'Propietaria',
-        'ADMIN_MAPA':   'Administradora',
-        'COLABORADORA': 'Colaboradora',
-        'MEMBRO':       'Membro',
-        'VISITANTE':    null,
+    const ROL_BADGE = {
+        'PROPIETARIA':  { texto: 'O teu mapa', estilo: { background: '#f0fdf4', color: '#16a34a', border: '1px solid #86efac' } },
+        'ADMIN_MAPA':   { texto: 'Admin',       estilo: { background: '#faf5ff', color: '#7c3aed', border: '1px solid #c4b5fd' } },
+        'COLABORADORA': { texto: 'Colaboras',   estilo: { background: '#eff6ff', color: '#2563eb', border: '1px solid #93c5fd' } },
     };
-    const rolClase = ['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo)
-        ? 'badge--publico'
-        : 'badge--privado';
 
     // Click handler active only when no modal is open and user can create markers
     const mapClickHandler = podeCrear && !mostrarFormMarcador && !marcadorEditando
@@ -428,7 +454,7 @@ export default function MapaDetallePage() {
     return (
         <PageShell>
             <div className="page__back">
-                <Link to="/mapas" className="back-link">← Volver aos mapas</Link>
+                <button className="back-link" onClick={handleVolver}>← Volver aos mapas</button>
             </div>
 
             <div className="detalle__header">
@@ -437,10 +463,28 @@ export default function MapaDetallePage() {
                     <span className={`badge badge--tipo badge--${mapa.tipo === 'PUBLICO' ? 'publico' : 'privado'}`}>
                         {mapa.tipo === 'PUBLICO' ? 'Público' : 'Privado'}
                     </span>
-                    {textoRol[rolEfectivo] && (
-                        <span className={`badge badge--tipo ${rolClase}`}>
-                            {textoRol[rolEfectivo]}
+                    {ROL_BADGE[rolEfectivo] && (
+                        <span style={{
+                            fontSize: '12px', padding: '2px 8px', borderRadius: '12px',
+                            display: 'inline-block', marginLeft: '8px',
+                            ...ROL_BADGE[rolEfectivo].estilo,
+                        }}>
+                            {ROL_BADGE[rolEfectivo].texto}
                         </span>
+                    )}
+                    {isAuthenticated && mapa?.creadoPor !== username && (
+                        <button
+                            onClick={toggleGardarDetalle}
+                            title={gardado ? 'Mapa gardado' : 'Gardar mapa'}
+                            style={{
+                                background: 'none', border: 'none', cursor: 'pointer',
+                                color: gardado ? 'var(--color-primary-500)' : 'var(--color-text-secondary, #888)',
+                                padding: '4px', marginLeft: '8px',
+                                display: 'inline-flex', alignItems: 'center', verticalAlign: 'middle',
+                            }}
+                        >
+                            {gardado ? <BookmarkFilledIcon size={22} /> : <BookmarkIcon size={22} />}
+                        </button>
                     )}
                 </div>
 

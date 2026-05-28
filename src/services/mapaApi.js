@@ -32,9 +32,9 @@ export async function cambiarVisibilidade(id, tipo) {
     return res.data;
 }
 
-export async function obterMapasPublicos(latitude, lonxitude, radio) {
+export async function obterMapasPublicos(lat, lon, radius) {
     const res = await axiosInstance.get('/mapas/publicos', {
-        params: { latitude, lonxitude, radio },
+        params: { lat, lon, radius },
     });
     return res.data;
 }
@@ -43,6 +43,8 @@ export async function obterMapasColaboradora() {
     const res = await axiosInstance.get('/mapas/colaboracións');
     return res.data;
 }
+
+export const obterColaboracions = obterMapasColaboradora;
 
 export async function obterMapasGardados() {
     const res = await axiosInstance.get('/mapas/gardados');

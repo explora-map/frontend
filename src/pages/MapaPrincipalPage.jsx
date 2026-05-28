@@ -3,13 +3,17 @@
 // Ao buscar unha cidade aparece un panel unificado con tempo + mapas públicos da zona.
 // Routing: fetch directo á API OSRM + L.geoJSON (sen leaflet-routing-machine).
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import L from 'leaflet';
 import { useNavigate } from 'react-router-dom';
 import MapViewer from '../components/MapViewer';
 import MapSearchBar from '../components/MapSearchBar';
 import axiosInstance from '../services/axiosInstance';
+import { gardarMapa, desgardarMapa, obterMapasGardados } from '../services/mapaGardadoApi';
+import { crearMarcador, listarMarcadores } from '../services/marcadorApi';
+import { BookmarkIcon, BookmarkFilledIcon, EyeIcon } from '../components/Iconas';
 import { useAuth } from '../hooks/useAuth';
+import useMapaVisualStore from '../store/useMapaVisualStore';
 import '../assets/styles/mapas.css';
 import '../assets/styles/map-search.css';
 
@@ -97,11 +101,83 @@ const estiloBtnSecundario = {
     fontFamily: 'inherit',
 };
 
+/* ---- Formulario de novo marcador ---- */
+
+function FormNovaMarcador({ coords, categorias, onGardar, onCancelar }) {
+    const [nome, setNome] = useState('');
+    const [categoriaId, setCategoriaId] = useState(categorias[0]?.id ?? '');
+    const [gardando, setGardando] = useState(false);
+    const [erro, setErro] = useState('');
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        if (!nome.trim()) { setErro('O nome é obrigatorio'); return; }
+        setGardando(true);
+        setErro('');
+        try {
+            await onGardar({ nome: nome.trim(), categoriaId: categoriaId || null, lat: coords.lat, lon: coords.lng });
+        } catch {
+            setErro('Erro ao gardar o marcador');
+            setGardando(false);
+        }
+    }
+
+    return (
+        <div style={{
+            position: 'absolute', top: '80px', right: '16px', zIndex: 1100,
+            background: 'white', borderRadius: '12px', padding: '16px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)', width: '260px',
+            fontFamily: 'inherit',
+        }}>
+            <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#2D2848', marginBottom: '12px' }}>
+                Novo marcador
+            </div>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <input
+                    type="text"
+                    placeholder="Nome do marcador..."
+                    value={nome}
+                    onChange={e => setNome(e.target.value)}
+                    style={{ ...estiloInputOrixe }}
+                    autoFocus
+                />
+                {categorias.length > 0 && (
+                    <select
+                        value={categoriaId}
+                        onChange={e => setCategoriaId(e.target.value)}
+                        style={{ ...estiloInputOrixe, cursor: 'pointer' }}
+                    >
+                        <option value="">Sen categoría</option>
+                        {categorias.map(cat => (
+                            <option key={cat.id} value={cat.id}>{cat.nome}</option>
+                        ))}
+                    </select>
+                )}
+                {erro && (
+                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#DC1B2F' }}>{erro}</p>
+                )}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                        type="submit"
+                        disabled={gardando}
+                        style={{ ...estiloBtnPrimario, flex: 1, opacity: gardando ? 0.6 : 1 }}
+                    >
+                        {gardando ? 'Gardando...' : 'Gardar'}
+                    </button>
+                    <button type="button" onClick={onCancelar} style={estiloBtnSecundario}>
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    );
+}
+
 /* ---- Compoñente ---- */
 
 export default function MapaPrincipalPage() {
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, username } = useAuth();
 
     const [coords, setCoords] = useState(GALICIA);
     const [destino, setDestino] = useState(null);
@@ -114,10 +190,48 @@ export default function MapaPrincipalPage() {
     // Directions
     const [mostrarDirections, setMostrarDirections] = useState(false);
     const [modo, setModo] = useState('coche');
+    const [mapasGardadosIds, setMapasGardadosIds] = useState(new Set());
     const [inputOrixe, setInputOrixe] = useState('');
     const [infoRuta, setInfoRuta] = useState(null);
     const [erroOrixe, setErroOrixe] = useState('');
     const [calculandoRuta, setCalculandoRuta] = useState(false);
+
+    // Engadir marcador
+    const [coordsNovaMarcador, setCoordsNovaMarcador] = useState(null);
+    const [mostrarFormMarcador, setMostrarFormMarcador] = useState(false);
+    const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
+
+    const setCoordsStore          = useMapaVisualStore(s => s.setCoords);
+    const mapasActivos            = useMapaVisualStore(s => s.mapasActivos);
+    const marcadoresPorMapa       = useMapaVisualStore(s => s.marcadoresPorMapa);
+    const categoriasActivas       = useMapaVisualStore(s => s.categoriasActivas);
+    const categoriasPorMapa       = useMapaVisualStore(s => s.categoriasPorMapa);
+    const mapaIdEngadindo         = useMapaVisualStore(s => s.mapaIdEngadindo);
+    const cancelarSolicitudEngadir = useMapaVisualStore(s => s.cancelarSolicitudEngadir);
+    const setMarcadoresMapa       = useMapaVisualStore(s => s.setMarcadoresMapa);
+
+    const marcadoresVisuais = useMemo(() => {
+        const resultado = [];
+        Object.entries(mapasActivos).forEach(([mapaId, activo]) => {
+            if (!activo) return;
+            const marcadores = marcadoresPorMapa[mapaId] ?? [];
+            marcadores.forEach(m => {
+                if (m.categoriaId) {
+                    const catActiva = categoriasActivas[String(m.categoriaId)];
+                    if (catActiva === undefined || catActiva === true) {
+                        resultado.push(m);
+                    }
+                } else {
+                    const claveEspecial = `${mapaId}_sen_categoria`;
+                    const visible = categoriasActivas[claveEspecial];
+                    if (visible === undefined || visible === true) {
+                        resultado.push(m);
+                    }
+                }
+            });
+        });
+        return resultado;
+    }, [mapasActivos, marcadoresPorMapa, categoriasActivas]);
 
     const mapaRef = useRef(null);
     const rutaLayerRef = useRef(null);
@@ -131,10 +245,80 @@ export default function MapaPrincipalPage() {
     }, []);
 
     useEffect(() => {
+        setCoordsStore(coords.lat, coords.lng);
+    }, [coords.lat, coords.lng]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        obterMapasGardados()
+            .then(data => setMapasGardadosIds(new Set(data.map(m => m.id))))
+            .catch(() => {});
+    }, [isAuthenticated]);
+
+    useEffect(() => {
         return () => {
             try { rutaLayerRef.current?.remove(); } catch { /* mapa xa destruído */ }
         };
     }, []);
+
+    useEffect(() => {
+        if (!mapaIdEngadindo) {
+            setCoordsNovaMarcador(null);
+            setMostrarFormMarcador(false);
+            setCategoriasDisponibles([]);
+            return;
+        }
+        const cats = categoriasPorMapa[mapaIdEngadindo] ?? [];
+        setCategoriasDisponibles(cats);
+        setCoordsNovaMarcador(null);
+        setMostrarFormMarcador(false);
+    }, [mapaIdEngadindo]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    /* ---- Gardar mapa ---- */
+
+    async function toggleGardar(mapaId) {
+        const gardado = mapasGardadosIds.has(mapaId);
+        try {
+            if (gardado) {
+                await desgardarMapa(mapaId);
+                setMapasGardadosIds(prev => { const n = new Set(prev); n.delete(mapaId); return n; });
+            } else {
+                await gardarMapa(mapaId);
+                setMapasGardadosIds(prev => new Set(prev).add(mapaId));
+            }
+        } catch (err) {
+            console.log('Erro ao gardar/desgardar:', err);
+        }
+    }
+
+    /* ---- Engadir marcador ---- */
+
+    function cancelarEngadirMarcador() {
+        cancelarSolicitudEngadir();
+        setCoordsNovaMarcador(null);
+        setMostrarFormMarcador(false);
+    }
+
+    async function handleGardarMarcador({ nome, categoriaId, lat, lon }) {
+        const dto = { nome, latitude: lat, lonxitude: lon };
+        if (categoriaId) dto.categoriaId = Number(categoriaId);
+
+        await crearMarcador(mapaIdEngadindo, dto);
+
+        const mapaId = String(mapaIdEngadindo);
+        try {
+            const data = await listarMarcadores(mapaIdEngadindo);
+            const marcadoresConCor = data.map(m => ({
+                ...m,
+                cor: m.categoriaCor ?? '#888888',
+            }));
+            setMarcadoresMapa(mapaId, marcadoresConCor);
+        } catch { /* ignore */ }
+
+        cancelarSolicitudEngadir();
+        setCoordsNovaMarcador(null);
+        setMostrarFormMarcador(false);
+    }
 
     /* ---- Routing helpers ---- */
 
@@ -341,16 +525,33 @@ export default function MapaPrincipalPage() {
 
                         {!cargandoMapas && mapasZona.slice(0, MAX_MAPAS_PANEL).map(mapa => (
                             <div key={mapa.id} className="panel-cidade__mapa-item">
-                                <span className="panel-cidade__mapa-icona">🗺</span>
                                 <div className="panel-cidade__mapa-info">
                                     <div className="panel-cidade__mapa-nome">{mapa.nome}</div>
                                     <div className="panel-cidade__mapa-autor">por {mapa.creadoPor}</div>
                                 </div>
+                                {isAuthenticated && mapa.creadoPor !== username && (
+                                    <button
+                                        onClick={() => toggleGardar(mapa.id)}
+                                        title={mapasGardadosIds.has(mapa.id) ? 'Mapa gardado' : 'Gardar mapa'}
+                                        style={{
+                                            background: 'none', border: 'none', cursor: 'pointer',
+                                            color: mapasGardadosIds.has(mapa.id) ? 'var(--color-primary-500)' : 'var(--color-text-secondary, #888)',
+                                            padding: '4px', display: 'flex', alignItems: 'center',
+                                        }}
+                                    >
+                                        {mapasGardadosIds.has(mapa.id) ? <BookmarkFilledIcon size={18} /> : <BookmarkIcon size={18} />}
+                                    </button>
+                                )}
                                 <button
-                                    className="panel-cidade__mapa-btn"
                                     onClick={() => navigate(`/mapas/${mapa.id}`)}
+                                    title="Ver mapa"
+                                    style={{
+                                        background: 'none', border: 'none', cursor: 'pointer',
+                                        color: 'var(--color-primary-500)',
+                                        padding: '4px', display: 'flex', alignItems: 'center',
+                                    }}
                                 >
-                                    Ver →
+                                    <EyeIcon size={18} />
                                 </button>
                             </div>
                         ))}
@@ -443,17 +644,60 @@ export default function MapaPrincipalPage() {
                 </div>
             )}
 
+            {/* Banner de selección de localización */}
+            {mapaIdEngadindo && !mostrarFormMarcador && (
+                <div style={{
+                    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1050,
+                    background: 'rgba(124,82,232,0.92)', color: 'white',
+                    padding: '10px 16px', display: 'flex', alignItems: 'center',
+                    justifyContent: 'space-between', fontSize: '0.875rem', fontFamily: 'inherit',
+                }}>
+                    <span>Fai clic no mapa para escoller a localización do marcador</span>
+                    <button
+                        onClick={cancelarEngadirMarcador}
+                        style={{
+                            background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white',
+                            borderRadius: '6px', padding: '4px 10px', cursor: 'pointer',
+                            fontFamily: 'inherit', fontSize: '0.8rem',
+                        }}
+                    >
+                        Cancelar
+                    </button>
+                </div>
+            )}
+
+            {/* Formulario de novo marcador */}
+            {mostrarFormMarcador && coordsNovaMarcador && (
+                <FormNovaMarcador
+                    coords={coordsNovaMarcador}
+                    categorias={categoriasDisponibles}
+                    onGardar={handleGardarMarcador}
+                    onCancelar={cancelarEngadirMarcador}
+                />
+            )}
+
             {/* Mapa */}
-            <div style={estiloMapa}>
+            <div style={{
+                ...estiloMapa,
+                cursor: (mapaIdEngadindo && !mostrarFormMarcador) ? 'crosshair' : 'default',
+            }}>
                 <MapViewer
                     latitude={coords.lat}
                     lonxitude={coords.lng}
                     zoom={coords.zoom}
                     marker={false}
                     height="100%"
-                    marcadores={[]}
+                    marcadores={marcadoresVisuais}
                     zoomPosition="bottomright"
                     onMapReady={(map) => { mapaRef.current = map; }}
+                    onLocationSelect={
+                        (mapaIdEngadindo && !mostrarFormMarcador)
+                            ? ({ lat, lng }) => {
+                                setCoordsNovaMarcador({ lat, lng });
+                                setMostrarFormMarcador(true);
+                            }
+                            : undefined
+                    }
                 />
             </div>
         </div>

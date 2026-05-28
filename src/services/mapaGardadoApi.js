@@ -8,3 +8,8 @@ export async function gardarMapa(mapaId) {
 export async function desgardarMapa(mapaId) {
     await axiosInstance.delete(`/mapas/${mapaId}/gardar`);
 }
+
+export async function obterMapasGardados() {
+    const res = await axiosInstance.get('/mapas/gardados');
+    return res.data;
+}

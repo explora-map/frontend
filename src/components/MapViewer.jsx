@@ -142,6 +142,7 @@ export default function MapViewer({
     // Render named markers from the marcadores array; remove previous ones first
     useEffect(() => {
         if (!mapRef.current) return;
+        console.log('MapViewer recibiu marcadores:', marcadores);
         marcadoresRefs.current.forEach((m) => m.remove());
         marcadoresRefs.current = marcadores.map((item) =>
             L.marker(

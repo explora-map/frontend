@@ -102,7 +102,7 @@
       "colaboracions": "Aínda non colaboras en ningún mapa.",
       "gardados": "Aínda non gardaches ningún mapa."
     },
-    "botonDesgardar": "Desgardar",
+    "botonDesgardar": "Eliminar dos gardados",
     "erroCargarColaboracions": "Non foi posible cargar os mapas de colaboración.",
     "erroCargarGardados": "Non foi posible cargar os mapas gardados.",
     "erroDesgardar": "Non foi posible desgardar o mapa. Tenta de novo."

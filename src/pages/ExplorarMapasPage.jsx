@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../services/axiosInstance';
+import { gardarMapa, desgardarMapa, obterMapasGardados } from '../services/mapaGardadoApi';
+import { BookmarkIcon, BookmarkFilledIcon, EyeIcon } from '../components/Iconas';
 import { useAuth } from '../hooks/useAuth';
 
 const LAT_GALICIA = 42.8782;
@@ -10,9 +12,10 @@ const RADIUS_BUSCA = 50000;
 
 export default function ExplorarMapasPage() {
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, username } = useAuth();
 
     const [inputBusca, setInputBusca] = useState('');
+    const [mapasGardadosIds, setMapasGardadosIds] = useState(new Set());
     const [buscaActiva, setBuscaActiva] = useState('');
     const [mapas, setMapas] = useState([]);
     const [cargando, setCargando] = useState(false);
@@ -38,6 +41,28 @@ export default function ExplorarMapasPage() {
     useEffect(() => {
         cargarMapas(LAT_GALICIA, LON_GALICIA, RADIUS_DESTACADOS);
     }, [cargarMapas]);
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        obterMapasGardados()
+            .then(data => setMapasGardadosIds(new Set(data.map(m => m.id))))
+            .catch(() => {});
+    }, [isAuthenticated]);
+
+    async function toggleGardar(mapaId) {
+        const gardado = mapasGardadosIds.has(mapaId);
+        try {
+            if (gardado) {
+                await desgardarMapa(mapaId);
+                setMapasGardadosIds(prev => { const n = new Set(prev); n.delete(mapaId); return n; });
+            } else {
+                await gardarMapa(mapaId);
+                setMapasGardadosIds(prev => new Set(prev).add(mapaId));
+            }
+        } catch (err) {
+            console.log('Erro ao gardar/desgardar:', err);
+        }
+    }
 
     async function buscar() {
         const termo = inputBusca.trim();
@@ -143,26 +168,44 @@ export default function ExplorarMapasPage() {
             {isAuthenticated && !cargando && mapas.length > 0 && (
                 <div className="explorar-page__grid">
                     {mapas.map(mapa => (
-                        <div key={mapa.id} className="explorar-card">
-                            <p className="explorar-card__nome">{mapa.nome}</p>
+                        <div key={mapa.id} className="explorar-card" style={{ position: 'relative' }}>
+
+                            {/* Iconas esquina superior dereita */}
+                            <div style={{ position: 'absolute', top: '8px', right: '8px', display: 'flex', gap: '4px', alignItems: 'center' }}>
+                                {isAuthenticated && mapa.creadoPor !== username && (
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); toggleGardar(mapa.id); }}
+                                        title={mapasGardadosIds.has(mapa.id) ? 'Mapa gardado' : 'Gardar mapa'}
+                                        style={{
+                                            background: 'none', border: 'none', cursor: 'pointer',
+                                            color: mapasGardadosIds.has(mapa.id) ? 'var(--color-primary-500)' : 'var(--color-text-secondary, #888)',
+                                            padding: '4px', display: 'flex', alignItems: 'center',
+                                        }}
+                                    >
+                                        {mapasGardadosIds.has(mapa.id) ? <BookmarkFilledIcon size={18} /> : <BookmarkIcon size={18} />}
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => navigate(`/mapas/${mapa.id}`)}
+                                    title="Ver mapa"
+                                    style={{
+                                        background: 'none', border: 'none', cursor: 'pointer',
+                                        color: 'var(--color-primary-500)',
+                                        padding: '4px', display: 'flex', alignItems: 'center',
+                                    }}
+                                >
+                                    <EyeIcon size={18} />
+                                </button>
+                            </div>
+
+                            <div className="explorar-card__nome" style={{ paddingRight: '56px' }}>{mapa.nome}</div>
                             {mapa.descricion && (
-                                <p className="explorar-card__descricion">
-                                    {mapa.descricion}
-                                </p>
+                                <div className="explorar-card__descricion">{mapa.descricion}</div>
                             )}
                             <div className="explorar-card__meta">
-                                <span>
-                                    {mapa.nomeLocalizacion ||
-                                        [mapa.cidade, mapa.pais].filter(Boolean).join(', ')}
-                                </span>
-                                {mapa.creadoPor && <span> · {mapa.creadoPor}</span>}
+                                {mapa.nomeLocalizacion || [mapa.cidade, mapa.pais].filter(Boolean).join(', ')}
+                                {mapa.creadoPor && ` · ${mapa.creadoPor}`}
                             </div>
-                            <button
-                                className="explorar-card__btn"
-                                onClick={() => verMapa(mapa.id)}
-                            >
-                                Ver mapa
-                            </button>
                         </div>
                     ))}
                 </div>
