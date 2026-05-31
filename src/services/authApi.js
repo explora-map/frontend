@@ -6,7 +6,7 @@
 
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080/api/auth';
+const BASE_URL = import.meta.env.VITE_AUTH_URL;
 
 // Public axios instance (no interceptors).
 // We use this for register/login/refresh/logout to avoid the refresh
