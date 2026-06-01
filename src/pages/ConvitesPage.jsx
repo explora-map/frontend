@@ -45,7 +45,7 @@ export default function ConvitesPage() {
         } finally {
             setLoadingEnviados(false);
         }
-    }, []);
+    }, [t]);
 
     const loadRecibidos = useCallback(async () => {
         setLoadingRecibidos(true);
@@ -57,7 +57,7 @@ export default function ConvitesPage() {
         } finally {
             setLoadingRecibidos(false);
         }
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         loadEnviados();

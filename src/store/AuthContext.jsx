@@ -30,6 +30,7 @@ import {
 import { logout as apiLogout } from '../services/authApi';
 import { getRefreshToken } from '../services/axiosInstance';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {

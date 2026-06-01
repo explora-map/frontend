@@ -48,7 +48,7 @@ export default function MapaListPage() {
         } finally {
             setLoadingCreados(false);
         }
-    }, []);
+    }, [t]);
 
     const cargarColab = useCallback(async () => {
         setLoadingColab(true);
@@ -61,7 +61,7 @@ export default function MapaListPage() {
         } finally {
             setLoadingColab(false);
         }
-    }, []);
+    }, [t]);
 
     const cargarGardados = useCallback(async () => {
         setLoadingGardados(true);
@@ -74,7 +74,7 @@ export default function MapaListPage() {
         } finally {
             setLoadingGardados(false);
         }
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         if (!cargadas.current.has(lapela)) {

@@ -97,14 +97,6 @@ export default function ExplorarMapasPage() {
         if (e.key === 'Enter') buscar();
     }
 
-    function verMapa(id) {
-        if (!isAuthenticated) {
-            navigate('/login', { state: { from: `/mapas/${id}` } });
-        } else {
-            navigate(`/mapas/${id}`);
-        }
-    }
-
     const tituloSeccion = buscaActiva
         ? `Resultados para "${buscaActiva}" — ${mapas.length} mapa${mapas.length !== 1 ? 's' : ''} atopado${mapas.length !== 1 ? 's' : ''}`
         : 'Mapas destacados';

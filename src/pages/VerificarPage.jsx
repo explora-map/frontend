@@ -1,28 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { verificarConta } from '../services/authApi';
 
 export default function VerificarPage() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
 
-  const [estado, setEstado] = useState('cargando');
-  const [mensaxe, setMensaxe] = useState('');
+  const [estado, setEstado] = useState(token ? 'cargando' : 'erro');
+  const [mensaxe, setMensaxe] = useState(token ? '' : 'Token de verificación non atopado na URL.');
 
   // Prevent double execution in React StrictMode
   const chamadaFeita = useRef(false);
 
   useEffect(() => {
-    if (!token) {
-      setEstado('erro');
-      setMensaxe('Token de verificación non atopado na URL.');
-      return;
-    }
-
-    // Guard against double invocation in React StrictMode
+    if (!token) return;
     if (chamadaFeita.current) return;
     chamadaFeita.current = true;
 
@@ -33,7 +25,6 @@ export default function VerificarPage() {
         setEstado('ok');
       } catch (err) {
         const mensaxeErro = err.response?.data?.message || 'O token non é válido ou xa caducou.';
-        // If token was already used but account is verified, treat as success
         if (err.response?.status === 403 && mensaxeErro.includes('xa foi usado')) {
           setMensaxe('Conta verificada correctamente. Xa podes iniciar sesión.');
           setEstado('ok');

@@ -44,7 +44,7 @@ export default function ConvitePanel({ mapaId, tipoMapa }) {
         } finally {
             setLoading(false);
         }
-    }, [mapaId]);
+    }, [mapaId, t]);
 
     useEffect(() => {
         loadConvites();

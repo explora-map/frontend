@@ -10,7 +10,7 @@ import { obterConvitesRecibidos, aceptarConvite, rexeitarConvite } from '../serv
 export default function PerfilPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { username, logout } = useAuth();
+  const { logout } = useAuth();
 
   // Profile form state
   const [formData, setFormData] = useState({
