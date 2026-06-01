@@ -1149,3 +1149,46 @@
     }
 }
 
+.icona-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.icona-selector__opcion {
+    width: 36px;
+    height: 36px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background: var(--color-surface, #f5f5f5);
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, background 0.15s;
+    padding: 0;
+}
+
+.icona-selector__opcion:hover:not(:disabled) {
+    border-color: var(--color-primary, #3B82F6);
+    background: var(--color-surface-hover, #e8f0fe);
+}
+
+.icona-selector__opcion--activa {
+    border-color: var(--color-primary, #3B82F6);
+    background: var(--color-primary-light, #dbeafe);
+}
+
+.icona-selector__opcion:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.categoria-panel__icona {
+    font-size: 16px;
+    line-height: 1;
+    margin-right: 2px;
+}
+
