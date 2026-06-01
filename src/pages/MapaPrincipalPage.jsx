@@ -57,7 +57,7 @@ function mapearCodigo(code) {
 
 const estiloContenedor = {
     position: 'relative',
-    height: '100%',
+    height: '100vh',
     overflow: 'hidden',
 };
 

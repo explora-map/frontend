@@ -1174,9 +1174,9 @@
         padding: 0;
     }
     .mapa-principal-page {
-        height: calc(100vh - var(--topbar-height) - var(--bottom-nav-height));
+        height: calc(100vh - var(--topbar-height) - var(--bottom-nav-height)) !important;
         margin-top: var(--topbar-height);
-        margin-bottom: var(--bottom-nav-height);
+        margin-bottom: 0;
         position: relative;
         overflow: hidden;
     }
