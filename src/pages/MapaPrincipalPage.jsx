@@ -55,7 +55,11 @@ function mapearCodigo(code) {
 
 /* ---- Estilos estáticos ---- */
 
-const estiloContenedor = { position: 'relative', height: '100vh', overflow: 'hidden' };
+const estiloContenedor = {
+    position: 'relative',
+    height: '100dvh',
+    overflow: 'hidden',
+};
 
 const estiloBuscador = {
     position: 'absolute',
@@ -63,7 +67,7 @@ const estiloBuscador = {
     left: '16px',
     zIndex: 1000,
     maxWidth: '300px',
-    width: '100%',
+    width: 'calc(100% - 32px)',
 };
 
 const estiloMapa = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' };

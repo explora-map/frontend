@@ -810,6 +810,12 @@
     gap: var(--space-2);
 }
 
+@media (max-width: 640px) {
+    .mapa-principal__topbar--desktop {
+        display: none;
+    }
+}
+
 .topbar-tema-btn {
     display: flex;
     align-items: center;
@@ -1170,4 +1176,5 @@
         padding-bottom: 0;
     }
 }
+
 

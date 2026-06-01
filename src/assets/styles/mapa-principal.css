@@ -207,3 +207,17 @@
     display: flex;
     flex-direction: column;
 }
+
+/* Zoom controls — subir en móbil para non solaparse co BottomNav */
+@media (max-width: 640px) {
+    .leaflet-bottom.leaflet-right {
+        bottom: calc(var(--bottom-nav-height) + var(--space-2));
+    }
+}
+
+/* Buscador — axustar top en móbil para respectar o MobileHeader */
+@media (max-width: 640px) {
+    .mapa-principal-page [style*="position: absolute"][style*="top: 16px"][style*="left: 16px"] {
+        top: calc(var(--topbar-height) + var(--space-2)) !important;
+    }
+}

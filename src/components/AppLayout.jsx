@@ -31,7 +31,7 @@ export default function AppLayout({ onVisualizarClick }) {
             >
                 <Outlet />
             </main>
-            <div className="mapa-principal__topbar">
+            <div className="mapa-principal__topbar mapa-principal__topbar--desktop">
                 <button
                     className="topbar-tema-btn"
                     onClick={toggleTema}
