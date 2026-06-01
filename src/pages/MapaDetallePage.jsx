@@ -427,35 +427,35 @@ export default function MapaDetallePage() {
             </div>
 
             <div className="detalle__header">
-                <div>
+                <div className="detalle__header-left">
                     <h1 className="page__title">{mapa.nome}</h1>
-                    <div className="detalle__header-badges">
-                        <span className={`badge badge--tipo badge--${mapa.tipo === 'PUBLICO' ? 'publico' : 'privado'}`}>
-                            {mapa.tipo === 'PUBLICO' ? 'Público' : 'Privado'}
+                </div>
+                <div className="detalle__header-right">
+                    <span className={`badge badge--tipo badge--${mapa.tipo === 'PUBLICO' ? 'publico' : 'privado'}`}>
+                        {mapa.tipo === 'PUBLICO' ? 'Público' : 'Privado'}
+                    </span>
+                    {ROL_BADGE[rolEfectivo] && (
+                        <span style={{
+                            fontSize: '12px', padding: '2px 8px', borderRadius: '12px',
+                            display: 'inline-flex', alignItems: 'center',
+                            ...ROL_BADGE[rolEfectivo].estilo,
+                        }}>
+                            {ROL_BADGE[rolEfectivo].texto}
                         </span>
-                        {ROL_BADGE[rolEfectivo] && (
-                            <span style={{
-                                fontSize: '12px', padding: '2px 8px', borderRadius: '12px',
-                                display: 'inline-block',
-                                ...ROL_BADGE[rolEfectivo].estilo,
-                            }}>
-                                {ROL_BADGE[rolEfectivo].texto}
-                            </span>
-                        )}
-                        {isAuthenticated && mapa?.creadoPor !== username && (
-                            <button
-                                onClick={toggleGardarDetalle}
-                                title={gardado ? 'Mapa gardado' : 'Gardar mapa'}
-                                style={{
-                                    background: 'none', border: 'none', cursor: 'pointer',
-                                    color: gardado ? 'var(--color-primary-500)' : 'var(--color-neutral-400)',
-                                    padding: '4px', display: 'inline-flex', alignItems: 'center',
-                                }}
-                            >
-                                {gardado ? <BookmarkFilledIcon size={22} /> : <BookmarkIcon size={22} />}
-                            </button>
-                        )}
-                    </div>
+                    )}
+                    {isAuthenticated && mapa?.creadoPor !== username && (
+                        <button
+                            onClick={toggleGardarDetalle}
+                            title={gardado ? 'Mapa gardado' : 'Gardar mapa'}
+                            style={{
+                                background: 'none', border: 'none', cursor: 'pointer',
+                                color: gardado ? 'var(--color-primary-500)' : 'var(--color-neutral-400)',
+                                padding: '4px', display: 'inline-flex', alignItems: 'center',
+                            }}
+                        >
+                            {gardado ? <BookmarkFilledIcon size={22} /> : <BookmarkIcon size={22} />}
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -509,6 +509,19 @@ export default function MapaDetallePage() {
 
             {pestanaActiva === 'xeral' && (
                 <div className="detalle__tab-contido">
+                    {mapa.descricion && (
+                        <p className="detalle__descricion">{mapa.descricion}</p>
+                    )}
+                    <dl className="detalle__meta">
+                        <dt>{t('detalle.localizacion')}</dt>
+                        <dd>{mapa.nomeLocalizacion}</dd>
+                        <dt>{t('detalle.creadoPor')}</dt>
+                        <dd>{mapa.creadoPor}</dd>
+                        <dt>{t('detalle.dataCreacion')}</dt>
+                        <dd>{formattedDate}</dd>
+                        <dt>{t('detalle.coordenadas')}</dt>
+                        <dd>Lat: {mapa.latitude} · Lng: {mapa.lonxitude}</dd>
+                    </dl>
                     {isOwner && (
                         <div className="detalle__xeral-accions">
                             <button
@@ -533,26 +546,13 @@ export default function MapaDetallePage() {
                             </button>
                         </div>
                     )}
-                    {mapa.descricion && (
-                        <p className="detalle__descricion">{mapa.descricion}</p>
-                    )}
-                    <dl className="detalle__meta">
-                        <dt>{t('detalle.localizacion')}</dt>
-                        <dd>{mapa.nomeLocalizacion}</dd>
-                        <dt>{t('detalle.creadoPor')}</dt>
-                        <dd>{mapa.creadoPor}</dd>
-                        <dt>{t('detalle.dataCreacion')}</dt>
-                        <dd>{formattedDate}</dd>
-                        <dt>{t('detalle.coordenadas')}</dt>
-                        <dd>Lat: {mapa.latitude} · Lng: {mapa.lonxitude}</dd>
-                    </dl>
                 </div>
             )}
 
             {pestanaActiva === 'marcadores' && (
                 <div className="detalle__tab-contido">
                     {podeCrear && (
-                        <div className="detalle__tab-accions">
+                        <div className="detalle__tab-accions detalle__tab-accions--marcadores">
                             <button
                                 className="btn btn--primary btn--sm"
                                 onClick={() => setMostrarFormMarcador(true)}

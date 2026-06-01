@@ -437,7 +437,21 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: var(--space-4);
+    margin-bottom: var(--space-4);
     flex-wrap: wrap;
+}
+
+.detalle__header-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.detalle__header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    flex-shrink: 0;
 }
 
 .detalle__owner-actions {
@@ -1270,7 +1284,7 @@
     display: flex;
     gap: var(--space-2);
     flex-wrap: wrap;
-    margin-bottom: var(--space-6);
+    margin-top: var(--space-6);
 }
 
 .detalle__descricion {
@@ -1372,4 +1386,8 @@
     background-color: var(--color-error-bg) !important;
 }
 
-
+.detalle__tab-accions--marcadores {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--space-4);
+}
