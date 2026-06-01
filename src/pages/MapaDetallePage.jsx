@@ -431,7 +431,7 @@ export default function MapaDetallePage() {
                     <h1 className="page__title">{mapa.nome}</h1>
                     <div className="detalle__header-badges">
                         <span className={`badge badge--tipo badge--${mapa.tipo === 'PUBLICO' ? 'publico' : 'privado'}`}>
-                            {mapa.tipo === 'PUBLICO' ? t('mapas.publico') : t('mapas.privado')}
+                            {mapa.tipo === 'PUBLICO' ? 'Público' : 'Privado'}
                         </span>
                         {ROL_BADGE[rolEfectivo] && (
                             <span style={{
@@ -465,7 +465,7 @@ export default function MapaDetallePage() {
                     className={`detalle__tab${pestanaActiva === 'xeral' ? ' detalle__tab--activa' : ''}`}
                     onClick={() => setPestanaActiva('xeral')}
                 >
-                    {t('detalle.tabXeral')}
+                    Xeral
                 </button>
                 <button
                     className={`detalle__tab${pestanaActiva === 'marcadores' ? ' detalle__tab--activa' : ''}`}
