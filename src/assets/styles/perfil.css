@@ -216,3 +216,14 @@
     align-items: flex-start;
   }
 }
+
+.perfil-section--accions-rapidas {
+  border-top: var(--border-default);
+  padding-top: var(--space-6);
+}
+
+.perfil-accions-rapidas {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}

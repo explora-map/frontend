@@ -211,7 +211,8 @@
     "datosPersoais": "Personal data",
     "zonaPerigo": "Danger zone",
     "funcionalidadeNonDisponible": "Feature not yet available.",
-    "convidouteAoMapa": "invited you to the map"
+    "convidouteAoMapa": "invited you to the map",
+    "accionsTitulo": "Actions"
   },
   "notificacions": {
     "titulo": "Notifications",

@@ -356,6 +356,24 @@ export default function PerfilPage() {
         onConfirm={handleEliminarConta}
         onCancel={() => !eliminando && setConfirmEliminarOpen(false)}
       />
+
+      <section className="perfil-section perfil-section--accions-rapidas">
+        <h2 className="perfil-section__titulo">{t('perfil.accionsTitulo')}</h2>
+        <div className="perfil-accions-rapidas">
+          <button
+            className="btn btn--secondary"
+            onClick={() => navigate('/configuracion')}
+          >
+            {t('nav.configuracion')}
+          </button>
+          <button
+            className="btn btn--danger"
+            onClick={logout}
+          >
+            {t('nav.pecharSesion')}
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
