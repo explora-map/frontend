@@ -467,12 +467,17 @@ export default function MapaPrincipalPage() {
             toggleMapa(mapaId);
         }
         try {
-            const res = await axiosInstance.get(`/mapas/${mapaId}/categorias`);
-            const cats = res.data ?? [];
+            const [catsRes, marcsRes] = await Promise.all([
+                axiosInstance.get(`/mapas/${mapaId}/categorias`),
+                axiosInstance.get(`/mapas/${mapaId}/marcadores`),
+            ]);
+            const cats = catsRes.data ?? [];
+            const marcs = marcsRes.data ?? [];
             setCategoriasMapa(String(mapaId), cats);
+            setMarcadoresMapa(String(mapaId), marcs);
             activarTodasCategorias(cats.map(c => String(c.id)));
         } catch {
-            // silently ignore — mapa visible sen categorías
+            // silently ignore
         }
     }
 

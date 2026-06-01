@@ -18,6 +18,7 @@ export default function ExplorarMapasPage() {
     const { isAuthenticated, username } = useAuth();
     const { toggleMapa, isMapaActivo } = useMapaVisualStore();
     const setCategoriasMapa      = useMapaVisualStore(s => s.setCategoriasMapa);
+    const setMarcadoresMapa      = useMapaVisualStore(s => s.setMarcadoresMapa);
     const activarTodasCategorias = useMapaVisualStore(s => s.activarTodasCategorias);
 
     const [inputBusca, setInputBusca] = useState('');
@@ -114,9 +115,14 @@ export default function ExplorarMapasPage() {
             toggleMapa(mapaId);
         }
         try {
-            const res = await axiosInstance.get(`/mapas/${mapaId}/categorias`);
-            const cats = res.data ?? [];
+            const [catsRes, marcsRes] = await Promise.all([
+                axiosInstance.get(`/mapas/${mapaId}/categorias`),
+                axiosInstance.get(`/mapas/${mapaId}/marcadores`),
+            ]);
+            const cats = catsRes.data ?? [];
+            const marcs = marcsRes.data ?? [];
             setCategoriasMapa(String(mapaId), cats);
+            setMarcadoresMapa(String(mapaId), marcs);
             activarTodasCategorias(cats.map(c => String(c.id)));
         } catch {
             // silently ignore
