@@ -4,6 +4,7 @@ import axiosInstance from '../services/axiosInstance';
 import { gardarMapa, desgardarMapa, obterMapasGardados } from '../services/mapaGardadoApi';
 import { BookmarkIcon, BookmarkFilledIcon, EyeIcon } from '../components/Iconas';
 import { useAuth } from '../hooks/useAuth';
+import useMapaVisualStore from '../store/useMapaVisualStore';
 
 const LAT_GALICIA = 42.8782;
 const LON_GALICIA = -8.5448;
@@ -13,6 +14,7 @@ const RADIUS_BUSCA = 50000;
 export default function ExplorarMapasPage() {
     const navigate = useNavigate();
     const { isAuthenticated, username } = useAuth();
+    const { toggleMapa, isMapaActivo } = useMapaVisualStore();
 
     const [inputBusca, setInputBusca] = useState('');
     const [mapasGardadosIds, setMapasGardadosIds] = useState(new Set());
@@ -178,8 +180,13 @@ export default function ExplorarMapasPage() {
                                     </button>
                                 )}
                                 <button
-                                    onClick={() => navigate(`/mapas/${mapa.id}`)}
-                                    title="Ver mapa"
+                                    onClick={() => {
+                                        if (!isMapaActivo(mapa.id)) {
+                                            toggleMapa(mapa.id);
+                                        }
+                                        navigate('/');
+                                    }}
+                                    title="Ver no mapa"
                                     style={{
                                         background: 'none', border: 'none', cursor: 'pointer',
                                         color: 'var(--color-primary-500)',
