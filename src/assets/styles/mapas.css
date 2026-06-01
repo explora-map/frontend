@@ -1167,13 +1167,20 @@
 .app-layout__main:has(.mapa-principal-page) {
     padding: 0;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 @media (max-width: 640px) {
     .app-layout__main:has(.mapa-principal-page) {
         padding: 0;
-        padding-top: 0;
-        padding-bottom: 0;
+        height: 100vh;
+    }
+    .mapa-principal-page {
+        flex: 1;
+        height: calc(100vh - var(--topbar-height) - var(--bottom-nav-height));
+        margin-top: var(--topbar-height);
+        margin-bottom: var(--bottom-nav-height);
     }
 }
 

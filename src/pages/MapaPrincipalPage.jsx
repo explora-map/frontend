@@ -57,17 +57,8 @@ function mapearCodigo(code) {
 
 const estiloContenedor = {
     position: 'relative',
-    height: '100dvh',
+    height: '100%',
     overflow: 'hidden',
-};
-
-const estiloBuscador = {
-    position: 'absolute',
-    top: '16px',
-    left: '16px',
-    zIndex: 1000,
-    maxWidth: '300px',
-    width: 'calc(100% - 32px)',
 };
 
 const estiloMapa = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' };
@@ -475,7 +466,7 @@ export default function MapaPrincipalPage() {
         <div className="mapa-principal-page" style={estiloContenedor}>
 
             {/* Barra de busca flotante */}
-            <div style={estiloBuscador}>
+            <div className="mapa-principal__buscador">
                 <MapSearchBar onLocationSelect={handleLocationSelect} />
             </div>
 

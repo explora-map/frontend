@@ -215,9 +215,18 @@
     }
 }
 
-/* Buscador — axustar top en móbil para respectar o MobileHeader */
+.mapa-principal__buscador {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 1000;
+    max-width: 300px;
+    width: calc(100% - 32px);
+}
+
 @media (max-width: 640px) {
-    .mapa-principal-page [style*="position: absolute"][style*="top: 16px"][style*="left: 16px"] {
-        top: calc(var(--topbar-height) + var(--space-2)) !important;
+    .mapa-principal__buscador {
+        top: calc(var(--topbar-height) + var(--space-2));
+        max-width: calc(100% - 32px);
     }
 }
