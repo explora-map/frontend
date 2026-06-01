@@ -15,6 +15,8 @@ export default function ExplorarMapasPage() {
     const navigate = useNavigate();
     const { isAuthenticated, username } = useAuth();
     const { toggleMapa, isMapaActivo } = useMapaVisualStore();
+    const setCategoriasMapa      = useMapaVisualStore(s => s.setCategoriasMapa);
+    const activarTodasCategorias = useMapaVisualStore(s => s.activarTodasCategorias);
 
     const [inputBusca, setInputBusca] = useState('');
     const [mapasGardadosIds, setMapasGardadosIds] = useState(new Set());
@@ -103,6 +105,20 @@ export default function ExplorarMapasPage() {
         ? `Resultados para "${buscaActiva}" — ${mapas.length} mapa${mapas.length !== 1 ? 's' : ''} atopado${mapas.length !== 1 ? 's' : ''}`
         : 'Mapas destacados';
 
+    async function activarMapaConCategorias(mapaId) {
+        if (!isMapaActivo(mapaId)) {
+            toggleMapa(mapaId);
+        }
+        try {
+            const res = await axiosInstance.get(`/mapas/${mapaId}/categorias`);
+            const cats = res.data ?? [];
+            setCategoriasMapa(String(mapaId), cats);
+            activarTodasCategorias(cats.map(c => String(c.id)));
+        } catch {
+            // silently ignore
+        }
+    }
+
     return (
         <div className="explorar-page">
             <div className="explorar-page__cabeceira">
@@ -181,9 +197,7 @@ export default function ExplorarMapasPage() {
                                 )}
                                 <button
                                     onClick={() => {
-                                        if (!isMapaActivo(mapa.id)) {
-                                            toggleMapa(mapa.id);
-                                        }
+                                        activarMapaConCategorias(mapa.id);
                                         navigate('/');
                                     }}
                                     title="Ver no mapa"

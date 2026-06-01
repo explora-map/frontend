@@ -204,6 +204,10 @@ export default function MapaPrincipalPage() {
     const mapaIdEngadindo         = useMapaVisualStore(s => s.mapaIdEngadindo);
     const cancelarSolicitudEngadir = useMapaVisualStore(s => s.cancelarSolicitudEngadir);
     const setMarcadoresMapa       = useMapaVisualStore(s => s.setMarcadoresMapa);
+    const toggleMapa              = useMapaVisualStore(s => s.toggleMapa);
+    const setCategoriasMapa       = useMapaVisualStore(s => s.setCategoriasMapa);
+    const activarTodasCategorias  = useMapaVisualStore(s => s.activarTodasCategorias);
+    const isMapaActivo            = useMapaVisualStore(s => s.isMapaActivo);
 
     const marcadoresVisuais = useMemo(() => {
         const resultado = [];
@@ -462,6 +466,20 @@ export default function MapaPrincipalPage() {
 
     /* ---- Render ---- */
 
+    async function activarMapaConCategorias(mapaId) {
+        if (!isMapaActivo(mapaId)) {
+            toggleMapa(mapaId);
+        }
+        try {
+            const res = await axiosInstance.get(`/mapas/${mapaId}/categorias`);
+            const cats = res.data ?? [];
+            setCategoriasMapa(String(mapaId), cats);
+            activarTodasCategorias(cats.map(c => String(c.id)));
+        } catch {
+            // silently ignore — mapa visible sen categorías
+        }
+    }
+
     return (
         <div className="mapa-principal-page" style={estiloContenedor}>
 
@@ -538,8 +556,8 @@ export default function MapaPrincipalPage() {
                                     </button>
                                 )}
                                 <button
-                                    onClick={() => navigate(`/mapas/${mapa.id}`)}
-                                    title="Ver mapa"
+                                    onClick={() => { activarMapaConCategorias(mapa.id); fecharPanel(); }}
+                                    title="Ver no mapa"
                                     style={{
                                         background: 'none', border: 'none', cursor: 'pointer',
                                         color: 'var(--color-primary-500)',
