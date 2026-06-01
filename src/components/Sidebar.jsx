@@ -244,24 +244,39 @@ export default function Sidebar({ onVisualizarClick }) {
                     )}
 
                     <li className="sidebar__item sidebar__item--idioma">
-                        <div className="sidebar__idioma">
+                        {expanded ? (
+                            <div className="sidebar__idioma">
+                                <button
+                                    className={`sidebar__idioma-btn${idioma === 'gl' ? ' sidebar__idioma-btn--activo' : ''}`}
+                                    onClick={() => setIdioma('gl', false)}
+                                    aria-pressed={idioma === 'gl'}
+                                    title="Galego"
+                                >
+                                    GL
+                                </button>
+                                <button
+                                    className={`sidebar__idioma-btn${idioma === 'en' ? ' sidebar__idioma-btn--activo' : ''}`}
+                                    onClick={() => setIdioma('en', false)}
+                                    aria-pressed={idioma === 'en'}
+                                    title="English"
+                                >
+                                    EN
+                                </button>
+                            </div>
+                        ) : (
                             <button
-                                className={`sidebar__idioma-btn${idioma === 'gl' ? ' sidebar__idioma-btn--activo' : ''}`}
-                                onClick={() => setIdioma('gl', false)}
-                                aria-pressed={idioma === 'gl'}
-                                title="Galego"
+                                className="sidebar__idioma-toggle"
+                                onClick={() => setIdioma(idioma === 'gl' ? 'en' : 'gl', false)}
+                                title={idioma === 'gl' ? 'Switch to English' : 'Cambiar a Galego'}
+                                aria-label={idioma === 'gl' ? 'Switch to English' : 'Cambiar a Galego'}
                             >
-                                GL
+                                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={20} height={20}>
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="2" y1="12" x2="22" y2="12" />
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                                </svg>
                             </button>
-                            <button
-                                className={`sidebar__idioma-btn${idioma === 'en' ? ' sidebar__idioma-btn--activo' : ''}`}
-                                onClick={() => setIdioma('en', false)}
-                                aria-pressed={idioma === 'en'}
-                                title="English"
-                            >
-                                EN
-                            </button>
-                        </div>
+                        )}
                     </li>
                 </ul>
             </nav>

@@ -392,3 +392,24 @@
     background-color: var(--color-neutral-200);
     color: var(--color-neutral-700);
 }
+
+.sidebar__idioma-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    color: var(--color-neutral-500);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition:
+        background-color var(--duration-normal) var(--ease-default),
+        color var(--duration-normal) var(--ease-default);
+}
+
+.sidebar__idioma-toggle:hover {
+    background-color: var(--color-neutral-200);
+    color: var(--color-neutral-700);
+}
