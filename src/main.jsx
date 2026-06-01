@@ -14,6 +14,7 @@ import './assets/styles/verificar.css';
 import './assets/styles/historial.css';
 import './assets/styles/explorar.css';
 import './assets/styles/mapa-principal.css';
+import './assets/styles/mapas.css';
 import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')).render(

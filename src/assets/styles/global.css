@@ -555,3 +555,70 @@ kbd {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ============================================================
+   17. Tema escuro
+   ============================================================ */
+[data-theme="dark"] {
+  /* Primary */
+  --color-primary-50:  #1E1535;
+  --color-primary-100: #2D2050;
+  --color-primary-300: #9370EB;
+  --color-primary-400: #A98CF0;
+  --color-primary-500: #B39DF5;
+  --color-primary-600: #C4B2F7;
+  --color-primary-700: #D4C8FA;
+
+  /* Neutral */
+  --color-neutral-50:  #18142E;
+  --color-neutral-100: #1F1A35;
+  --color-neutral-200: #2D2848;
+  --color-neutral-300: #3D3760;
+  --color-neutral-400: #5C5585;
+  --color-neutral-500: #7A72A8;
+  --color-neutral-600: #A89EC8;
+  --color-neutral-700: #C4BEE0;
+  --color-neutral-800: #DDD9EE;
+  --color-neutral-900: #F7F5FB;
+
+  /* Superficies */
+  --color-surface:          #1F1A35;
+  --color-surface-sidebar:  #18142E;
+  --color-surface-elevated: #2D2848;
+  --color-bg:               #18142E;
+
+  /* Semánticas — mantéñense pero lixeiramente axustadas */
+  --color-success:        #4CAF74;
+  --color-success-bg:     #0D2B18;
+  --color-success-border: #1A5C30;
+
+  --color-warning:        #F0B429;
+  --color-warning-bg:     #2B1F00;
+  --color-warning-border: #5C4200;
+
+  --color-error:        #F05060;
+  --color-error-bg:     #2B0A10;
+  --color-error-border: #5C1520;
+
+  --color-info:        #5B9CF5;
+  --color-info-bg:     #0A1A3B;
+  --color-info-border: #1A3A7A;
+
+  /* Sombras */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.45), 0 10px 10px rgba(0, 0, 0, 0.3);
+  --shadow-focus: 0 0 0 3px rgba(179, 157, 245, 0.3);
+
+  /* Bordos */
+  --border-default: 1px solid var(--color-neutral-300);
+  --border-strong:  1px solid var(--color-neutral-400);
+  --border-focus:   var(--color-primary-500);
+}
+
+[data-theme="dark"] body {
+  color: var(--color-neutral-700);
+  background-color: var(--color-bg);
+}

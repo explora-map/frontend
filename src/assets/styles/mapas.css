@@ -116,7 +116,7 @@
 }
 
 .btn--danger:hover:not(:disabled) {
-    background: #B5162A;
+    background: var(--color-error);
 }
 
 .btn--sm {
@@ -909,7 +909,7 @@
 }
 
 .form-modal {
-    background: #FDFCFF;
+    background: var(--color-surface);
     border-radius: 16px;
     width: 100%;
     max-width: 480px;
@@ -928,7 +928,7 @@
 .form-modal__title {
     font-size: var(--text-lg);
     font-weight: var(--font-semibold);
-    color: #18142E;
+    color: var(--color-neutral-900);
     margin: 0;
 }
 
@@ -978,26 +978,26 @@
 .modal-label {
     font-size: var(--text-sm);
     font-weight: var(--font-medium);
-    color: #453F60;
+    color: var(--color-neutral-700);
 }
 
 .modal-input {
     width: 100%;
     padding: 10px 14px;
-    background: #FDFCFF;
-    border: 1.5px solid #C4BAE8;
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-neutral-300);
     border-radius: var(--radius-md);
     font-size: var(--text-sm);
-    color: #453F60;
+    color: var(--color-neutral-700);
     transition: border-color 150ms var(--ease-default, ease),
                 box-shadow   150ms var(--ease-default, ease);
 }
 
-.modal-input::placeholder { color: #9E97BB; }
+.modal-input::placeholder { color: var(--color-neutral-400); }
 
 .modal-input:focus {
     outline: none;
-    border-color: #7C52E8;
+    border-color: var(--color-primary-500);
     box-shadow: 0 0 0 3px rgba(124, 82, 232, 0.15);
 }
 
@@ -1007,17 +1007,17 @@
 }
 
 .modal-input--error {
-    border-color: #DC1B2F;
+    border-color: var(--color-error);
 }
 
 .modal-input--error:focus {
-    border-color: #DC1B2F;
+    border-color: var(--color-error);
     box-shadow: 0 0 0 3px rgba(220, 27, 47, 0.15);
 }
 
 .modal-error {
     font-size: var(--text-sm);
-    color: #DC1B2F;
+    color: var(--color-error);
     margin: 0;
 }
 
@@ -1030,15 +1030,15 @@
 
 .modal-btn-gardar {
     padding: 10px 20px;
-    background: #7C52E8;
-    color: #fff;
+    background: var(--color-primary-500);
+    color: var(--color-neutral-50);
     border-radius: var(--radius-md);
     font-size: var(--text-sm);
     font-weight: var(--font-medium);
     transition: background-color 150ms var(--ease-default, ease);
 }
 
-.modal-btn-gardar:hover:not(:disabled) { background: #6640D4; }
+.modal-btn-gardar:hover:not(:disabled) { background: var(--color-primary-600); }
 
 .modal-btn-gardar:disabled {
     opacity: 0.6;
@@ -1048,7 +1048,7 @@
 .modal-btn-cancelar {
     padding: 10px 20px;
     background: transparent;
-    color: #7C52E8;
+    color: var(--color-primary-500);
     border: 1.5px solid #7C52E8;
     border-radius: var(--radius-md);
     font-size: var(--text-sm);
@@ -1056,7 +1056,7 @@
     transition: background-color 150ms var(--ease-default, ease);
 }
 
-.modal-btn-cancelar:hover:not(:disabled) { background: #F0EDF8; }
+.modal-btn-cancelar:hover:not(:disabled) { background: var(--color-primary-50); }
 
 .modal-btn-cancelar:disabled {
     opacity: 0.6;
@@ -1087,8 +1087,8 @@
     top: calc(100% - 1px);
     left: 0;
     right: 0;
-    background: #FDFCFF;
-    border: 1.5px solid #C4BAE8;
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-neutral-300);
     border-top: none;
     border-radius: 0 0 var(--radius-md) var(--radius-md);
     z-index: var(--z-dropdown, 200);
@@ -1103,7 +1103,7 @@
 .marcador-busca__option {
     padding: 9px 14px;
     font-size: var(--text-sm);
-    color: #453F60;
+    color: var(--color-neutral-700);
     cursor: pointer;
     transition: background-color 100ms var(--ease-default, ease);
     list-style: none;
@@ -1111,13 +1111,13 @@
 
 .marcador-busca__option:hover,
 .marcador-busca__option:focus {
-    background: #F0EDF8;
+    background: var(--color-primary-50);
     outline: none;
 }
 
 .marcador-busca__coords-info {
     font-size: var(--text-xs);
-    color: #9E97BB;
+    color: var(--color-neutral-400);
     margin: 0;
     line-height: 1.5;
 }

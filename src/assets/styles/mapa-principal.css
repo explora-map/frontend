@@ -50,7 +50,7 @@
 
 .panel-cidade__tempo {
     font-size: 14px;
-    color: #666;
+    color: var(--color-neutral-600);
     margin-top: 2px;
 }
 
@@ -67,7 +67,7 @@
     border: none;
     cursor: pointer;
     font-size: 18px;
-    color: #999;
+    color: var(--color-neutral-500);
     padding: 0;
     margin-left: 8px;
     line-height: 1;
@@ -85,7 +85,7 @@
 .panel-cidade__mapas-titulo {
     font-size: 13px;
     font-weight: 600;
-    color: #888;
+    color: var(--color-neutral-500);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 8px;
@@ -124,7 +124,7 @@
 
 .panel-cidade__mapa-autor {
     font-size: 12px;
-    color: #999;
+    color: var(--color-neutral-500);
     margin-top: 1px;
 }
 
@@ -164,7 +164,7 @@
 
 .panel-cidade__mensaxe {
     text-align: center;
-    color: #999;
+    color: var(--color-neutral-500);
     font-size: 14px;
     padding: 16px 0;
     margin: 0;
