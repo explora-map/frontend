@@ -21,7 +21,7 @@ export default function AppLayout({ onVisualizarClick }) {
         <div className="app-layout">
             <MobileHeader />
             <Sidebar onVisualizarClick={onVisualizarClick} />
-            <BottomNav />
+            <BottomNav onVisualizarClick={onVisualizarClick} />
             <main
                 className="app-layout__main"
                 style={{

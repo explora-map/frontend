@@ -56,7 +56,7 @@ const UserIcon = () => (
 
 /* ---- Compoñente principal ---- */
 
-export default function BottomNav() {
+export default function BottomNav({ onVisualizarClick }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
@@ -77,7 +77,7 @@ export default function BottomNav() {
     const itemsAuth = [
         { ruta: '/',         label: t('nav.explorar'),        icona: <GlobeIcon /> },
         { ruta: '/explorar', label: t('nav.explorarMapas'),   icona: <CompassIcon /> },
-        ...(soNaInicio ? [{ ruta: '/mapas-visualizar', label: t('nav.visualizarMapas'), icona: <LayersIcon /> }] : []),
+        ...(soNaInicio && onVisualizarClick ? [{ ruta: '/mapas-visualizar', label: t('nav.visualizarMapas'), icona: <LayersIcon /> }] : []),
         { ruta: '/mapas',    label: t('nav.osMenusMapas'),    icona: <PinIcon /> },
         { ruta: '/perfil',   label: t('nav.perfil'),          icona: <UserIcon /> },
     ];
@@ -91,7 +91,7 @@ export default function BottomNav() {
                     <li key={ruta} className="bottom-nav__item">
                         <button
                             className={`bottom-nav__btn ${isActive(ruta) ? 'bottom-nav__btn--active' : ''}`}
-                            onClick={() => navigate(ruta)}
+                            onClick={() => ruta === '/mapas-visualizar' ? onVisualizarClick() : navigate(ruta)}
                             aria-label={label}
                         >
                             <span className="bottom-nav__icon" aria-hidden="true">
