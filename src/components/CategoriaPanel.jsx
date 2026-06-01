@@ -13,25 +13,6 @@ const CORES_PREDEFINIDAS = [
     '#6A1B9A', '#AD1457', '#37474F', '#00695C', '#283593',
 ];
 
-const ICONAS_PREDEFINIDAS = [
-    { valor: '📍', label: 'Lugar' },
-    { valor: '🏠', label: 'Edificio' },
-    { valor: '🌲', label: 'Natureza' },
-    { valor: '🍽️', label: 'Restaurante' },
-    { valor: '☕', label: 'Café' },
-    { valor: '🏛️', label: 'Monumento' },
-    { valor: '🛒', label: 'Comercio' },
-    { valor: '🏥', label: 'Saúde' },
-    { valor: '🎓', label: 'Educación' },
-    { valor: '🚌', label: 'Transporte' },
-    { valor: '⛺', label: 'Campamento' },
-    { valor: '🏖️', label: 'Praia' },
-    { valor: '⛪', label: 'Relixión' },
-    { valor: '🎭', label: 'Ocio' },
-    { valor: '🏋️', label: 'Deporte' },
-    { valor: '⭐', label: 'Destacado' },
-];
-
 function SelectorCor({ cor, onChange, disabled }) {
     const inputRef = useRef(null);
     const esPersonalizada = !CORES_PREDEFINIDAS.some(
@@ -73,27 +54,6 @@ function SelectorCor({ cor, onChange, disabled }) {
     );
 }
 
-function SelectorIcona({ icona, onChange, disabled }) {
-    return (
-        <div className="icona-selector" role="group" aria-label="Seleccionar icona">
-            {ICONAS_PREDEFINIDAS.map((i) => (
-                <button
-                    key={i.valor}
-                    type="button"
-                    className={`icona-selector__opcion${icona === i.valor ? ' icona-selector__opcion--activa' : ''}`}
-                    aria-label={i.label}
-                    aria-pressed={icona === i.valor}
-                    onClick={() => onChange(icona === i.valor ? '' : i.valor)}
-                    disabled={disabled}
-                    title={i.label}
-                >
-                    {i.valor}
-                </button>
-            ))}
-        </div>
-    );
-}
-
 export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCambio, podeCrear, podeEditarCalquera, usernameActual }) {
     const { t } = useTranslation();
     const canCreate = podeCrear ?? esPropietario;
@@ -102,14 +62,12 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
     const [categoriaEditando, setCategoriaEditando] = useState(null);
     const [nomeEdit, setNomeEdit] = useState('');
     const [corEdit, setCorEdit] = useState('#3B82F6');
-    const [iconaEdit, setIconaEdit] = useState('');
     const [erroEdit, setErroEdit] = useState('');
     const [gardandoEdit, setGardandoEdit] = useState(false);
 
     const [mostrarForm, setMostrarForm] = useState(false);
     const [nome, setNome] = useState('');
     const [cor, setCor] = useState('#3B82F6');
-    const [icona, setIcona] = useState('');
     const [gardando, setGardando] = useState(false);
     const [erroForm, setErroForm] = useState('');
 
@@ -121,7 +79,6 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
         setNome('');
         setCor('#3B82F6');
         setErroForm('');
-        setIcona('');
     }
 
     function resetEdit() {
@@ -129,7 +86,6 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
         setNomeEdit('');
         setCorEdit('#3B82F6');
         setErroEdit('');
-        setIconaEdit('');
     }
 
     async function handleCrear(e) {
@@ -143,7 +99,7 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
         setGardando(true);
         setErroForm('');
         try {
-            await crearCategoria(mapaId, { nome: nome.trim(), cor, icona });
+            await crearCategoria(mapaId, { nome: nome.trim(), cor });
             resetForm();
             await onCambio();
         } catch (err) {
@@ -161,7 +117,7 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
         }
         setGardandoEdit(true);
         try {
-            await editarCategoria(categoriaEditando.id, { nome: nomeEdit.trim(), cor: corEdit, icona: iconaEdit });
+            await editarCategoria(categoriaEditando.id, { nome: nomeEdit.trim(), cor: corEdit });
             resetEdit();
             await onCambio();
         } catch (err) {
@@ -208,9 +164,6 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                                     className="categoria-panel__cor"
                                     style={{ backgroundColor: cat.cor, width: 16, height: 16 }}
                                 />
-                                {cat.icona && (
-                                    <span className="categoria-panel__icona" aria-hidden="true">{cat.icona}</span>
-                                )}
                                 <span className="categoria-panel__nome">{cat.nome}</span>
                                 {(podeEditarCalquera !== undefined
                                     ? (podeEditarCalquera || cat.creadoPor === usernameActual)
@@ -222,7 +175,6 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                                                 setCategoriaEditando(cat);
                                                 setNomeEdit(cat.nome);
                                                 setCorEdit(cat.cor);
-                                                setIconaEdit(cat.icona || '');
                                                 setErroEdit('');
                                             }}
                                         >
@@ -271,10 +223,6 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                             <label className="modal-label">{t('categorias.campoCor')}</label>
                             <SelectorCor cor={cor} onChange={setCor} disabled={gardando} />
                         </div>
-                        <div className="modal-field">
-                            <label className="modal-label">{t('categorias.campoIcona')}</label>
-                            <SelectorIcona icona={icona} onChange={setIcona} disabled={gardando} />
-                        </div>
                         {erroForm && <p className="modal-error">{erroForm}</p>}
                         <div className="modal-actions">
                             <button
@@ -315,10 +263,6 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                     <div className="modal-field">
                         <label className="modal-label">{t('categorias.campoCor')}</label>
                         <SelectorCor cor={corEdit} onChange={setCorEdit} disabled={gardandoEdit} />
-                    </div>
-                    <div className="modal-field">
-                        <label className="modal-label">{t('categorias.campoIcona')}</label>
-                        <SelectorIcona icona={iconaEdit} onChange={setIconaEdit} disabled={gardandoEdit} />
                     </div>
                     {erroEdit && <p className="modal-error">{erroEdit}</p>}
                     <div className="modal-actions">
