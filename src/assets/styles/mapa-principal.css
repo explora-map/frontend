@@ -226,7 +226,11 @@
 
 @media (max-width: 640px) {
     .mapa-principal__buscador {
-        top: calc(var(--topbar-height) + var(--space-2));
+        top: var(--space-2);
         max-width: calc(100% - 32px);
+    }
+
+    .leaflet-bottom.leaflet-right {
+        bottom: var(--space-2);
     }
 }
