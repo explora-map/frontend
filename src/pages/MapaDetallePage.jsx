@@ -1,6 +1,6 @@
 // MapaDetallePage.jsx
 // Protected page at /mapas/:id.
-// Shows map detail with a Leaflet map. If owner: edit/delete/visibility/invitations.
+// Shows map detail with tabs: xeral, marcadores, categorías, membros, convites, historial.
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
@@ -13,7 +13,6 @@ import { BookmarkIcon, BookmarkFilledIcon } from '../components/Iconas';
 import { listarMarcadores, crearMarcador, editarMarcador, eliminarMarcador } from '../services/marcadorApi';
 import { listarCategorias } from '../services/categoriaApi';
 import { listarMembros } from '../services/mapaMembroApi';
-import MapViewer from '../components/MapViewer';
 import ConvitePanel from '../components/ConvitePanel';
 import CategoriaPanel from '../components/CategoriaPanel';
 import MembroPanel from '../components/MembroPanel';
@@ -182,6 +181,7 @@ export default function MapaDetallePage() {
     const [membros, setMembros] = useState([]);
     const [rolEfectivo, setRolEfectivo] = useState(null);
     const [gardado, setGardado] = useState(false);
+    const [pestanaActiva, setPestanaActiva] = useState('xeral');
 
     // Create marker form state
     const [mostrarFormMarcador, setMostrarFormMarcador] = useState(false);
@@ -191,9 +191,6 @@ export default function MapaDetallePage() {
     const [categoriaId, setCategoriaId] = useState('');
     const [erroMarcador, setErroMarcador] = useState('');
     const [gardandoMarcador, setGardandoMarcador] = useState(false);
-
-    // Filter state
-    const [categoriasFiltro, setCategoriasFiltro] = useState(new Set());
 
     // Edit marker form state
     const [marcadorEditando, setMarcadorEditando] = useState(null);
@@ -212,7 +209,6 @@ export default function MapaDetallePage() {
         try {
             const data = await listarCategorias(id);
             setCategorias(data);
-            setCategoriasFiltro(new Set(data.map(c => c.id)));
         } catch {
             setError('Non foi posible cargar as categorías.');
         }
@@ -279,19 +275,6 @@ export default function MapaDetallePage() {
 
     const podeCrear = ['PROPIETARIA', 'ADMIN_MAPA', 'COLABORADORA'].includes(rolEfectivo);
     const podeEditarCalquera = ['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo);
-    const podeXestionarMembros = ['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo);
-
-    function toggleCategoria(catId) {
-        setCategoriasFiltro(prev => {
-            const novo = new Set(prev);
-            if (novo.has(catId)) {
-                novo.delete(catId);
-            } else {
-                novo.add(catId);
-            }
-            return novo;
-        });
-    }
 
     function solicitarEliminarMapa() {
         setAccionPendente({ tipo: 'mapa' });
@@ -327,12 +310,6 @@ export default function MapaDetallePage() {
         }
     }
 
-    // Clicking the map (while modal is closed) places provisional pin and opens create modal
-    const handleMapClick = useCallback(({ lat, lng }) => {
-        setCoordsMarcador({ lat, lng });
-        setMostrarFormMarcador(true);
-    }, []);
-
     function resetFormMarcador() {
         setNomeMarcador('');
         setDescMarcador('');
@@ -354,7 +331,7 @@ export default function MapaDetallePage() {
 
     async function handleCrearMarcador() {
         if (!coordsMarcador) {
-            setErroMarcador('Debes seleccionar unha localización (busca un enderezo ou preme no mapa).');
+            setErroMarcador('Debes seleccionar unha localización (busca un enderezo ou pecha o modal e preme no mapa).');
             return;
         }
         if (!nomeMarcador.trim()) {
@@ -428,10 +405,6 @@ export default function MapaDetallePage() {
             confirmLabel: t('marcadores.confirmEliminarBoton'),
           };
 
-    const marcadoresFiltrados = marcadores.filter(m =>
-        m.categoriaId === null ? true : categoriasFiltro.has(m.categoriaId)
-    );
-
     if (loading) return <PageShell><p className="state-msg">Cargando mapa…</p></PageShell>;
     if (error) return <PageShell><p className="state-msg state-msg--error">{error}</p></PageShell>;
     if (!mapa) return null;
@@ -446,46 +419,44 @@ export default function MapaDetallePage() {
         'COLABORADORA': { texto: 'Colaboras',   estilo: { background: '#eff6ff', color: '#2563eb', border: '1px solid #93c5fd' } },
     };
 
-    // Click handler active only when no modal is open and user can create markers
-    const mapClickHandler = podeCrear && !mostrarFormMarcador && !marcadorEditando
-        ? handleMapClick
-        : null;
-
     return (
         <PageShell>
+            {/* Cabeceira */}
             <div className="page__back">
                 <button className="back-link" onClick={handleVolver}>← Volver aos mapas</button>
             </div>
 
             <div className="detalle__header">
-                <div>
+                <div className="detalle__header-info">
                     <h1 className="page__title">{mapa.nome}</h1>
-                    <span className={`badge badge--tipo badge--${mapa.tipo === 'PUBLICO' ? 'publico' : 'privado'}`}>
-                        {mapa.tipo === 'PUBLICO' ? 'Público' : 'Privado'}
-                    </span>
-                    {ROL_BADGE[rolEfectivo] && (
-                        <span style={{
-                            fontSize: '12px', padding: '2px 8px', borderRadius: '12px',
-                            display: 'inline-block', marginLeft: '8px',
-                            ...ROL_BADGE[rolEfectivo].estilo,
-                        }}>
-                            {ROL_BADGE[rolEfectivo].texto}
+                    <div className="detalle__header-badges">
+                        <span className={`badge badge--tipo badge--${mapa.tipo === 'PUBLICO' ? 'publico' : 'privado'}`}>
+                            {mapa.tipo === 'PUBLICO' ? 'Público' : 'Privado'}
                         </span>
-                    )}
-                    {isAuthenticated && mapa?.creadoPor !== username && (
-                        <button
-                            onClick={toggleGardarDetalle}
-                            title={gardado ? 'Mapa gardado' : 'Gardar mapa'}
-                            style={{
-                                background: 'none', border: 'none', cursor: 'pointer',
-                                color: gardado ? 'var(--color-primary-500)' : 'var(--color-text-secondary, #888)',
-                                padding: '4px', marginLeft: '8px',
-                                display: 'inline-flex', alignItems: 'center', verticalAlign: 'middle',
-                            }}
-                        >
-                            {gardado ? <BookmarkFilledIcon size={22} /> : <BookmarkIcon size={22} />}
-                        </button>
-                    )}
+                        {ROL_BADGE[rolEfectivo] && (
+                            <span style={{
+                                fontSize: '12px', padding: '2px 8px', borderRadius: '12px',
+                                display: 'inline-block',
+                                ...ROL_BADGE[rolEfectivo].estilo,
+                            }}>
+                                {ROL_BADGE[rolEfectivo].texto}
+                            </span>
+                        )}
+                        {isAuthenticated && mapa?.creadoPor !== username && (
+                            <button
+                                onClick={toggleGardarDetalle}
+                                title={gardado ? 'Mapa gardado' : 'Gardar mapa'}
+                                style={{
+                                    background: 'none', border: 'none', cursor: 'pointer',
+                                    color: gardado ? 'var(--color-primary-500)' : 'var(--color-text-secondary, #888)',
+                                    padding: '4px',
+                                    display: 'inline-flex', alignItems: 'center', verticalAlign: 'middle',
+                                }}
+                            >
+                                {gardado ? <BookmarkFilledIcon size={22} /> : <BookmarkIcon size={22} />}
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {isOwner && (
@@ -514,135 +485,160 @@ export default function MapaDetallePage() {
                 )}
             </div>
 
-            {podeCrear && (
-                <div className="detalle__marcadores-actions">
+            {/* Navegación de pestanas */}
+            <nav className="detalle__tabs">
+                <button
+                    className={`detalle__tab${pestanaActiva === 'xeral' ? ' detalle__tab--activa' : ''}`}
+                    onClick={() => setPestanaActiva('xeral')}
+                >
+                    {t('detalle.tabXeral')}
+                </button>
+                <button
+                    className={`detalle__tab${pestanaActiva === 'marcadores' ? ' detalle__tab--activa' : ''}`}
+                    onClick={() => setPestanaActiva('marcadores')}
+                >
+                    {t('detalle.tabMarcadores')}
+                </button>
+                <button
+                    className={`detalle__tab${pestanaActiva === 'categorias' ? ' detalle__tab--activa' : ''}`}
+                    onClick={() => setPestanaActiva('categorias')}
+                >
+                    {t('detalle.tabCategorias')}
+                </button>
+                {['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo) && (
                     <button
-                        className="btn btn--primary btn--sm"
-                        onClick={() => setMostrarFormMarcador(true)}
+                        className={`detalle__tab${pestanaActiva === 'membros' ? ' detalle__tab--activa' : ''}`}
+                        onClick={() => setPestanaActiva('membros')}
                     >
-                        Engadir marcador
+                        {t('detalle.tabMembros')}
                     </button>
-                </div>
-            )}
-
-            {categorias.length > 0 && (
-                <div className="detalle__filtros">
-                    <span className="detalle__filtros-label">Filtrar por categoría</span>
-                    {categorias.map((categoria) => (
-                        <button
-                            key={categoria.id}
-                            className={`btn btn--sm ${categoriasFiltro.has(categoria.id) ? 'btn--primary' : 'btn--ghost'}`}
-                            onClick={() => toggleCategoria(categoria.id)}
-                        >
-                            <span style={{ backgroundColor: categoria.cor, width: 12, height: 12, display: 'inline-block', borderRadius: '50%', marginRight: 6 }} />
-                            {categoria.nome}
-                        </button>
-                    ))}
-                </div>
-            )}
-
-            <MapViewer
-                latitude={mapa.latitude}
-                lonxitude={mapa.lonxitude}
-                zoom={13}
-                marker
-                height="400px"
-                marcadores={marcadoresFiltrados}
-                provisionalMarker={coordsMarcador}
-                onLocationSelect={mapClickHandler}
-            />
-
-            {marcadores.length > 0 && (
-                <div className="detalle__marcadores">
-                    <h2 className="section__title">Marcadores</h2>
-                    <ul className="marcadores-lista">
-                        {marcadores.map((marcador) => (
-                            <li key={marcador.id} className="marcador-item">
-                                <span className="marcador-item__nome">{marcador.nome}</span>
-                                {marcador.categoriaNome && (
-                                    <span>
-                                        <span style={{ backgroundColor: marcador.categoriaCor, width: 12, height: 12, display: 'inline-block', borderRadius: '50%', marginRight: 6 }} />
-                                        <span style={{ color: 'grey' }}>{marcador.categoriaNome}</span>
-                                    </span>
-                                )}
-                                <span className="marcador-item__coords">
-                                    Lat: {marcador.latitude.toFixed(4)} · Lng: {marcador.lonxitude.toFixed(4)}
-                                </span>
-                                {(podeEditarCalquera || marcador.creadoPor === username) && (
-                                    <>
-                                        <button
-                                            className="btn btn--secondary btn--sm"
-                                            onClick={() => {
-                                                setMarcadorEditando(marcador);
-                                                setNomeEdit(marcador.nome);
-                                                setDescEdit(marcador.descricion || '');
-                                                setCategoriaIdEdit(marcador.categoriaId || '');
-                                                setCoordsEditOverride(null);
-                                                setErroEdit('');
-                                            }}
-                                        >
-                                            Editar
-                                        </button>
-                                        <button
-                                            className="btn btn--danger btn--sm"
-                                            onClick={() => solicitarEliminarMarcador(marcador)}
-                                        >
-                                            Eliminar
-                                        </button>
-                                    </>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-
-            <CategoriaPanel
-                mapaId={id}
-                esPropietario={mapa.creadoPor === username}
-                categorias={categorias}
-                onCambio={async () => { await loadCategorias(); await loadMarcadores(); }}
-                podeCrear={podeCrear}
-                podeEditarCalquera={podeEditarCalquera}
-                usernameActual={username}
-            />
-
-            {['PROPIETARIA', 'ADMIN_MAPA', 'COLABORADORA'].includes(rolEfectivo) && (
-                <HistorialPanel
-                    mapaId={mapa.id}
-                    usuarioActual={username}
-                />
-            )}
-
-            <div className="detalle__info">
-                {mapa.descricion && (
-                    <p className="detalle__descricion">{mapa.descricion}</p>
                 )}
-                <dl className="detalle__meta">
-                    <dt>Localización</dt>
-                    <dd>{mapa.nomeLocalizacion}</dd>
-                    <dt>Creado por</dt>
-                    <dd>{mapa.creadoPor}</dd>
-                    <dt>Data de creación</dt>
-                    <dd>{formattedDate}</dd>
-                    <dt>Coordenadas</dt>
-                    <dd className="coords-display coords-display--inline">
-                        <span>Lat: {mapa.latitude}</span>
-                        <span>Lng: {mapa.lonxitude}</span>
-                    </dd>
-                </dl>
-            </div>
+                {['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo) && (
+                    <button
+                        className={`detalle__tab${pestanaActiva === 'convites' ? ' detalle__tab--activa' : ''}`}
+                        onClick={() => setPestanaActiva('convites')}
+                    >
+                        {t('detalle.tabConvites')}
+                    </button>
+                )}
+                {['PROPIETARIA', 'ADMIN_MAPA', 'COLABORADORA'].includes(rolEfectivo) && (
+                    <button
+                        className={`detalle__tab${pestanaActiva === 'historial' ? ' detalle__tab--activa' : ''}`}
+                        onClick={() => setPestanaActiva('historial')}
+                    >
+                        {t('detalle.tabHistorial')}
+                    </button>
+                )}
+            </nav>
 
-            {isOwner && (
-                <div className="detalle__invitations">
+            {/* Contido das pestanas */}
+
+            {pestanaActiva === 'xeral' && (
+                <div className="detalle__tab-contido">
+                    {mapa.descricion && <p className="detalle__descricion">{mapa.descricion}</p>}
+                    <dl className="detalle__meta">
+                        <dt>{t('detalle.localizacion')}</dt>
+                        <dd>{mapa.nomeLocalizacion}</dd>
+                        <dt>{t('detalle.creadoPor')}</dt>
+                        <dd>{mapa.creadoPor}</dd>
+                        <dt>{t('detalle.dataCreacion')}</dt>
+                        <dd>{formattedDate}</dd>
+                        <dt>{t('detalle.coordenadas')}</dt>
+                        <dd>Lat: {mapa.latitude} · Lng: {mapa.lonxitude}</dd>
+                    </dl>
+                </div>
+            )}
+
+            {pestanaActiva === 'marcadores' && (
+                <div className="detalle__tab-contido">
+                    {podeCrear && (
+                        <div className="detalle__tab-accions">
+                            <button
+                                className="btn btn--primary btn--sm"
+                                onClick={() => setMostrarFormMarcador(true)}
+                            >
+                                {t('detalle.engadirMarcador')}
+                            </button>
+                        </div>
+                    )}
+                    {marcadores.length === 0 && (
+                        <p className="state-msg">{t('detalle.senMarcadores')}</p>
+                    )}
+                    {marcadores.length > 0 && (
+                        <ul className="marcadores-lista">
+                            {marcadores.map((marcador) => (
+                                <li key={marcador.id} className="marcador-item">
+                                    <span className="marcador-item__nome">{marcador.nome}</span>
+                                    {marcador.categoriaNome && (
+                                        <span className="marcador-item__categoria">
+                                            <span className="categoria-dot" style={{ backgroundColor: marcador.categoriaCor }} />
+                                            <span>{marcador.categoriaNome}</span>
+                                        </span>
+                                    )}
+                                    <span className="marcador-item__coords">
+                                        Lat: {marcador.latitude.toFixed(4)} · Lng: {marcador.lonxitude.toFixed(4)}
+                                    </span>
+                                    {(podeEditarCalquera || marcador.creadoPor === username) && (
+                                        <div className="marcador-item__accions">
+                                            <button
+                                                className="btn btn--secondary btn--sm"
+                                                onClick={() => {
+                                                    setMarcadorEditando(marcador);
+                                                    setNomeEdit(marcador.nome);
+                                                    setDescEdit(marcador.descricion || '');
+                                                    setCategoriaIdEdit(marcador.categoriaId || '');
+                                                    setCoordsEditOverride(null);
+                                                    setErroEdit('');
+                                                }}
+                                            >
+                                                {t('detalle.editar')}
+                                            </button>
+                                            <button
+                                                className="btn btn--danger btn--sm"
+                                                onClick={() => solicitarEliminarMarcador(marcador)}
+                                            >
+                                                {t('detalle.eliminar')}
+                                            </button>
+                                        </div>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            )}
+
+            {pestanaActiva === 'categorias' && (
+                <div className="detalle__tab-contido">
+                    <CategoriaPanel
+                        mapaId={id}
+                        esPropietario={mapa.creadoPor === username}
+                        categorias={categorias}
+                        onCambio={async () => { await loadCategorias(); await loadMarcadores(); }}
+                        podeCrear={podeCrear}
+                        podeEditarCalquera={podeEditarCalquera}
+                        usernameActual={username}
+                    />
+                </div>
+            )}
+
+            {pestanaActiva === 'membros' && ['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo) && (
+                <div className="detalle__tab-contido">
+                    <MembroPanel mapaId={mapa.id} creadoPor={mapa.creadoPor} tipoMapa={mapa.tipo} />
+                </div>
+            )}
+
+            {pestanaActiva === 'convites' && ['PROPIETARIA', 'ADMIN_MAPA'].includes(rolEfectivo) && (
+                <div className="detalle__tab-contido">
                     <ConvitePanel mapaId={mapa.id} tipoMapa={mapa.tipo} />
                 </div>
             )}
 
-            {podeXestionarMembros && (
-                <MembroPanel mapaId={mapa.id} creadoPor={mapa.creadoPor} tipoMapa={mapa.tipo} />
+            {pestanaActiva === 'historial' && ['PROPIETARIA', 'ADMIN_MAPA', 'COLABORADORA'].includes(rolEfectivo) && (
+                <div className="detalle__tab-contido">
+                    <HistorialPanel mapaId={mapa.id} usuarioActual={username} />
+                </div>
             )}
-
 
             {/* ---- Create marker modal ---- */}
             {mostrarFormMarcador && (
@@ -789,6 +785,7 @@ export default function MapaDetallePage() {
                 </FormModal>
             )}
 
+            {/* ---- Confirm dialog ---- */}
             <ConfirmDialog
                 isOpen={confirmOpen}
                 {...confirmConfig}

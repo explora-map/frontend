@@ -254,5 +254,21 @@
     "MEMBRO": "Membro",
     "COLABORADORA": "Colaboradora",
     "ADMIN_MAPA": "Administradora"
+  },
+  "detalle": {
+    "tabXeral": "Visión xeral",
+    "tabMarcadores": "Marcadores",
+    "tabCategorias": "Categorías",
+    "tabMembros": "Membros",
+    "tabConvites": "Convites",
+    "tabHistorial": "Historial",
+    "localizacion": "Localización",
+    "creadoPor": "Creado por",
+    "dataCreacion": "Data de creación",
+    "coordenadas": "Coordenadas",
+    "engadirMarcador": "Engadir marcador",
+    "senMarcadores": "Non hai marcadores neste mapa.",
+    "editar": "Editar",
+    "eliminar": "Eliminar"
   }
 }

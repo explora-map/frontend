@@ -254,5 +254,21 @@
     "MEMBRO": "Member",
     "COLABORADORA": "Collaborator",
     "ADMIN_MAPA": "Administrator"
+  },
+  "detalle": {
+    "tabXeral": "Overview",
+    "tabMarcadores": "Markers",
+    "tabCategorias": "Categories",
+    "tabMembros": "Members",
+    "tabConvites": "Invitations",
+    "tabHistorial": "History",
+    "localizacion": "Location",
+    "creadoPor": "Created by",
+    "dataCreacion": "Creation date",
+    "coordenadas": "Coordinates",
+    "engadirMarcador": "Add marker",
+    "senMarcadores": "No markers in this map.",
+    "editar": "Edit",
+    "eliminar": "Delete"
   }
 }
