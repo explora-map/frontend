@@ -269,6 +269,8 @@
     "engadirMarcador": "Add marker",
     "senMarcadores": "No markers in this map.",
     "editar": "Edit",
-    "eliminar": "Delete"
+    "eliminar": "Delete",
+    "facerPrivado": "Make private",
+    "facerPublico": "Make public"
   }
 }

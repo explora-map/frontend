@@ -269,6 +269,8 @@
     "engadirMarcador": "Engadir marcador",
     "senMarcadores": "Non hai marcadores neste mapa.",
     "editar": "Editar",
-    "eliminar": "Eliminar"
+    "eliminar": "Eliminar",
+    "facerPrivado": "Facer privado",
+    "facerPublico": "Facer público"
   }
 }

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { obterMapaPorId, eliminarMapa, cambiarVisibilidade } from '../services/mapaApi';
 import { gardarMapa, desgardarMapa, obterMapasGardados } from '../services/mapaGardadoApi';
-import { BookmarkIcon, BookmarkFilledIcon } from '../components/Iconas';
+import { BookmarkIcon, BookmarkFilledIcon, SettingsIcon, TrashIcon } from '../components/Iconas';
 import { listarMarcadores, crearMarcador, editarMarcador, eliminarMarcador } from '../services/marcadorApi';
 import { listarCategorias } from '../services/categoriaApi';
 import { listarMembros } from '../services/mapaMembroApi';
@@ -427,11 +427,11 @@ export default function MapaDetallePage() {
             </div>
 
             <div className="detalle__header">
-                <div className="detalle__header-info">
+                <div>
                     <h1 className="page__title">{mapa.nome}</h1>
                     <div className="detalle__header-badges">
                         <span className={`badge badge--tipo badge--${mapa.tipo === 'PUBLICO' ? 'publico' : 'privado'}`}>
-                            {mapa.tipo === 'PUBLICO' ? 'Público' : 'Privado'}
+                            {mapa.tipo === 'PUBLICO' ? t('mapas.publico') : t('mapas.privado')}
                         </span>
                         {ROL_BADGE[rolEfectivo] && (
                             <span style={{
@@ -448,9 +448,8 @@ export default function MapaDetallePage() {
                                 title={gardado ? 'Mapa gardado' : 'Gardar mapa'}
                                 style={{
                                     background: 'none', border: 'none', cursor: 'pointer',
-                                    color: gardado ? 'var(--color-primary-500)' : 'var(--color-text-secondary, #888)',
-                                    padding: '4px',
-                                    display: 'inline-flex', alignItems: 'center', verticalAlign: 'middle',
+                                    color: gardado ? 'var(--color-primary-500)' : 'var(--color-neutral-400)',
+                                    padding: '4px', display: 'inline-flex', alignItems: 'center',
                                 }}
                             >
                                 {gardado ? <BookmarkFilledIcon size={22} /> : <BookmarkIcon size={22} />}
@@ -458,31 +457,6 @@ export default function MapaDetallePage() {
                         )}
                     </div>
                 </div>
-
-                {isOwner && (
-                    <div className="detalle__owner-actions">
-                        <button
-                            className="btn btn--ghost btn--sm"
-                            onClick={handleToggleVisibility}
-                            disabled={toggling}
-                        >
-                            {toggling ? '…' : mapa.tipo === 'PUBLICO' ? '🔒 Facer privado' : '🔓 Facer público'}
-                        </button>
-                        <button
-                            className="btn btn--secondary btn--sm"
-                            onClick={() => navigate(`/mapas/${id}/editar`)}
-                        >
-                            Editar
-                        </button>
-                        <button
-                            className="btn btn--danger btn--sm"
-                            onClick={solicitarEliminarMapa}
-                            disabled={deleting}
-                        >
-                            {deleting ? 'Eliminando…' : 'Eliminar'}
-                        </button>
-                    </div>
-                )}
             </div>
 
             {/* Navegación de pestanas */}
@@ -535,7 +509,33 @@ export default function MapaDetallePage() {
 
             {pestanaActiva === 'xeral' && (
                 <div className="detalle__tab-contido">
-                    {mapa.descricion && <p className="detalle__descricion">{mapa.descricion}</p>}
+                    {isOwner && (
+                        <div className="detalle__xeral-accions">
+                            <button
+                                className="btn btn--ghost btn--sm"
+                                onClick={handleToggleVisibility}
+                                disabled={toggling}
+                            >
+                                {toggling ? '…' : mapa.tipo === 'PUBLICO' ? '🔒 ' + t('detalle.facerPrivado') : '🔓 ' + t('detalle.facerPublico')}
+                            </button>
+                            <button
+                                className="btn btn--secondary btn--sm"
+                                onClick={() => navigate(`/mapas/${id}/editar`)}
+                            >
+                                {t('detalle.editar')}
+                            </button>
+                            <button
+                                className="btn btn--danger btn--sm"
+                                onClick={solicitarEliminarMapa}
+                                disabled={deleting}
+                            >
+                                {deleting ? '…' : t('detalle.eliminar')}
+                            </button>
+                        </div>
+                    )}
+                    {mapa.descricion && (
+                        <p className="detalle__descricion">{mapa.descricion}</p>
+                    )}
                     <dl className="detalle__meta">
                         <dt>{t('detalle.localizacion')}</dt>
                         <dd>{mapa.nomeLocalizacion}</dd>
@@ -567,40 +567,46 @@ export default function MapaDetallePage() {
                     {marcadores.length > 0 && (
                         <ul className="marcadores-lista">
                             {marcadores.map((marcador) => (
-                                <li key={marcador.id} className="marcador-item">
-                                    <span className="marcador-item__nome">{marcador.nome}</span>
-                                    {marcador.categoriaNome && (
-                                        <span className="marcador-item__categoria">
-                                            <span className="categoria-dot" style={{ backgroundColor: marcador.categoriaCor }} />
-                                            <span>{marcador.categoriaNome}</span>
-                                        </span>
+                                <li key={marcador.id} className="marcador-card">
+                                    <div className="marcador-card__header">
+                                        <span className="marcador-card__nome">{marcador.nome}</span>
+                                        {(podeEditarCalquera || marcador.creadoPor === username) && (
+                                            <div className="marcador-card__accions">
+                                                <button
+                                                    className="btn btn--ghost btn--icon-sm"
+                                                    title={t('detalle.editar')}
+                                                    onClick={() => {
+                                                        setMarcadorEditando(marcador);
+                                                        setNomeEdit(marcador.nome);
+                                                        setDescEdit(marcador.descricion || '');
+                                                        setCategoriaIdEdit(marcador.categoriaId || '');
+                                                        setCoordsEditOverride(null);
+                                                        setErroEdit('');
+                                                    }}
+                                                >
+                                                    <SettingsIcon size={16} />
+                                                </button>
+                                                <button
+                                                    className="btn btn--ghost btn--icon-sm marcador-card__btn-eliminar"
+                                                    title={t('detalle.eliminar')}
+                                                    onClick={() => solicitarEliminarMarcador(marcador)}
+                                                >
+                                                    <TrashIcon size={16} />
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {marcador.descricion && (
+                                        <p className="marcador-card__descricion">{marcador.descricion}</p>
                                     )}
-                                    <span className="marcador-item__coords">
-                                        Lat: {marcador.latitude.toFixed(4)} · Lng: {marcador.lonxitude.toFixed(4)}
-                                    </span>
-                                    {(podeEditarCalquera || marcador.creadoPor === username) && (
-                                        <div className="marcador-item__accions">
-                                            <button
-                                                className="btn btn--secondary btn--sm"
-                                                onClick={() => {
-                                                    setMarcadorEditando(marcador);
-                                                    setNomeEdit(marcador.nome);
-                                                    setDescEdit(marcador.descricion || '');
-                                                    setCategoriaIdEdit(marcador.categoriaId || '');
-                                                    setCoordsEditOverride(null);
-                                                    setErroEdit('');
-                                                }}
-                                            >
-                                                {t('detalle.editar')}
-                                            </button>
-                                            <button
-                                                className="btn btn--danger btn--sm"
-                                                onClick={() => solicitarEliminarMarcador(marcador)}
-                                            >
-                                                {t('detalle.eliminar')}
-                                            </button>
-                                        </div>
-                                    )}
+                                    <div className="marcador-card__meta">
+                                        {marcador.categoriaNome && (
+                                            <span className="marcador-card__categoria">
+                                                <span className="categoria-dot" style={{ backgroundColor: marcador.categoriaCor }} />
+                                                {marcador.categoriaNome}
+                                            </span>
+                                        )}
+                                    </div>
                                 </li>
                             ))}
                         </ul>
