@@ -8,6 +8,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import useSidebarStore from '../store/useSidebarStore';
+import useIdiomaStore from '../store/useIdiomaStore';
 
 /* ---- Iconas SVG inline (Feather-style, 24×24) ---- */
 
@@ -82,6 +83,7 @@ export default function Sidebar({ onVisualizarClick }) {
     const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
 
     const soNaInicio = location.pathname === '/';
+    const { idioma, setIdioma } = useIdiomaStore();
 
     function isActive(ruta) {
         return location.pathname === ruta;
@@ -217,6 +219,27 @@ export default function Sidebar({ onVisualizarClick }) {
                             </li>
                         );
                     })}
+
+                    <li className="sidebar__item sidebar__item--idioma">
+                        <div className="sidebar__idioma">
+                            <button
+                                className={`sidebar__idioma-btn${idioma === 'gl' ? ' sidebar__idioma-btn--activo' : ''}`}
+                                onClick={() => setIdioma('gl', false)}
+                                aria-pressed={idioma === 'gl'}
+                                title="Galego"
+                            >
+                                GL
+                            </button>
+                            <button
+                                className={`sidebar__idioma-btn${idioma === 'en' ? ' sidebar__idioma-btn--activo' : ''}`}
+                                onClick={() => setIdioma('en', false)}
+                                aria-pressed={idioma === 'en'}
+                                title="English"
+                            >
+                                EN
+                            </button>
+                        </div>
+                    </li>
 
                     {isAuthenticated && (
                         <li className="sidebar__item sidebar__item--logout">
