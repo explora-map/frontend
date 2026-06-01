@@ -371,10 +371,6 @@ export default function MapaPrincipalPage() {
     }
 
     async function cargarMapas(lat, lng) {
-        if (!isAuthenticated) {
-            setMapasZona([]);
-            return;
-        }
         setCargandoMapas(true);
         setMapasZona([]);
         try {

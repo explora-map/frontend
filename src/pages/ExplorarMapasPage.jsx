@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../services/axiosInstance';
 import { gardarMapa, desgardarMapa, obterMapasGardados } from '../services/mapaGardadoApi';
 import { BookmarkIcon, BookmarkFilledIcon, EyeIcon } from '../components/Iconas';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import useMapaVisualStore from '../store/useMapaVisualStore';
 
@@ -13,6 +14,7 @@ const RADIUS_BUSCA = 50000;
 
 export default function ExplorarMapasPage() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const { isAuthenticated, username } = useAuth();
     const { toggleMapa, isMapaActivo } = useMapaVisualStore();
     const setCategoriasMapa      = useMapaVisualStore(s => s.setCategoriasMapa);
@@ -23,12 +25,9 @@ export default function ExplorarMapasPage() {
     const [buscaActiva, setBuscaActiva] = useState('');
     const [mapas, setMapas] = useState([]);
     const [cargando, setCargando] = useState(false);
-    const [erroNominatim, setErroNominatim] = useState(false);
 
     const cargarMapas = useCallback(async (lat, lon, radius) => {
-        if (!isAuthenticated) return;
         setCargando(true);
-        setErroNominatim(false);
         try {
             const res = await axiosInstance.get(
                 `/mapas/publicos?lat=${lat}&lon=${lon}&radius=${radius}`
@@ -40,17 +39,25 @@ export default function ExplorarMapasPage() {
         } finally {
             setCargando(false);
         }
-    }, [isAuthenticated]);
+    }, []);
 
     useEffect(() => {
-        cargarMapas(LAT_GALICIA, LON_GALICIA, RADIUS_DESTACADOS);
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const { latitude: lat, longitude: lon } = pos.coords;
+                    cargarMapas(lat, lon, RADIUS_BUSCA);
+                },
+                () => {}
+            );
+        }
     }, [cargarMapas]);
 
     useEffect(() => {
         if (!isAuthenticated) return;
-        obterMapasGardados()
-            .then(data => setMapasGardadosIds(new Set(data.map(m => m.id))))
-            .catch(() => {});
+        obterMapasGardados().then(lista => {
+            setMapasGardadosIds(new Set(lista.map(m => m.id)));
+        }).catch(() => {});
     }, [isAuthenticated]);
 
     async function toggleGardar(mapaId) {
@@ -73,7 +80,6 @@ export default function ExplorarMapasPage() {
         if (!termo) return;
 
         setCargando(true);
-        setErroNominatim(false);
         setMapas([]);
 
         try {
@@ -83,7 +89,6 @@ export default function ExplorarMapasPage() {
             const lugares = await res.json();
 
             if (!lugares.length) {
-                setErroNominatim(true);
                 setCargando(false);
                 return;
             }
@@ -92,7 +97,6 @@ export default function ExplorarMapasPage() {
             setBuscaActiva(termo);
             await cargarMapas(lat, lon, RADIUS_BUSCA);
         } catch {
-            setErroNominatim(true);
             setCargando(false);
         }
     }
@@ -144,43 +148,16 @@ export default function ExplorarMapasPage() {
 
             <p className="explorar-page__seccion-titulo">{tituloSeccion}</p>
 
-            {!isAuthenticated ? (
-                <div className="explorar-page__mensaxe">
-                    <p>Inicia sesión para explorar mapas públicos</p>
-                    <button
-                        className="explorar-card__btn"
-                        style={{ marginTop: '12px' }}
-                        onClick={() => navigate('/login')}
-                    >
-                        Iniciar sesión
-                    </button>
-                </div>
-            ) : (
-                <>
-                    {erroNominatim && (
-                        <p className="explorar-page__mensaxe">
-                            Non se puido localizar o lugar indicado
-                        </p>
-                    )}
-
-                    {!erroNominatim && cargando && (
-                        <p className="explorar-page__mensaxe">Cargando mapas...</p>
-                    )}
-
-                    {!erroNominatim && !cargando && mapas.length === 0 && (
-                        <p className="explorar-page__mensaxe">
-                            Non se atoparon mapas nesta zona
-                        </p>
-                    )}
-                </>
+            {cargando && (
+                <p className="explorar-page__mensaxe">Cargando mapas...</p>
             )}
-
-            {isAuthenticated && !cargando && mapas.length > 0 && (
+            {!cargando && mapas.length === 0 && (
+                <p className="explorar-page__mensaxe">{t('explorar.senResultados')}</p>
+            )}
+            {!cargando && mapas.length > 0 && (
                 <div className="explorar-page__grid">
                     {mapas.map(mapa => (
                         <div key={mapa.id} className="explorar-card" style={{ position: 'relative' }}>
-
-                            {/* Iconas esquina superior dereita */}
                             <div style={{ position: 'absolute', top: '8px', right: '8px', display: 'flex', gap: '4px', alignItems: 'center' }}>
                                 {isAuthenticated && mapa.creadoPor !== username && (
                                     <button
@@ -210,15 +187,12 @@ export default function ExplorarMapasPage() {
                                     <EyeIcon size={18} />
                                 </button>
                             </div>
-
                             <div className="explorar-card__nome" style={{ paddingRight: '56px' }}>{mapa.nome}</div>
                             {mapa.descricion && (
                                 <div className="explorar-card__descricion">{mapa.descricion}</div>
                             )}
-                            <div className="explorar-card__meta">
-                                {mapa.nomeLocalizacion || [mapa.cidade, mapa.pais].filter(Boolean).join(', ')}
-                                {mapa.creadoPor && ` · ${mapa.creadoPor}`}
-                            </div>
+                            <div className="explorar-card__meta">{mapa.cidade || mapa.nomeLocalizacion}</div>
+                            <div className="explorar-card__meta">{mapa.rexion && mapa.pais ? `${mapa.rexion} · ${mapa.pais}` : ''} · {mapa.creadoPor}</div>
                         </div>
                     ))}
                 </div>
