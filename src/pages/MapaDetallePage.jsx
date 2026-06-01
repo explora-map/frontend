@@ -517,7 +517,7 @@ export default function MapaDetallePage() {
             {podeCrear && (
                 <div className="detalle__marcadores-actions">
                     <button
-                        className="btn btn--secondary btn--sm"
+                        className="btn btn--primary btn--sm"
                         onClick={() => setMostrarFormMarcador(true)}
                     >
                         Engadir marcador
@@ -571,7 +571,7 @@ export default function MapaDetallePage() {
                                 {(podeEditarCalquera || marcador.creadoPor === username) && (
                                     <>
                                         <button
-                                            className="btn btn--ghost btn--sm"
+                                            className="btn btn--secondary btn--sm"
                                             onClick={() => {
                                                 setMarcadorEditando(marcador);
                                                 setNomeEdit(marcador.nome);
