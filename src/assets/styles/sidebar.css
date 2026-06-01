@@ -24,30 +24,7 @@
 .sidebar--expanded  { width: var(--sidebar-expanded-width); }
 .sidebar--collapsed { width: var(--sidebar-collapsed-width); }
 
-.sidebar__toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    margin: 0 var(--space-3) var(--space-4);
-    border-radius: var(--radius-md);
-    color: var(--color-neutral-500);
-    flex-shrink: 0;
-    align-self: flex-end;
-    transition:
-        background-color var(--duration-normal) var(--ease-default),
-        color            var(--duration-normal) var(--ease-default),
-        transform        var(--duration-slow)   var(--ease-default);
-}
-
-.sidebar__toggle:hover {
-    background-color: var(--color-neutral-200);
-    color: var(--color-neutral-700);
-}
-
-.sidebar--expanded  .sidebar__toggle { transform: rotate(0deg); }
-.sidebar--collapsed .sidebar__toggle { transform: rotate(180deg); }
+/* .sidebar__toggle eliminado — substituído por .sidebar__hamburger */
 
 .sidebar__nav { flex: 1; overflow-y: auto; overflow-x: hidden; }
 
@@ -412,4 +389,43 @@
 .sidebar__idioma-toggle:hover {
     background-color: var(--color-neutral-200);
     color: var(--color-neutral-700);
+}
+
+.sidebar__logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-2);
+    min-height: 44px;
+}
+
+.sidebar__hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    color: var(--color-neutral-600);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+        background-color var(--duration-normal) var(--ease-default),
+        color var(--duration-normal) var(--ease-default);
+}
+
+.sidebar__hamburger:hover {
+    background-color: var(--color-neutral-200);
+    color: var(--color-neutral-800);
+}
+
+.sidebar__logo-icona-soa {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
 }

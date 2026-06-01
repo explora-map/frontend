@@ -98,9 +98,10 @@ export default function Sidebar({ onVisualizarClick }) {
     }
 
     const itemsNoAuth = [
-        { ruta: '/login',    label: t('nav.iniciarSesion'), icona: <LoginIcon /> },
         { ruta: '/',         label: t('nav.explorar'),      icona: <GlobeIcon /> },
         { ruta: '/explorar', label: t('nav.explorarMapas'), icona: <CompassIcon /> },
+        { ruta: '/mapas-visualizar', label: t('nav.visualizarMapas'), icona: <LayersIcon /> },
+        { ruta: '/login',    label: t('nav.iniciarSesion'), icona: <LoginIcon /> },
     ];
 
     const itemsAuth = [
@@ -119,44 +120,48 @@ export default function Sidebar({ onVisualizarClick }) {
             className={`sidebar ${expanded ? 'sidebar--expanded' : 'sidebar--collapsed'}`}
             aria-label="Navegación principal"
         >
-            <Link
-                to="/"
-                className="sidebar__logo"
-                aria-label="Ir á páxina principal"
-                style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}
-            >
-                <div className="sidebar__logo-icona" aria-hidden="true">
-                    <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                    >
-                        <circle cx="12" cy="10" r="3" fill="var(--color-primary-500)" />
-                        <path
-                            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"
-                            fill="var(--color-primary-100)"
-                            stroke="var(--color-primary-500)"
-                            strokeWidth="1.5"
-                            strokeLinejoin="round"
-                        />
+            <div className="sidebar__logo-wrapper">
+                <button
+                    className="sidebar__hamburger"
+                    onClick={toggleSidebar}
+                    aria-label={expanded ? 'Colapsar menú' : 'Expandir menú'}
+                >
+                    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={20} height={20}>
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
                     </svg>
-                </div>
+                </button>
                 {expanded && (
-                    <span className="sidebar__logo-texto" aria-hidden="true">Explora</span>
+                    <Link
+                        to="/"
+                        className="sidebar__logo"
+                        aria-label="Ir á páxina principal"
+                        style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}
+                    >
+                        <div className="sidebar__logo-icona" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="10" r="3" fill="var(--color-primary-500)" />
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="var(--color-primary-100)" stroke="var(--color-primary-500)" strokeWidth="1.5" strokeLinejoin="round" />
+                            </svg>
+                        </div>
+                        <span className="sidebar__logo-texto" aria-hidden="true">Explora</span>
+                    </Link>
                 )}
-            </Link>
+                {!expanded && (
+                    <Link
+                        to="/"
+                        className="sidebar__logo-icona-soa"
+                        aria-label="Ir á páxina principal"
+                    >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="10" r="3" fill="var(--color-primary-500)" />
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="var(--color-primary-100)" stroke="var(--color-primary-500)" strokeWidth="1.5" strokeLinejoin="round" />
+                        </svg>
+                    </Link>
+                )}
+            </div>
             <div className="sidebar__logo-separador" aria-hidden="true" />
-
-            <button
-                className="sidebar__toggle"
-                onClick={toggleSidebar}
-                aria-label={expanded ? 'Colapsar menú' : 'Expandir menú'}
-            >
-                <ChevronIcon />
-            </button>
 
             <nav className="sidebar__nav">
                 <ul className="sidebar__list">
