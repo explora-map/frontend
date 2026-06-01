@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import useIdiomaStore from '../store/useIdiomaStore';
+import useTemaStore from '../store/useTemaStore';
 import { actualizarPerfil } from '../services/perfilApi';
 
 export default function ConfiguracionPage() {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
   const { idioma, setIdioma } = useIdiomaStore();
+  const { tema, setTema } = useTemaStore();
   const [gardado, setGardado] = useState(false);
   const [erro, setErro] = useState('');
 
@@ -84,10 +86,10 @@ export default function ConfiguracionPage() {
         <div className="config-section__corpo">
           <div className="tema-selector" role="radiogroup" aria-label={t('configuracion.tema')}>
             <button
-              className="tema-option tema-option--activo"
+              className={`tema-option${tema === 'light' ? ' tema-option--activo' : ''}`}
               role="radio"
-              aria-checked={true}
-              disabled
+              aria-checked={tema === 'light'}
+              onClick={() => setTema('light')}
             >
               <span className="tema-option__icona" aria-hidden="true">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -105,11 +107,10 @@ export default function ConfiguracionPage() {
               <span className="tema-option__nome">{t('configuracion.temaClaro')}</span>
             </button>
             <button
-              className="tema-option tema-option--proximamente"
+              className={`tema-option${tema === 'dark' ? ' tema-option--activo' : ''}`}
               role="radio"
-              aria-checked={false}
-              disabled
-              title="Próximamente"
+              aria-checked={tema === 'dark'}
+              onClick={() => setTema('dark')}
             >
               <span className="tema-option__icona" aria-hidden="true">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -117,7 +118,6 @@ export default function ConfiguracionPage() {
                 </svg>
               </span>
               <span className="tema-option__nome">{t('configuracion.temaEscuro')}</span>
-              <span className="tema-option__badge">Próximamente</span>
             </button>
           </div>
         </div>
