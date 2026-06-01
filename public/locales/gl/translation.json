@@ -4,7 +4,7 @@
     "rexistrarse": "Rexistrarse",
     "pecharSesion": "Pechar sesión",
     "explorar": "Explorar",
-    "explorarMapas": "Explorar mapas públicos",
+    "explorarMapas": "Mapas públicos",
     "osMenusMapas": "Os meus mapas",
     "visualizarMapas": "Visualizar mapas",
     "configuracion": "Configuración",
@@ -221,7 +221,7 @@
     "conviteMensaxe": "{{remitente}} convidoute ao mapa \"{{mapa}}\""
   },
   "visualizar": {
-    "titulo": "Explorar mapas públicos",
+    "titulo": "Mapas públicos",
     "buscador": "Buscar mapas preto de…",
     "botonBuscar": "Buscar",
     "sinResultados": "Non se atoparon mapas nesta zona.",

@@ -4,7 +4,7 @@
     "rexistrarse": "Sign up",
     "pecharSesion": "Sign out",
     "explorar": "Explore",
-    "explorarMapas": "Explore public maps",
+    "explorarMapas": "Public maps",
     "osMenusMapas": "My maps",
     "visualizarMapas": "Visualize maps",
     "configuracion": "Settings",
@@ -221,7 +221,7 @@
     "conviteMensaxe": "{{remitente}} invited you to the map \"{{mapa}}\""
   },
   "visualizar": {
-    "titulo": "Explore public maps",
+    "titulo": "Public maps",
     "buscador": "Search maps near…",
     "botonBuscar": "Search",
     "sinResultados": "No maps found in this area.",
