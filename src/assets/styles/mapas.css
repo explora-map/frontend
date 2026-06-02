@@ -1391,3 +1391,83 @@
     justify-content: flex-end;
     margin-bottom: var(--space-4);
 }
+
+/* Categoría cards */
+.categoria-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3) var(--space-4);
+    box-shadow: var(--shadow-xs);
+}
+
+.categoria-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.categoria-card__identidade {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 1;
+    min-width: 0;
+}
+
+.categoria-card__nome {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-neutral-800);
+}
+
+.categoria-card__accions {
+    display: flex;
+    gap: var(--space-1);
+    flex-shrink: 0;
+}
+
+.categoria-card__accions .btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--color-neutral-200);
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    color: var(--color-neutral-600);
+}
+
+.categoria-card__accions .btn:hover {
+    background: var(--color-neutral-100);
+    border-color: var(--color-neutral-300);
+}
+
+.categoria-card__btn-eliminar {
+    color: var(--color-error) !important;
+    border-color: var(--color-error-border) !important;
+}
+
+.categoria-card__btn-eliminar:hover {
+    background-color: var(--color-error-bg) !important;
+}
+
+/* Fix espazo engadir marcador */
+.detalle__tab-accions--marcadores {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: var(--space-5);
+}
+
+/* Fix espazo botóns accións xeral */
+.detalle__xeral-accions {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: var(--border-default);
+}

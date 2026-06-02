@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { crearCategoria, eliminarCategoria, editarCategoria } from '../services/categoriaApi';
 import ConfirmDialog from './ConfirmDialog';
 import FormModal from './FormModal';
+import { SettingsIcon, TrashIcon } from './Iconas';
 
 const CORES_PREDEFINIDAS = [
     '#C0392B', '#D4600A', '#B8860B', '#2E7D32', '#1565C0',
@@ -159,36 +160,38 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                 {categorias.length > 0 && (
                     <ul className="categoria-panel__list">
                         {categorias.map((cat) => (
-                            <li key={cat.id} className="categoria-panel__item">
-                                <div
-                                    className="categoria-panel__cor"
-                                    style={{ backgroundColor: cat.cor, width: 16, height: 16 }}
-                                />
-                                <span className="categoria-panel__nome">{cat.nome}</span>
-                                {(podeEditarCalquera !== undefined
-                                    ? (podeEditarCalquera || cat.creadoPor === usernameActual)
-                                    : esPropietario) && (
-                                    <>
-                                        <button
-                                            className="btn btn--secondary btn--sm"
-                                            onClick={() => {
-                                                setCategoriaEditando(cat);
-                                                setNomeEdit(cat.nome);
-                                                setCorEdit(cat.cor);
-                                                setErroEdit('');
-                                            }}
-                                        >
-                                            {/* TODO: add categorias.botonEditar to translation files */}
-                                            Editar
-                                        </button>
-                                        <button
-                                            className="btn btn--danger btn--sm"
-                                            onClick={() => solicitarEliminar(cat)}
-                                        >
-                                            {t('categorias.botonEliminar')}
-                                        </button>
-                                    </>
-                                )}
+                            <li key={cat.id} className="categoria-card">
+                                <div className="categoria-card__header">
+                                    <div className="categoria-card__identidade">
+                                        <span className="categoria-dot" style={{ backgroundColor: cat.cor, width: 14, height: 14 }} />
+                                        <span className="categoria-card__nome">{cat.nome}</span>
+                                    </div>
+                                    {(podeEditarCalquera !== undefined
+                                        ? (podeEditarCalquera || cat.creadoPor === usernameActual)
+                                        : esPropietario) && (
+                                        <div className="categoria-card__accions">
+                                            <button
+                                                className="btn btn--ghost btn--icon-sm"
+                                                title="Editar"
+                                                onClick={() => {
+                                                    setCategoriaEditando(cat);
+                                                    setNomeEdit(cat.nome);
+                                                    setCorEdit(cat.cor);
+                                                    setErroEdit('');
+                                                }}
+                                            >
+                                                <SettingsIcon size={15} />
+                                            </button>
+                                            <button
+                                                className="btn btn--ghost btn--icon-sm categoria-card__btn-eliminar"
+                                                title={t('categorias.botonEliminar')}
+                                                onClick={() => solicitarEliminar(cat)}
+                                            >
+                                                <TrashIcon size={15} />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </li>
                         ))}
                     </ul>
