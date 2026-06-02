@@ -282,6 +282,14 @@ export default function MapaPrincipalPage() {
         setMostrarFormMarcador(false);
     }, [mapaIdEngadindo]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    useEffect(() => {
+        function handleCentrarMapa(e) {
+            setCoords({ lat: e.detail.lat, lng: e.detail.lng, zoom: e.detail.zoom ?? 14 });
+        }
+        window.addEventListener('centrar-mapa', handleCentrarMapa);
+        return () => window.removeEventListener('centrar-mapa', handleCentrarMapa);
+    }, []);
+
     /* ---- Gardar mapa ---- */
 
     async function toggleGardar(mapaId) {

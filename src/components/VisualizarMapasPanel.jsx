@@ -273,6 +273,12 @@ export default function VisualizarMapasPanel({ isOpen, onClose, lat, lon }) {
             }
         }
 
+        const mapaObj = mapas.find(m => String(m.id) === id);
+        if (mapaObj?.latitude && mapaObj?.lonxitude) {
+            window.dispatchEvent(new CustomEvent('centrar-mapa', {
+                detail: { lat: mapaObj.latitude, lng: mapaObj.lonxitude, zoom: 14 }
+            }));
+        }
         toggleMapa(id);
     }
 
@@ -280,6 +286,12 @@ export default function VisualizarMapasPanel({ isOpen, onClose, lat, lon }) {
         const mapa = mapas.find(m => String(m.id) === String(mapaId));
         if (mapa && mapa.latitude && mapa.lonxitude) {
             setCoordsStore(mapa.latitude, mapa.lonxitude);
+        }
+        const mapaObj = mapas.find(m => String(m.id) === String(mapaId));
+        if (mapaObj?.latitude && mapaObj?.lonxitude) {
+            window.dispatchEvent(new CustomEvent('centrar-mapa', {
+                detail: { lat: mapaObj.latitude, lng: mapaObj.lonxitude, zoom: 14 }
+            }));
         }
         solicitarEngadirMarcador(mapaId);
         onClose();
