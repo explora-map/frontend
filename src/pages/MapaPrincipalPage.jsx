@@ -405,6 +405,11 @@ export default function MapaPrincipalPage() {
 
     function handleLocationSelect({ lat, lng, zoom, nome }) {
         setCoords({ lat, lng, zoom: zoom ?? 14 });
+        if (mapaIdEngadindo) {
+            setCoordsNovaMarcador({ lat, lng });
+            setMostrarFormMarcador(true);
+            return;
+        }
         setDestino({ lat, lng });
         cancelarDirections();
         if (nome) cargarTempo(lat, lng, nome);
