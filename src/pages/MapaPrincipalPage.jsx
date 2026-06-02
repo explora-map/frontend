@@ -206,6 +206,7 @@ export default function MapaPrincipalPage() {
     const [erroEditPanel, setErroEditPanel] = useState('');
 
     const setCoordsStore          = useMapaVisualStore(s => s.setCoords);
+    const coordsActuaisStore      = useMapaVisualStore(s => s.coordsActuais);
     const mapasActivos            = useMapaVisualStore(s => s.mapasActivos);
     const marcadoresPorMapa       = useMapaVisualStore(s => s.marcadoresPorMapa);
     const categoriasActivas       = useMapaVisualStore(s => s.categoriasActivas);
@@ -255,6 +256,13 @@ export default function MapaPrincipalPage() {
     useEffect(() => {
         setCoordsStore(coords.lat, coords.lng);
     }, [coords.lat, coords.lng]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        if (!coordsActuaisStore) return;
+        if (Math.abs(coordsActuaisStore.lat - coords.lat) < 0.0001 &&
+            Math.abs(coordsActuaisStore.lon - coords.lng) < 0.0001) return;
+        setCoords({ lat: coordsActuaisStore.lat, lng: coordsActuaisStore.lon, zoom: 14 });
+    }, [coordsActuaisStore]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         if (!isAuthenticated) return;

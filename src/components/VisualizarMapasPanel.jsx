@@ -167,6 +167,7 @@ export default function VisualizarMapasPanel({ isOpen, onClose, lat, lon }) {
     const [cargandoMapas, setCargandoMapas]       = useState(false);
     const [cargandoMarcadores, setCargandoMarcadores] = useState({});
 
+    const setCoordsStore             = useMapaVisualStore((s) => s.setCoords);
     const coordsActuais              = useMapaVisualStore((s) => s.coordsActuais);
     const solicitarEngadirMarcador   = useMapaVisualStore((s) => s.solicitarEngadirMarcador);
     const marcadoresPorMapa    = useMapaVisualStore((s) => s.marcadoresPorMapa);
@@ -246,6 +247,11 @@ export default function VisualizarMapasPanel({ isOpen, onClose, lat, lon }) {
         const id = String(mapaId);
         const estaActivo = isMapaActivo(id);
 
+        const mapa = mapas.find(m => String(m.id) === id);
+        if (mapa && mapa.latitude && mapa.lonxitude) {
+            setCoordsStore(mapa.latitude, mapa.lonxitude);
+        }
+
         if (!estaActivo) {
             setCargandoMarcadores((prev) => ({ ...prev, [id]: true }));
             try {
@@ -271,6 +277,10 @@ export default function VisualizarMapasPanel({ isOpen, onClose, lat, lon }) {
     }
 
     function handleEngadirMarcador(mapaId) {
+        const mapa = mapas.find(m => String(m.id) === String(mapaId));
+        if (mapa && mapa.latitude && mapa.lonxitude) {
+            setCoordsStore(mapa.latitude, mapa.lonxitude);
+        }
         solicitarEngadirMarcador(mapaId);
         onClose();
     }
