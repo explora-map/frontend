@@ -76,6 +76,7 @@ export default function MapViewer({
     markerDraggable = false,
     height = '400px',
     marcadores = [],
+    onMarcadorClick = null,
     provisionalMarker = null,
     zoomPosition = 'topleft',
     onMapReady,
@@ -142,17 +143,22 @@ export default function MapViewer({
     // Render named markers from the marcadores array; remove previous ones first
     useEffect(() => {
         if (!mapRef.current) return;
-        console.log('MapViewer recibiu marcadores:', marcadores);
         marcadoresRefs.current.forEach((m) => m.remove());
-        marcadoresRefs.current = marcadores.map((item) =>
-            L.marker(
+        marcadoresRefs.current = marcadores.map((item) => {
+            const marker = L.marker(
                 [item.latitude, item.lonxitude],
                 { icon: crearIconoMarcador(item.cor || item.categoriaCor || '#7C52E8') },
-            )
-                .addTo(mapRef.current)
-                .bindPopup(item.nome),
-        );
-    }, [marcadores]);
+            ).addTo(mapRef.current);
+
+            if (onMarcadorClick) {
+                marker.on('click', () => onMarcadorClick(item));
+            } else {
+                marker.bindPopup(item.nome);
+            }
+
+            return marker;
+        });
+    }, [marcadores, onMarcadorClick]);
 
     // Provisional marker: shown while a new marker is being placed (grey, dashed outline)
     useEffect(() => {

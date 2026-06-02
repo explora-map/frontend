@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import useMapaVisualStore from '../store/useMapaVisualStore';
 import { useAuth } from '../hooks/useAuth';
 import { obterMeusMaps, obterColaboracions, obterMapasGardados, obterMapasPublicos } from '../services/mapaApi';
@@ -20,7 +21,7 @@ const CloseIcon = () => (
 
 /* ---- Subcompoñente: item dun mapa con toggle e categorías ---- */
 
-function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle, onEngadirMarcador, username }) {
+function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle, onEngadirMarcador, onGestionar, username }) {
     const { t } = useTranslation();
     const mapasActivos    = useMapaVisualStore((s) => s.mapasActivos);
     const categoriasActivas = useMapaVisualStore((s) => s.categoriasActivas);
@@ -57,16 +58,31 @@ function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle, onEn
                     </div>
                 </div>
 
-                {isActivo && username && mapa.creadoPor === username && onEngadirMarcador && (
-                    <button
-                        className="mapa-toggle-item__btn-engadir"
-                        onClick={() => onEngadirMarcador(mapa.id)}
-                        title={t('visualizar.engadirMarcador', 'Engadir marcador')}
-                        aria-label={`Engadir marcador en ${mapa.nome}`}
-                    >
-                        +
-                    </button>
-                )}
+                <div className="mapa-toggle-item__btns">
+                    {isActivo && username && onGestionar && (
+                        <button
+                            className="mapa-toggle-item__btn-xestionar"
+                            onClick={() => onGestionar(mapa.id)}
+                            title="Xestionar mapa"
+                            aria-label={`Xestionar ${mapa.nome}`}
+                        >
+                            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={16} height={16}>
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                        </button>
+                    )}
+                    {isActivo && username && onEngadirMarcador && (
+                        <button
+                            className="mapa-toggle-item__btn-engadir"
+                            onClick={() => onEngadirMarcador(mapa.id)}
+                            title={t('visualizar.engadirMarcador', 'Engadir marcador')}
+                            aria-label={`Engadir marcador en ${mapa.nome}`}
+                        >
+                            +
+                        </button>
+                    )}
+                </div>
             </div>
 
             {isActivo && (
@@ -142,6 +158,7 @@ function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle, onEn
 export default function VisualizarMapasPanel({ isOpen, onClose, lat, lon }) {
     const { t } = useTranslation();
     const { username } = useAuth();
+    const navigate = useNavigate();
     const [mapas, setMapas]                       = useState([]);
     const [cargandoMapas, setCargandoMapas]       = useState(false);
     const [cargandoMarcadores, setCargandoMarcadores] = useState({});
@@ -317,6 +334,7 @@ export default function VisualizarMapasPanel({ isOpen, onClose, lat, lon }) {
                             cargando={Boolean(cargandoMarcadores[String(mapa.id)])}
                             onToggle={handleToggleMapa}
                             onEngadirMarcador={handleEngadirMarcador}
+                            onGestionar={(mapaId) => { navigate(`/mapas/${mapaId}`); onClose(); }}
                             username={username}
                         />
                     ))

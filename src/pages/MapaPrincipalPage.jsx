@@ -10,7 +10,8 @@ import MapViewer from '../components/MapViewer';
 import MapSearchBar from '../components/MapSearchBar';
 import axiosInstance from '../services/axiosInstance';
 import { gardarMapa, desgardarMapa, obterMapasGardados } from '../services/mapaGardadoApi';
-import { crearMarcador, listarMarcadores } from '../services/marcadorApi';
+import { crearMarcador, listarMarcadores, editarMarcador, eliminarMarcador } from '../services/marcadorApi';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { BookmarkIcon, BookmarkFilledIcon, EyeIcon } from '../components/Iconas';
 import { useAuth } from '../hooks/useAuth';
 import useMapaVisualStore from '../store/useMapaVisualStore';
@@ -195,6 +196,14 @@ export default function MapaPrincipalPage() {
     const [coordsNovaMarcador, setCoordsNovaMarcador] = useState(null);
     const [mostrarFormMarcador, setMostrarFormMarcador] = useState(false);
     const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
+
+    const [marcadorSeleccionado, setMarcadorSeleccionado] = useState(null);
+    const [editandoMarcadorPanel, setEditandoMarcadorPanel] = useState(false);
+    const [nomeEditPanel, setNomeEditPanel] = useState('');
+    const [descEditPanel, setDescEditPanel] = useState('');
+    const [categoriaIdEditPanel, setCategoriaIdEditPanel] = useState('');
+    const [gardandoEditPanel, setGardandoEditPanel] = useState(false);
+    const [erroEditPanel, setErroEditPanel] = useState('');
 
     const setCoordsStore          = useMapaVisualStore(s => s.setCoords);
     const mapasActivos            = useMapaVisualStore(s => s.mapasActivos);
@@ -460,6 +469,63 @@ export default function MapaPrincipalPage() {
         }
     }
 
+    function podeEditarMarcador(marcador) {
+        if (!isAuthenticated || !marcador) return false;
+        const mapaIdStr = String(marcador.mapaId);
+        const activo = mapasActivos[mapaIdStr];
+        if (!activo) return false;
+        return marcador.creadoPor === username ||
+            Object.entries(mapasActivos).some(([id, activo]) => {
+                if (!activo || id !== mapaIdStr) return false;
+                return true;
+            });
+    }
+
+    async function handleGardarEditPanel() {
+        if (!marcadorSeleccionado || !nomeEditPanel.trim()) return;
+        setGardandoEditPanel(true);
+        setErroEditPanel('');
+        try {
+            await editarMarcador(marcadorSeleccionado.id, {
+                nome: nomeEditPanel.trim(),
+                descricion: descEditPanel,
+                categoriaId: categoriaIdEditPanel || null,
+                latitude: marcadorSeleccionado.latitude,
+                lonxitude: marcadorSeleccionado.lonxitude,
+            });
+            const mapaIdStr = String(marcadorSeleccionado.mapaId);
+            const data = await listarMarcadores(marcadorSeleccionado.mapaId);
+            const marcadoresConCor = data.map((m) => ({
+                ...m,
+                cor: m.categoriaCor ?? '#888888'
+            }));
+            setMarcadoresMapa(mapaIdStr, marcadoresConCor);
+            setMarcadorSeleccionado(null);
+            setEditandoMarcadorPanel(false);
+        } catch {
+            setErroEditPanel('Erro ao gardar o marcador.');
+        } finally {
+            setGardandoEditPanel(false);
+        }
+    }
+
+    async function handleEliminarMarcadorPanel() {
+        if (!marcadorSeleccionado) return;
+        try {
+            await eliminarMarcador(marcadorSeleccionado.id);
+            const mapaIdStr = String(marcadorSeleccionado.mapaId);
+            const data = await listarMarcadores(marcadorSeleccionado.mapaId);
+            const marcadoresConCor = data.map((m) => ({
+                ...m,
+                cor: m.categoriaCor ?? '#888888'
+            }));
+            setMarcadoresMapa(mapaIdStr, marcadoresConCor);
+            setMarcadorSeleccionado(null);
+        } catch {
+            // ignore
+        }
+    }
+
     /* ---- Render ---- */
 
     async function activarMapaConCategorias(mapaId) {
@@ -702,6 +768,14 @@ export default function MapaPrincipalPage() {
                     marker={false}
                     height="100%"
                     marcadores={marcadoresVisuais}
+                    onMarcadorClick={(marcador) => {
+                        setMarcadorSeleccionado(marcador);
+                        setEditandoMarcadorPanel(false);
+                        setNomeEditPanel(marcador.nome);
+                        setDescEditPanel(marcador.descricion || '');
+                        setCategoriaIdEditPanel(marcador.categoriaId || '');
+                        setErroEditPanel('');
+                    }}
                     zoomPosition="bottomright"
                     onMapReady={(map) => { mapaRef.current = map; }}
                     onLocationSelect={
@@ -714,6 +788,90 @@ export default function MapaPrincipalPage() {
                     }
                 />
             </div>
+
+            {marcadorSeleccionado && (
+                <div className="marcador-popup-flotante">
+                    {!editandoMarcadorPanel ? (
+                        <>
+                            <div className="marcador-popup-flotante__header">
+                                <span className="marcador-popup-flotante__nome">{marcadorSeleccionado.nome}</span>
+                                <button
+                                    className="marcador-popup-flotante__pechar"
+                                    onClick={() => setMarcadorSeleccionado(null)}
+                                    aria-label="Pechar"
+                                >×</button>
+                            </div>
+                            {marcadorSeleccionado.descricion && (
+                                <p className="marcador-popup-flotante__desc">{marcadorSeleccionado.descricion}</p>
+                            )}
+                            {marcadorSeleccionado.categoriaNome && (
+                                <span className="marcador-popup-flotante__categoria">
+                                    <span className="categoria-dot" style={{ backgroundColor: marcadorSeleccionado.categoriaCor }} />
+                                    {marcadorSeleccionado.categoriaNome}
+                                </span>
+                            )}
+                            {isAuthenticated && (marcadorSeleccionado.creadoPor === username || podeEditarMarcador(marcadorSeleccionado)) && (
+                                <div className="marcador-popup-flotante__accions">
+                                    <button
+                                        className="btn btn--secondary btn--sm"
+                                        onClick={() => setEditandoMarcadorPanel(true)}
+                                    >
+                                        Editar
+                                    </button>
+                                    <button
+                                        className="btn btn--danger btn--sm"
+                                        onClick={handleEliminarMarcadorPanel}
+                                    >
+                                        Eliminar
+                                    </button>
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <div className="marcador-popup-flotante__header">
+                                <span className="marcador-popup-flotante__nome">Editar marcador</span>
+                                <button
+                                    className="marcador-popup-flotante__pechar"
+                                    onClick={() => setMarcadorSeleccionado(null)}
+                                    aria-label="Pechar"
+                                >×</button>
+                            </div>
+                            <input
+                                className="modal-input"
+                                value={nomeEditPanel}
+                                onChange={(e) => setNomeEditPanel(e.target.value)}
+                                placeholder="Nome"
+                                disabled={gardandoEditPanel}
+                            />
+                            <input
+                                className="modal-input"
+                                value={descEditPanel}
+                                onChange={(e) => setDescEditPanel(e.target.value)}
+                                placeholder="Descrición"
+                                disabled={gardandoEditPanel}
+                            />
+                            {erroEditPanel && <p style={{ color: 'var(--color-error)', fontSize: '0.8rem' }}>{erroEditPanel}</p>}
+                            <div className="marcador-popup-flotante__accions">
+                                <button
+                                    className="btn btn--ghost btn--sm"
+                                    onClick={() => setEditandoMarcadorPanel(false)}
+                                    disabled={gardandoEditPanel}
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    className="btn btn--primary btn--sm"
+                                    onClick={handleGardarEditPanel}
+                                    disabled={gardandoEditPanel}
+                                >
+                                    {gardandoEditPanel ? '…' : 'Gardar'}
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
