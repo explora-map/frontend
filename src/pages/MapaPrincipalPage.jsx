@@ -727,18 +727,22 @@ export default function MapaPrincipalPage() {
             {/* Banner de selección de localización */}
             {mapaIdEngadindo && !mostrarFormMarcador && (
                 <div style={{
-                    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1050,
+                    position: 'absolute', bottom: 'calc(var(--space-12) + 40px)', left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 1050,
                     background: 'rgba(124,82,232,0.92)', color: 'white',
                     padding: '10px 16px', display: 'flex', alignItems: 'center',
-                    justifyContent: 'space-between', fontSize: '0.875rem', fontFamily: 'inherit',
+                    gap: '12px', borderRadius: '8px',
+                    fontSize: '0.875rem', fontFamily: 'inherit',
+                    whiteSpace: 'nowrap', boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
                 }}>
-                    <span>Fai clic no mapa para escoller a localización do marcador</span>
+                    <span>Estás no modo de edición de marcadores</span>
                     <button
                         onClick={cancelarEngadirMarcador}
                         style={{
                             background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white',
                             borderRadius: '6px', padding: '4px 10px', cursor: 'pointer',
-                            fontFamily: 'inherit', fontSize: '0.8rem',
+                            fontFamily: 'inherit', fontSize: '0.8rem', flexShrink: 0,
                         }}
                     >
                         Cancelar

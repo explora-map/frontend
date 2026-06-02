@@ -8,7 +8,7 @@
     top: 70px;
     left: 16px;
     z-index: 1000;
-    background: white;
+    background: var(--color-surface);
     border-radius: 16px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     width: 300px;
@@ -27,7 +27,7 @@
     align-items: flex-start;
     position: sticky;
     top: 0;
-    background: white;
+    background: var(--color-surface);
     border-radius: 16px 16px 0 0;
     z-index: 1;
 }
@@ -302,4 +302,9 @@
     display: flex;
     gap: var(--space-2);
     justify-content: flex-end;
+}
+
+/* Panel cidade modo escuro */
+[data-theme="dark"] .panel-cidade {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
