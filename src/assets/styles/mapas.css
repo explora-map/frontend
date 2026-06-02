@@ -1490,3 +1490,18 @@
     color: var(--color-neutral-900);
     margin-bottom: var(--space-4);
 }
+
+.categoria-panel__title {
+    margin-bottom: var(--space-4);
+}
+
+.categoria-panel__header-accions {
+    margin-bottom: var(--space-5);
+}
+
+.membro-panel__title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--color-neutral-900);
+    margin-bottom: var(--space-4);
+}

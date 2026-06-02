@@ -643,6 +643,7 @@ export default function MapaDetallePage() {
 
             {pestanaActiva === 'historial' && ['PROPIETARIA', 'ADMIN_MAPA', 'COLABORADORA'].includes(rolEfectivo) && (
                 <div className="detalle__tab-contido">
+                    <h3 className="detalle__tab-titulo">{t('detalle.tabHistorial')}</h3>
                     <HistorialPanel mapaId={mapa.id} usuarioActual={username} />
                 </div>
             )}

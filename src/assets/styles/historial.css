@@ -8,16 +8,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
-    padding: var(--space-4);
-    background-color: var(--color-surface);
-    border: var(--border-default);
-    border-radius: var(--radius-lg);
 }
 
 .historial-panel__title {
-    font-size: var(--text-base);
-    font-weight: var(--font-semibold);
-    color: var(--color-neutral-900);
+    display: none;
 }
 
 /* Cabeceira con título e selector de filtro */
