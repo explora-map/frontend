@@ -150,6 +150,17 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
             <div className="categoria-panel">
                 <h3 className="categoria-panel__title">{t('categorias.titulo')}</h3>
 
+                {canCreate && (
+                    <div className="categoria-panel__header-accions">
+                        <button
+                            className="btn btn--primary btn--sm"
+                            onClick={() => setMostrarForm(true)}
+                        >
+                            {t('categorias.engadirCategoria')}
+                        </button>
+                    </div>
+                )}
+
                 {erro && <p className="categoria-panel__msg categoria-panel__msg--error">{erro}</p>}
 
                 {/* TODO: add categorias.sinCategorias to translation files */}
@@ -195,15 +206,6 @@ export default function CategoriaPanel({ mapaId, esPropietario, categorias, onCa
                             </li>
                         ))}
                     </ul>
-                )}
-
-                {canCreate && (
-                    <button
-                        className="btn btn--primary btn--sm"
-                        onClick={() => setMostrarForm(true)}
-                    >
-                        {t('categorias.engadirCategoria')}
-                    </button>
                 )}
             </div>
 

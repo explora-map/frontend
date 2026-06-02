@@ -1471,3 +1471,22 @@
     padding-top: var(--space-6);
     border-top: var(--border-default);
 }
+
+.categoria-panel__header-accions {
+    margin-bottom: var(--space-4);
+}
+
+.categoria-panel__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    list-style: none;
+    padding: 0;
+}
+
+.detalle__tab-titulo {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--color-neutral-900);
+    margin-bottom: var(--space-4);
+}

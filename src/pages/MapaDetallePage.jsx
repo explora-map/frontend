@@ -551,6 +551,7 @@ export default function MapaDetallePage() {
 
             {pestanaActiva === 'marcadores' && (
                 <div className="detalle__tab-contido">
+                    <h3 className="detalle__tab-titulo">{t('detalle.tabMarcadores')}</h3>
                     {podeCrear && (
                         <div className="detalle__tab-accions detalle__tab-accions--marcadores">
                             <button
