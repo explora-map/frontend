@@ -134,11 +134,8 @@ function MapaToggleItem({ mapa, marcadores, categorias, cargando, onToggle, onEn
                                         aria-pressed={activa}
                                     >
                                         <span
-                                            className="categoria-toggle__cor"
-                                            style={{
-                                                backgroundColor: '#888888',
-                                                opacity: activa ? 1 : 0.3,
-                                            }}
+                                            className="categoria-toggle__cor categoria-toggle__cor--sen-cor"
+                                            style={{ opacity: activa ? 1 : 0.3 }}
                                         />
                                         <span
                                             className="categoria-toggle__nome"

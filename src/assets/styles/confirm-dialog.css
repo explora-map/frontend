@@ -1,7 +1,13 @@
+/* ============================================================
+   confirm-dialog.css
+   Diálogo de confirmación global.
+   As animacións overlay-in e dialog-in están en global.css.
+   ============================================================ */
+
 .confirm-overlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(24, 20, 46, 0.55);
+    background-color: var(--shadow-overlay);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -41,16 +47,6 @@
     justify-content: flex-end;
     gap: var(--space-3);
     margin-top: var(--space-2);
-}
-
-@keyframes overlay-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-@keyframes dialog-in {
-    from { opacity: 0; transform: scale(0.95) translateY(8px); }
-    to   { opacity: 1; transform: scale(1)    translateY(0);   }
 }
 
 .body--no-scroll {

@@ -413,10 +413,11 @@ export default function MapaDetallePage() {
         ? new Date(mapa.dataCreacion).toLocaleString()
         : '—';
 
-    const ROL_BADGE = {
-        'PROPIETARIA':  { texto: 'O teu mapa', estilo: { background: '#f0fdf4', color: '#16a34a', border: '1px solid #86efac' } },
-        'ADMIN_MAPA':   { texto: 'Admin',       estilo: { background: '#faf5ff', color: '#7c3aed', border: '1px solid #c4b5fd' } },
-        'COLABORADORA': { texto: 'Colaboras',   estilo: { background: '#eff6ff', color: '#2563eb', border: '1px solid #93c5fd' } },
+    const ROL_BADGE_CLASS = {
+        PROPIETARIA:  { label: 'O teu mapa',   cls: 'badge badge--rol-admin' },
+        ADMIN_MAPA:   { label: 'Admin',         cls: 'badge badge--rol-admin' },
+        COLABORADORA: { label: 'Colaboras',     cls: 'badge badge--rol-colaboradora' },
+        MEMBRO:       { label: 'Membro',        cls: 'badge badge--rol-membro' },
     };
 
     return (
@@ -434,24 +435,16 @@ export default function MapaDetallePage() {
                     <span className={`badge badge--tipo badge--${mapa.tipo === 'PUBLICO' ? 'publico' : 'privado'}`}>
                         {mapa.tipo === 'PUBLICO' ? 'Público' : 'Privado'}
                     </span>
-                    {ROL_BADGE[rolEfectivo] && (
-                        <span style={{
-                            fontSize: '12px', padding: '2px 8px', borderRadius: '12px',
-                            display: 'inline-flex', alignItems: 'center',
-                            ...ROL_BADGE[rolEfectivo].estilo,
-                        }}>
-                            {ROL_BADGE[rolEfectivo].texto}
+                    {ROL_BADGE_CLASS[rolEfectivo] && (
+                        <span className={ROL_BADGE_CLASS[rolEfectivo]?.cls ?? 'badge'}>
+                            {ROL_BADGE_CLASS[rolEfectivo]?.label}
                         </span>
                     )}
                     {isAuthenticated && mapa?.creadoPor !== username && (
                         <button
                             onClick={toggleGardarDetalle}
                             title={gardado ? 'Mapa gardado' : 'Gardar mapa'}
-                            style={{
-                                background: 'none', border: 'none', cursor: 'pointer',
-                                color: gardado ? 'var(--color-primary-500)' : 'var(--color-neutral-400)',
-                                padding: '4px', display: 'inline-flex', alignItems: 'center',
-                            }}
+                            className={`btn btn--icon ${gardado ? 'btn--primary' : 'btn--ghost'}`}
                         >
                             {gardado ? <BookmarkFilledIcon size={22} /> : <BookmarkIcon size={22} />}
                         </button>

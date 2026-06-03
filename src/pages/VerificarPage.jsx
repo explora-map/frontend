@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { verificarConta } from '../services/authApi';
+import { CheckIcon, CloseIcon } from '../components/Iconas';
 
 export default function VerificarPage() {
   const navigate = useNavigate();
@@ -67,10 +68,7 @@ export default function VerificarPage() {
         {estado === 'erro' && (
           <>
             <div className="verificar-card__icona verificar-card__icona--erro" aria-hidden="true">
-              <span style={{ display:'inline-flex', width:'32px', height:'32px', position:'relative' }}>
-                <span style={{ position:'absolute', top:'50%', left:0, width:'100%', height:'3px', backgroundColor:'currentColor', borderRadius:'2px', transform:'translateY(-50%) rotate(45deg)' }} />
-                <span style={{ position:'absolute', top:'50%', left:0, width:'100%', height:'3px', backgroundColor:'currentColor', borderRadius:'2px', transform:'translateY(-50%) rotate(-45deg)' }} />
-              </span>
+              <CloseIcon size={28} />
             </div>
             <h1 className="verificar-card__titulo">Erro de verificación</h1>
             <p className="verificar-card__texto">{mensaxe}</p>

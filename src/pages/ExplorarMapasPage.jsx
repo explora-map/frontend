@@ -171,7 +171,7 @@ export default function ExplorarMapasPage() {
                                         title={mapasGardadosIds.has(mapa.id) ? 'Mapa gardado' : 'Gardar mapa'}
                                         style={{
                                             background: 'none', border: 'none', cursor: 'pointer',
-                                            color: mapasGardadosIds.has(mapa.id) ? 'var(--color-primary-500)' : 'var(--color-text-secondary, #888)',
+                                            color: mapasGardadosIds.has(mapa.id) ? 'var(--color-primary-500)' : 'var(--color-text-secondary)',
                                             padding: '4px', display: 'flex', alignItems: 'center',
                                         }}
                                     >
@@ -193,7 +193,7 @@ export default function ExplorarMapasPage() {
                                     <EyeIcon size={18} />
                                 </button>
                             </div>
-                            <div className="explorar-card__nome" style={{ paddingRight: '56px' }}>{mapa.nome}</div>
+                            <div className="explorar-card__nome explorar-card__accions-offset">{mapa.nome}</div>
                             {mapa.descricion && (
                                 <div className="explorar-card__descricion">{mapa.descricion}</div>
                             )}

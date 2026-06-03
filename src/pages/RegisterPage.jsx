@@ -159,10 +159,10 @@ export default function RegisterPage() {
                     <div className="verificar-card__icona verificar-card__icona--ok" style={{ margin: '0 auto' }} aria-hidden="true">
                         <span className="tick-icon" />
                     </div>
-                    <h1 className="auth-card__titulo" style={{ textAlign: 'center' }}>
+                    <h1 className="auth-card__titulo auth-card__centro">
                         Revisa o teu correo
                     </h1>
-                    <p style={{ textAlign: 'center', fontSize: 'var(--text-sm)', color: 'var(--color-neutral-600)', lineHeight: 'var(--leading-relaxed)' }}>
+                    <p className="auth-card__subtexto">
                         Enviámosche un correo de verificación. Preme na ligazón para activar a túa conta.
                     </p>
                     <button
@@ -254,20 +254,14 @@ export default function RegisterPage() {
                     />
 
                     {passwordStrength.visible && (
-                        <div className="password-strength" aria-live="polite" aria-atomic="true">
+                        <div className="password-strength"
+                             style={{ '--strength-pct': `${passwordStrength.pct}%`,
+                                      '--strength-color': passwordStrength.color }}
+                             aria-live="polite" aria-atomic="true">
                             <div className="password-strength__bar-track">
-                                <div
-                                    className="password-strength__bar-fill"
-                                    style={{
-                                        width: `${passwordStrength.pct}%`,
-                                        backgroundColor: passwordStrength.color,
-                                    }}
-                                />
+                                <div className="password-strength__bar-fill" />
                             </div>
-                            <span
-                                className="password-strength__label"
-                                style={{ color: passwordStrength.color }}
-                            >
+                            <span className="password-strength__label">
                                 {passwordStrength.label}
                             </span>
                         </div>

@@ -256,20 +256,14 @@ export default function PerfilPage() {
               autoComplete="new-password"
             />
             {passwordStrength.visible && (
-              <div className="password-strength" aria-live="polite" aria-atomic="true">
+              <div className="password-strength"
+                   style={{ '--strength-pct': `${passwordStrength.pct}%`,
+                            '--strength-color': passwordStrength.color }}
+                   aria-live="polite" aria-atomic="true">
                 <div className="password-strength__bar-track">
-                  <div
-                    className="password-strength__bar-fill"
-                    style={{
-                      width: `${passwordStrength.pct}%`,
-                      backgroundColor: passwordStrength.color,
-                    }}
-                  />
+                  <div className="password-strength__bar-fill" />
                 </div>
-                <span
-                  className="password-strength__label"
-                  style={{ color: passwordStrength.color }}
-                >
+                <span className="password-strength__label">
                   {passwordStrength.label}
                 </span>
               </div>

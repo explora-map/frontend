@@ -201,14 +201,14 @@ export default function MapaListPage() {
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); handleDesgardar(mapa.id); }}
                                                     title={t('mapas.botonDesgardar')}
-                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary-500)', padding: '4px', display: 'flex', alignItems: 'center' }}
+                                                    className="btn btn--ghost btn--icon"
                                                 >
                                                     <BookmarkFilledIcon size={18} />
                                                 </button>
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); navigate(`/mapas/${mapa.id}`); }}
                                                     title="Ver mapa"
-                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary-500)', padding: '4px', display: 'flex', alignItems: 'center' }}
+                                                    className="btn btn--ghost btn--icon"
                                                 >
                                                     <EyeIcon size={18} />
                                                 </button>

@@ -118,17 +118,16 @@ export default function MapaCard({ mapa, onEliminar, onVisibilidadeCambiada, acc
         <div style={{ position: 'relative' }}>
           <button
             ref={btnRef}
-            className="btn btn--icon btn--ghost"
+            className="btn btn--icon btn--ghost mapa-card__kebab-trigger"
             onClick={handleKebabClick}
             aria-label="Opcións do mapa"
             aria-haspopup="true"
             aria-expanded={menuAberto}
-            style={{ width: '32px', height: '32px' }}
           >
-            <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '3px', width: '16px', height: '16px' }} aria-hidden="true">
-              <span style={{ display: 'block', width: '4px', height: '4px', borderRadius: '50%', backgroundColor: 'currentColor' }} />
-              <span style={{ display: 'block', width: '4px', height: '4px', borderRadius: '50%', backgroundColor: 'currentColor' }} />
-              <span style={{ display: 'block', width: '4px', height: '4px', borderRadius: '50%', backgroundColor: 'currentColor' }} />
+            <span className="kebab-dots" aria-hidden="true">
+              <span className="kebab-dot" />
+              <span className="kebab-dot" />
+              <span className="kebab-dot" />
             </span>
           </button>
         </div>

@@ -26,7 +26,7 @@ import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'Inter,sans-serif', color: '#453F60' }}>Cargando…</div>}>
+    <Suspense fallback={<div className="app-loading">Cargando…</div>}>
       <App />
     </Suspense>
   </React.StrictMode>,

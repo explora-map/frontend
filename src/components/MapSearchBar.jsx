@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CloseIcon } from './Iconas';
 
 // Nominatim search with debounce — no external dependencies needed
 export default function MapSearchBar({ onLocationSelect, placeholder }) {
@@ -113,10 +114,7 @@ export default function MapSearchBar({ onLocationSelect, placeholder }) {
             aria-label="Limpar busca"
             tabIndex={0}
           >
-            <span style={{ display:'inline-flex', width:'12px', height:'12px', position:'relative', flexShrink:0 }} aria-hidden="true">
-              <span style={{ position:'absolute', top:'50%', left:0, width:'100%', height:'2px', backgroundColor:'currentColor', borderRadius:'2px', transform:'translateY(-50%) rotate(45deg)' }} />
-              <span style={{ position:'absolute', top:'50%', left:0, width:'100%', height:'2px', backgroundColor:'currentColor', borderRadius:'2px', transform:'translateY(-50%) rotate(-45deg)' }} />
-            </span>
+            <CloseIcon size={14} />
           </button>
         )}
       </div>

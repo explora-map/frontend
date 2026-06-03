@@ -12,7 +12,7 @@
     background-color: var(--color-surface);
     border-left: var(--border-default);
     box-shadow: var(--shadow-xl);
-    z-index: 2000;
+    z-index: var(--z-panel);
     display: flex;
     flex-direction: column;
     transform: translateX(100%);
@@ -45,6 +45,18 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+}
+
+/* ---- Botón de pechar ---- */
+.visualizar-panel__btn-pechar {
+    color: var(--color-error);
+    border-color: transparent;
+}
+
+.visualizar-panel__btn-pechar:hover {
+    background-color: var(--color-error-bg);
+    border-color: var(--color-error-border);
+    color: var(--color-error);
 }
 
 /* ---- Mapa item ---- */
@@ -88,6 +100,50 @@
     color: var(--color-neutral-500);
 }
 
+/* ---- Botóns de acción do mapa item ---- */
+.mapa-toggle-item__btns {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    flex-shrink: 0;
+}
+
+/* Clase única para ambos botóns: xestionar e engadir */
+.mapa-toggle-item__btn-xestionar,
+.mapa-toggle-item__btn-engadir {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-md);
+    border: var(--border-default);
+    background: var(--color-surface);
+    color: var(--color-neutral-600);
+    cursor: pointer;
+    transition:
+        background-color var(--duration-normal) var(--ease-default),
+        color            var(--duration-normal) var(--ease-default),
+        border-color     var(--duration-normal) var(--ease-default);
+}
+
+.mapa-toggle-item__btn-xestionar:hover {
+    background: var(--color-neutral-100);
+    color: var(--color-neutral-800);
+}
+
+.mapa-toggle-item__btn-engadir {
+    color: var(--color-primary-500);
+    border-color: var(--color-primary-300);
+}
+
+.mapa-toggle-item__btn-engadir:hover {
+    background: var(--color-primary-50);
+    color: var(--color-primary-600);
+    border-color: var(--color-primary-400);
+}
+
+/* ---- Categorías ---- */
 .mapa-toggle-item__categorias {
     padding: var(--space-2) var(--space-3) var(--space-3);
     display: flex;
@@ -119,6 +175,11 @@
     border-radius: var(--radius-full);
     flex-shrink: 0;
     transition: opacity var(--duration-normal) var(--ease-default);
+}
+
+/* Cor por defecto cando a categoría non ten cor asignada */
+.categoria-toggle__cor--sen-cor {
+    background-color: var(--color-neutral-400);
 }
 
 .categoria-toggle__nome {
@@ -182,11 +243,6 @@
     animation: skeleton-shimmer 1.5s infinite;
 }
 
-@keyframes skeleton-shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
 /* ---- Spinner pequeno ---- */
 .spinner-sm {
     width: 16px;
@@ -194,12 +250,8 @@
     border: 2px solid var(--color-neutral-200);
     border-top-color: var(--color-primary-500);
     border-radius: var(--radius-full);
-    animation: spin 0.6s linear infinite;
+    animation: spin var(--duration-slow) linear infinite;
     margin: var(--space-2) auto;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
 }
 
 /* ---- Mobile: bottom sheet ---- */
@@ -215,78 +267,4 @@
     .visualizar-panel--open {
         transform: translateY(0);
     }
-}
-
-/* ---- Botón de pechar ---- */
-.visualizar-panel__btn-pechar {
-    color: var(--color-error);
-    border-color: transparent;
-}
-
-.visualizar-panel__btn-pechar:hover {
-    background-color: var(--color-error-bg);
-    border-color: var(--color-error-border);
-    color: var(--color-error);
-}
-
-/* ---- Botón engadir marcador ---- */
-.mapa-toggle-item__btn-engadir {
-    flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 1.5px solid var(--color-primary-500);
-    background: transparent;
-    color: var(--color-primary-500);
-    font-size: 1rem;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s, color 0.15s;
-}
-
-.mapa-toggle-item__btn-engadir:hover {
-    background: var(--color-primary-500);
-    color: white;
-}
-
-.mapa-toggle-item__btns {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-    flex-shrink: 0;
-}
-
-.mapa-toggle-item__btn-xestionar,
-.mapa-toggle-item__btn-engadir {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-neutral-300);
-    background: var(--color-surface);
-    color: var(--color-neutral-600);
-    cursor: pointer;
-    transition:
-        background-color var(--duration-normal) var(--ease-default),
-        color var(--duration-normal) var(--ease-default);
-}
-
-.mapa-toggle-item__btn-xestionar:hover {
-    background: var(--color-neutral-100);
-    color: var(--color-neutral-800);
-}
-
-.mapa-toggle-item__btn-engadir {
-    color: var(--color-primary-500);
-    border-color: var(--color-primary-300);
-}
-
-.mapa-toggle-item__btn-engadir:hover {
-    background: var(--color-primary-50);
-    color: var(--color-primary-600);
 }

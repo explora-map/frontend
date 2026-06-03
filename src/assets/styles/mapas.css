@@ -1,7 +1,8 @@
 /* ============================================================
-   mapas.css — Sprint 3
-   Styles for all map-related pages and components.
-   Uses CSS custom properties from global.css.
+   mapas.css
+   Estilos das páxinas e compoñentes de mapas.
+   NOTA: .btn, .badge e .form-* están en global.css.
+         Non duplicar aquí.
    ============================================================ */
 
 /* ---- Shared page shell ---- */
@@ -58,72 +59,6 @@
 
 /* ---- Topbar ---- */
 
-/* ---- Buttons ---- */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: background 150ms, color 150ms, box-shadow 150ms, border-color 150ms;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-.btn:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-}
-
-.btn--primary {
-    background: var(--color-primary-500);
-    color: var(--color-neutral-50);
-}
-
-.btn--primary:hover:not(:disabled) {
-    background: var(--color-primary-600);
-}
-
-.btn--secondary {
-    background: var(--color-primary-100);
-    color: var(--color-primary-500);
-}
-
-.btn--secondary:hover:not(:disabled) {
-    background: var(--color-neutral-200);
-}
-
-.btn--ghost {
-    background: transparent;
-    color: var(--color-neutral-500);
-    border: 1.5px solid var(--color-neutral-200);
-}
-
-.btn--ghost:hover:not(:disabled) {
-    border-color: var(--color-primary-500);
-    color: var(--color-primary-500);
-    background: var(--color-primary-100);
-}
-
-.btn--danger {
-    background: var(--color-error);
-    color: var(--color-neutral-50);
-}
-
-.btn--danger:hover:not(:disabled) {
-    background: var(--color-error);
-}
-
-.btn--sm {
-    padding: var(--space-1) var(--space-3);
-    font-size: 0.75rem;
-}
-
 /* ---- Alert ---- */
 .alert {
     padding: var(--space-3) var(--space-4);
@@ -165,19 +100,19 @@
     width: 100%;
     border: 1.5px solid var(--color-neutral-200);
     border-radius: var(--radius-md);
-    padding: var(--space-3) var(--space-3);
+    padding: var(--space-3);
     font-size: var(--text-base);
     color: var(--color-neutral-900);
     background: var(--color-surface);
     resize: vertical;
-    transition: border-color 150ms;
+    transition: border-color var(--duration-normal) var(--ease-default);
     line-height: 1.5;
 }
 
 .field__textarea:focus {
     outline: none;
     border-color: var(--color-primary-500);
-    box-shadow: 0 0 0 3px rgba(124, 82, 232, 0.1);
+    box-shadow: var(--shadow-focus);
 }
 
 .field__select {
@@ -188,7 +123,7 @@
     font-size: var(--text-base);
     color: var(--color-neutral-900);
     background: var(--color-surface);
-    transition: border-color 150ms;
+    transition: border-color var(--duration-normal) var(--ease-default);
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -199,7 +134,7 @@
 .field__select:focus {
     outline: none;
     border-color: var(--color-primary-500);
-    box-shadow: 0 0 0 3px rgba(124, 82, 232, 0.1);
+    box-shadow: var(--shadow-focus);
 }
 
 .field__hint {
@@ -246,52 +181,6 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     /* Leaflet requires explicit height — set via inline style prop */
-}
-
-/* ---- Badges ---- */
-.badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px var(--space-2);
-    border-radius: 9999px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-/* Tipo badges */
-.badge--tipo.badge--publico {
-    background: var(--color-primary-100);
-    color: var(--color-primary-500);
-}
-
-.badge--tipo.badge--privado {
-    background: var(--color-neutral-100);
-    color: var(--color-neutral-500);
-}
-
-/* Estado badges */
-.badge--estado.badge--pendente {
-    background: var(--color-warning-bg);
-    color: var(--color-warning);
-}
-
-.badge--estado.badge--aceptado {
-    background: var(--color-success-bg);
-    color: var(--color-success);
-}
-
-.badge--estado.badge--rexeitado,
-.badge--estado.badge--cancelado {
-    background: var(--color-neutral-100);
-    color: var(--color-neutral-500);
-}
-
-.badge--estado.badge--expirado {
-    background: var(--color-error-bg);
-    color: var(--color-error);
 }
 
 /* ---- MapaCard ---- */
@@ -397,8 +286,6 @@
     z-index: var(--z-tooltip);
 }
 
-@keyframes menu-in {
-    from { opacity: 0; transform: scale(0.95) translateY(-4px); }
     to   { opacity: 1; transform: scale(1)    translateY(0); }
 }
 
@@ -533,13 +420,13 @@
     font-size: var(--text-sm);
     color: var(--color-neutral-900);
     background: var(--color-surface);
-    transition: border-color 150ms;
+    transition: border-color var(--duration-normal) var(--ease-default);
 }
 
 .convite-panel__input:focus {
     outline: none;
     border-color: var(--color-primary-500);
-    box-shadow: 0 0 0 3px rgba(124, 82, 232, 0.1);
+    box-shadow: var(--shadow-focus);
 }
 
 .convite-panel__send-btn {
@@ -551,7 +438,7 @@
     font-size: var(--text-sm);
     font-weight: 600;
     cursor: pointer;
-    transition: background 150ms;
+    transition: background-color var(--duration-normal) var(--ease-default);
     white-space: nowrap;
 }
 
@@ -618,7 +505,7 @@
     background: transparent;
     color: var(--color-error);
     cursor: pointer;
-    transition: background 150ms;
+    transition: background-color var(--duration-normal) var(--ease-default);
     font-weight: 500;
 }
 
@@ -648,7 +535,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    transition: color 150ms;
+    transition: color var(--duration-normal) var(--ease-default);
 }
 
 .tab:hover {
@@ -886,16 +773,16 @@
     cursor: pointer;
     flex-shrink: 0;
     padding: 0;
-    transition: outline-offset 150ms var(--ease-default, ease);
+    transition: outline-offset var(--duration-normal) var(--ease-default, ease);
 }
 
 .cor-selector__opcion:focus-visible {
-    outline: 3px solid #7C52E8;
+    outline: 3px solid var(--color-primary-500);
     outline-offset: 2px;
 }
 
 .cor-selector__opcion--activa {
-    outline: 3px solid #7C52E8;
+    outline: 3px solid var(--color-primary-500);
     outline-offset: 2px;
 }
 
@@ -928,20 +815,13 @@
 }
 
 /* ---- FormModal ---- */
-@keyframes modal-overlay-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-@keyframes modal-in {
-    from { opacity: 0; transform: translateY(-12px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0)      scale(1);    }
 }
 
 .form-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(24, 20, 46, 0.45);
+    background: var(--shadow-overlay);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -952,11 +832,11 @@
 
 .form-modal {
     background: var(--color-surface);
-    border-radius: 16px;
+    border-radius: var(--radius-xl);
     width: 100%;
     max-width: 480px;
-    padding: 32px;
-    box-shadow: 0 8px 32px rgba(24, 20, 46, 0.18);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-xl);
     animation: modal-in 220ms var(--ease-default, ease) both;
 }
 
@@ -985,7 +865,7 @@
     font-size: 1.25rem;
     line-height: 1;
     flex-shrink: 0;
-    transition: background-color 150ms var(--ease-default, ease),
+    transition: background-color var(--duration-normal) var(--ease-default, ease),
                 color 150ms var(--ease-default, ease);
 }
 
@@ -1003,11 +883,11 @@
 .form-modal__body form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--space-5);
 }
 
 .form-modal__body .cor-selector {
-    margin-top: 8px;
+    margin-top: var(--space-2);
 }
 
 /* ---- Modal form fields ---- */
@@ -1025,13 +905,13 @@
 
 .modal-input {
     width: 100%;
-    padding: 10px 14px;
+    padding: var(--space-2) var(--space-3);
     background: var(--color-surface);
     border: 1.5px solid var(--color-neutral-300);
     border-radius: var(--radius-md);
     font-size: var(--text-sm);
     color: var(--color-neutral-700);
-    transition: border-color 150ms var(--ease-default, ease),
+    transition: border-color var(--duration-normal) var(--ease-default, ease),
                 box-shadow   150ms var(--ease-default, ease);
 }
 
@@ -1066,18 +946,18 @@
 .modal-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 24px;
+    gap: var(--space-2);
+    margin-top: var(--space-6);
 }
 
 .modal-btn-gardar {
-    padding: 10px 20px;
+    padding: var(--space-2) var(--space-5);
     background: var(--color-primary-500);
     color: var(--color-neutral-50);
     border-radius: var(--radius-md);
     font-size: var(--text-sm);
     font-weight: var(--font-medium);
-    transition: background-color 150ms var(--ease-default, ease);
+    transition: background-color var(--duration-normal) var(--ease-default, ease);
 }
 
 .modal-btn-gardar:hover:not(:disabled) { background: var(--color-primary-600); }
@@ -1088,14 +968,14 @@
 }
 
 .modal-btn-cancelar {
-    padding: 10px 20px;
+    padding: var(--space-2) var(--space-5);
     background: transparent;
     color: var(--color-primary-500);
-    border: 1.5px solid #7C52E8;
+    border: 1.5px solid var(--color-primary-500);
     border-radius: var(--radius-md);
     font-size: var(--text-sm);
     font-weight: var(--font-medium);
-    transition: background-color 150ms var(--ease-default, ease);
+    transition: background-color var(--duration-normal) var(--ease-default, ease);
 }
 
 .modal-btn-cancelar:hover:not(:disabled) { background: var(--color-primary-50); }
@@ -1115,8 +995,6 @@
 }
 
 /* ---- Marker address search (AddressSearchField in modals) ---- */
-@keyframes marcador-busca-fadein {
-    from { opacity: 0; transform: translateY(-4px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -1280,12 +1158,7 @@
     flex-wrap: wrap;
 }
 
-.detalle__xeral-accions {
-    display: flex;
-    gap: var(--space-2);
-    flex-wrap: wrap;
-    margin-top: var(--space-6);
-}
+
 
 .detalle__descricion {
     margin-bottom: var(--space-6);
@@ -1386,11 +1259,7 @@
     background-color: var(--color-error-bg) !important;
 }
 
-.detalle__tab-accions--marcadores {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: var(--space-4);
-}
+
 
 /* Categoría cards */
 .categoria-card {
@@ -1472,9 +1341,6 @@
     border-top: var(--border-default);
 }
 
-.categoria-panel__header-accions {
-    margin-bottom: var(--space-4);
-}
 
 .categoria-panel__list {
     display: flex;
@@ -1505,3 +1371,7 @@
     color: var(--color-neutral-900);
     margin-bottom: var(--space-4);
 }
+
+.kebab-dots { display: flex; flex-direction: column; gap: 3px; align-items: center; }
+.kebab-dot  { width: 4px; height: 4px; border-radius: var(--radius-full);
+              background-color: currentColor; }

@@ -1,3 +1,10 @@
+/* ============================================================
+   perfil.css
+   Páxina de perfil de usuaria.
+   Os sistemas de formulario (.form-*) e botóns (.btn)
+   están definidos en global.css e non se repiten aquí.
+   ============================================================ */
+
 .perfil-page {
   max-width: 600px;
   margin: 0 auto;
@@ -21,7 +28,7 @@
   padding: var(--space-8) var(--space-4);
 }
 
-/* Avatar */
+/* ---- Avatar ---- */
 .perfil-avatar-wrapper {
   display: flex;
   align-items: center;
@@ -56,7 +63,25 @@
   color: var(--color-neutral-500);
 }
 
-/* Sections */
+.perfil-avatar__accions {
+  display: flex;
+  gap: var(--space-2);
+  margin-left: auto;
+  align-items: center;
+}
+
+/* Botóns de acción sobre o avatar usan .btn.btn--ghost.btn--icon-sm
+   con modificador semántico específico para logout */
+.perfil-avatar__logout {
+  color: var(--color-error) !important;
+  border-color: var(--color-error-border) !important;
+}
+
+.perfil-avatar__logout:hover {
+  background-color: var(--color-error-bg) !important;
+}
+
+/* ---- Seccións ---- */
 .perfil-section {
   display: flex;
   flex-direction: column;
@@ -85,44 +110,16 @@
   border-bottom-color: var(--color-error-border);
 }
 
-/* Form */
+.perfil-section--accions-rapidas {
+  border-top: var(--border-default);
+  padding-top: var(--space-6);
+}
+
+/* ---- Formulario ---- */
 .perfil-form {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.form-label {
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  color: var(--color-neutral-700);
-}
-
-.form-input {
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  border: var(--border-default);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  font-family: var(--font-ui);
-  color: var(--color-neutral-800);
-  background-color: var(--color-surface);
-  transition:
-    border-color var(--duration-normal) var(--ease-default),
-    box-shadow var(--duration-normal) var(--ease-default);
-  outline: none;
-  box-sizing: border-box;
-}
-
-.form-input:focus {
-  border-color: var(--color-primary-500);
-  box-shadow: var(--shadow-focus);
 }
 
 .perfil-form__accions {
@@ -131,7 +128,14 @@
   padding-top: var(--space-2);
 }
 
-/* Invitations */
+/* ---- Accións rápidas ---- */
+.perfil-accions-rapidas {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ---- Estado baleiro ---- */
 .perfil-baleiro {
   font-size: var(--text-sm);
   color: var(--color-neutral-400);
@@ -139,11 +143,11 @@
   padding: var(--space-6) 0;
 }
 
+/* ---- Lista de convites ---- */
 .perfil-convites {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  list-style: none;
 }
 
 .perfil-convite-item {
@@ -165,7 +169,7 @@
 .perfil-convite-item__texto {
   font-size: var(--text-sm);
   color: var(--color-neutral-700);
-  line-height: var(--leading-snug);
+  line-height: var(--leading-normal);
 }
 
 .perfil-convite-item__data {
@@ -180,7 +184,7 @@
   flex-shrink: 0;
 }
 
-/* Danger zone */
+/* ---- Zona de perigo ---- */
 .perfil-danger-corpo {
   display: flex;
   align-items: center;
@@ -201,6 +205,7 @@
   line-height: var(--leading-relaxed);
 }
 
+/* ---- Responsive ---- */
 @media (max-width: 640px) {
   .perfil-page {
     padding: var(--space-6) var(--space-4);
@@ -215,54 +220,4 @@
     flex-direction: column;
     align-items: flex-start;
   }
-}
-
-.perfil-section--accions-rapidas {
-  border-top: var(--border-default);
-  padding-top: var(--space-6);
-}
-
-.perfil-accions-rapidas {
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.perfil-avatar__accions {
-    display: flex;
-    gap: var(--space-2);
-    margin-left: auto;
-    align-items: center;
-}
-
-.perfil-avatar__accions .btn {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-neutral-200);
-    background: var(--color-surface);
-    color: var(--color-neutral-600);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    transition:
-        background-color var(--duration-normal) var(--ease-default),
-        color var(--duration-normal) var(--ease-default),
-        border-color var(--duration-normal) var(--ease-default);
-}
-
-.perfil-avatar__accions .btn:hover {
-    background: var(--color-neutral-100);
-    border-color: var(--color-neutral-300);
-    color: var(--color-neutral-800);
-}
-
-.perfil-avatar__logout {
-    color: var(--color-error) !important;
-    border-color: var(--color-error-border) !important;
-}
-
-.perfil-avatar__logout:hover {
-    background-color: var(--color-error-bg) !important;
 }

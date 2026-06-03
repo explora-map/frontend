@@ -54,49 +54,6 @@ function mapearCodigo(code) {
     return WEATHER_CODES[code] ?? { desc: 'Tempo variable', emoji: '🌡️' };
 }
 
-/* ---- Estilos estáticos ---- */
-
-const estiloContenedor = {
-    position: 'relative',
-    height: '100vh',
-    overflow: 'hidden',
-};
-
-const estiloMapa = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' };
-
-const estiloInputOrixe = {
-    width: '100%',
-    padding: '8px 10px',
-    border: '1px solid #DDD9EE',
-    borderRadius: '8px',
-    fontSize: '0.875rem',
-    fontFamily: 'inherit',
-    outline: 'none',
-    boxSizing: 'border-box',
-};
-
-const estiloBtnPrimario = {
-    padding: '7px 14px',
-    background: '#7C52E8',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '0.8rem',
-    cursor: 'pointer',
-    fontFamily: 'inherit',
-};
-
-const estiloBtnSecundario = {
-    padding: '7px 14px',
-    background: 'transparent',
-    color: '#5C5585',
-    border: '1px solid #DDD9EE',
-    borderRadius: '8px',
-    fontSize: '0.8rem',
-    cursor: 'pointer',
-    fontFamily: 'inherit',
-};
-
 /* ---- Formulario de novo marcador ---- */
 
 function FormNovaMarcador({ coords, categorias, onGardar, onCancelar }) {
@@ -119,13 +76,8 @@ function FormNovaMarcador({ coords, categorias, onGardar, onCancelar }) {
     }
 
     return (
-        <div style={{
-            position: 'absolute', top: '80px', right: '16px', zIndex: 1100,
-            background: 'white', borderRadius: '12px', padding: '16px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.15)', width: '260px',
-            fontFamily: 'inherit',
-        }}>
-            <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#2D2848', marginBottom: '12px' }}>
+        <div className="panel-rutas">
+            <div className="panel-rutas__destino">
                 Novo marcador
             </div>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -134,14 +86,14 @@ function FormNovaMarcador({ coords, categorias, onGardar, onCancelar }) {
                     placeholder="Nome do marcador..."
                     value={nome}
                     onChange={e => setNome(e.target.value)}
-                    style={{ ...estiloInputOrixe }}
+                    className="form-input"
                     autoFocus
                 />
                 {categorias.length > 0 && (
                     <select
                         value={categoriaId}
                         onChange={e => setCategoriaId(e.target.value)}
-                        style={{ ...estiloInputOrixe, cursor: 'pointer' }}
+                        className="form-input"
                     >
                         <option value="">Sen categoría</option>
                         {categorias.map(cat => (
@@ -150,17 +102,18 @@ function FormNovaMarcador({ coords, categorias, onGardar, onCancelar }) {
                     </select>
                 )}
                 {erro && (
-                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#DC1B2F' }}>{erro}</p>
+                    <p className="panel-rutas__erro">{erro}</p>
                 )}
                 <div style={{ display: 'flex', gap: '8px' }}>
                     <button
                         type="submit"
                         disabled={gardando}
-                        style={{ ...estiloBtnPrimario, flex: 1, opacity: gardando ? 0.6 : 1 }}
+                        className="btn btn--primary btn--sm"
+                        style={{ flex: 1, opacity: gardando ? 0.6 : 1 }}
                     >
                         {gardando ? 'Gardando...' : 'Gardar'}
                     </button>
-                    <button type="button" onClick={onCancelar} style={estiloBtnSecundario}>
+                    <button type="button" onClick={onCancelar} className="btn btn--ghost btn--sm">
                         Cancelar
                     </button>
                 </div>
@@ -561,7 +514,7 @@ export default function MapaPrincipalPage() {
     }
 
     return (
-        <div className="mapa-principal-page" style={estiloContenedor}>
+        <div className="mapa-principal-page">
 
             {/* Barra de busca flotante */}
             <div className="mapa-principal__buscador">
@@ -626,11 +579,7 @@ export default function MapaPrincipalPage() {
                                     <button
                                         onClick={() => toggleGardar(mapa.id)}
                                         title={mapasGardadosIds.has(mapa.id) ? 'Mapa gardado' : 'Gardar mapa'}
-                                        style={{
-                                            background: 'none', border: 'none', cursor: 'pointer',
-                                            color: mapasGardadosIds.has(mapa.id) ? 'var(--color-primary-500)' : 'var(--color-text-secondary, #888)',
-                                            padding: '4px', display: 'flex', alignItems: 'center',
-                                        }}
+                                        className="btn btn--ghost btn--icon"
                                     >
                                         {mapasGardadosIds.has(mapa.id) ? <BookmarkFilledIcon size={18} /> : <BookmarkIcon size={18} />}
                                     </button>
@@ -638,11 +587,7 @@ export default function MapaPrincipalPage() {
                                 <button
                                     onClick={() => { activarMapaConCategorias(mapa.id); fecharPanel(); }}
                                     title="Ver no mapa"
-                                    style={{
-                                        background: 'none', border: 'none', cursor: 'pointer',
-                                        color: 'var(--color-primary-500)',
-                                        padding: '4px', display: 'flex', alignItems: 'center',
-                                    }}
+                                    className="btn btn--ghost btn--icon"
                                 >
                                     <EyeIcon size={18} />
                                 </button>
@@ -678,18 +623,7 @@ export default function MapaPrincipalPage() {
                                             <button
                                                 key={m.id}
                                                 onClick={() => setModo(m.id)}
-                                                style={{
-                                                    flex: 1,
-                                                    padding: '6px 4px',
-                                                    borderRadius: '8px',
-                                                    border: modo === m.id ? '1px solid var(--color-primary-500)' : '1px solid #ddd',
-                                                    background: modo === m.id ? 'var(--color-primary-500)' : '#f5f4f9',
-                                                    color: modo === m.id ? 'white' : '#5C5585',
-                                                    cursor: 'pointer',
-                                                    fontSize: '13px',
-                                                    transition: 'all 0.2s',
-                                                    fontFamily: 'inherit',
-                                                }}
+                                                className={`panel-rutas__modo-btn${modo === m.id ? ' panel-rutas__modo-btn--activo' : ''}`}
                                             >
                                                 {m.label}
                                             </button>
@@ -703,7 +637,7 @@ export default function MapaPrincipalPage() {
                                         value={inputOrixe}
                                         onChange={e => setInputOrixe(e.target.value)}
                                         onKeyDown={e => e.key === 'Enter' && calcularRuta()}
-                                        style={estiloInputOrixe}
+                                        className="form-input"
                                         autoFocus
                                     />
 
@@ -712,21 +646,21 @@ export default function MapaPrincipalPage() {
                                         <button
                                             onClick={calcularRuta}
                                             disabled={calculandoRuta || !inputOrixe.trim()}
-                                            style={{ ...estiloBtnPrimario, opacity: (calculandoRuta || !inputOrixe.trim()) ? 0.6 : 1 }}
+                                            className="btn btn--primary btn--sm"
                                         >
                                             {calculandoRuta ? 'Calculando...' : 'Calcular ruta'}
                                         </button>
-                                        <button onClick={cancelarDirections} style={estiloBtnSecundario}>
+                                        <button onClick={cancelarDirections} className="btn btn--ghost btn--sm">
                                             Cancelar
                                         </button>
                                     </div>
 
                                     {erroOrixe && (
-                                        <p style={{ margin: '8px 0 0', fontSize: '0.8rem', color: '#DC1B2F' }}>{erroOrixe}</p>
+                                        <p className="panel-rutas__erro">{erroOrixe}</p>
                                     )}
 
                                     {infoRuta && (
-                                        <p style={{ margin: '8px 0 0', fontSize: '0.875rem', color: '#2D2848', fontWeight: 500 }}>
+                                        <p>
                                             📍 {infoRuta.km} km · ⏱ {infoRuta.min} min
                                         </p>
                                     )}
@@ -739,24 +673,11 @@ export default function MapaPrincipalPage() {
 
             {/* Banner de selección de localización */}
             {mapaIdEngadindo && !mostrarFormMarcador && (
-                <div style={{
-                    position: 'absolute', bottom: 'calc(var(--space-12) + 40px)', left: '50%',
-                    transform: 'translateX(-50%)',
-                    zIndex: 1050,
-                    background: 'rgba(124,82,232,0.92)', color: 'white',
-                    padding: '10px 16px', display: 'flex', alignItems: 'center',
-                    gap: '12px', borderRadius: '8px',
-                    fontSize: '0.875rem', fontFamily: 'inherit',
-                    whiteSpace: 'nowrap', boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                }}>
+                <div className="panel-rutas__info">
                     <span>Estás no modo de edición de marcadores</span>
                     <button
                         onClick={cancelarEngadirMarcador}
-                        style={{
-                            background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white',
-                            borderRadius: '6px', padding: '4px 10px', cursor: 'pointer',
-                            fontFamily: 'inherit', fontSize: '0.8rem', flexShrink: 0,
-                        }}
+                        className="panel-rutas__pechar"
                     >
                         Cancelar
                     </button>
@@ -774,10 +695,7 @@ export default function MapaPrincipalPage() {
             )}
 
             {/* Mapa */}
-            <div style={{
-                ...estiloMapa,
-                cursor: (mapaIdEngadindo && !mostrarFormMarcador) ? 'crosshair' : 'default',
-            }}>
+            <div className={`mapa-principal__mapa-wrap${(mapaIdEngadindo && !mostrarFormMarcador) ? ' mapa-principal__mapa-wrap--edicion' : ''}`}>
                 <MapViewer
                     latitude={coords.lat}
                     lonxitude={coords.lng}

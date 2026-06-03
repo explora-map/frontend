@@ -174,3 +174,5 @@
     width: 100%;
   }
 }
+
+.explorar-card__accions-offset { padding-right: var(--space-16); }

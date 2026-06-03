@@ -1,6 +1,11 @@
+/* ============================================================
+   global.css
+   Tokens de deseño, reset, sistema de botóns, formularios,
+   badges, utilitarios e animacións globais.
+   ============================================================ */
 
 /* ============================================================
-   2. Tokens de cor
+   1. Tokens de cor
    ============================================================ */
 :root {
   /* Primary — escala púrpura */
@@ -47,6 +52,13 @@
   --color-info-bg:     #EAF0FD;
   --color-info-border: #A3BEF5;
 
+  /* Alias semánticos de conveniencia */
+  --color-danger:    var(--color-error);
+  --color-danger-bg: var(--color-error-bg);
+
+  /* Token de texto secundario xenérico */
+  --color-text-secondary: var(--color-neutral-500);
+
   /* Marcadores do mapa — RESERVADOS para marcadores, non para UI xeral */
   --marker-red:    #C0392B;
   --marker-orange: #D4600A;
@@ -61,7 +73,7 @@
 }
 
 /* ============================================================
-   3. Tokens de tipografía
+   2. Tokens de tipografía
    ============================================================ */
 :root {
   --font-ui:   'Inter', system-ui, sans-serif;
@@ -93,10 +105,11 @@
   --tracking-tight:  -0.025em;
   --tracking-normal: 0;
   --tracking-wide:   0.025em;
+  --tracking-wider:  0.05em;
 }
 
 /* ============================================================
-   4. Tokens de espaciado (base 4 px)
+   3. Tokens de espaciado (base 4px)
    ============================================================ */
 :root {
   --space-1:  0.25rem;
@@ -113,7 +126,7 @@
 }
 
 /* ============================================================
-   5. Tokens de borde e radio
+   4. Tokens de borde e radio
    ============================================================ */
 :root {
   --radius-sm:   0.25rem;
@@ -129,10 +142,9 @@
 }
 
 /* ============================================================
-   6. Tokens de sombra
+   5. Tokens de sombra
    ============================================================ */
 :root {
-  /* rgba de --color-neutral-900 (#18142E) */
   --shadow-xs: 0 1px 2px rgba(24, 20, 46, 0.05);
   --shadow-sm: 0 1px 3px rgba(24, 20, 46, 0.08), 0 1px 2px rgba(24, 20, 46, 0.06);
   --shadow-md: 0 4px 6px rgba(24, 20, 46, 0.07), 0 2px 4px rgba(24, 20, 46, 0.06);
@@ -140,10 +152,13 @@
   --shadow-xl: 0 20px 25px rgba(24, 20, 46, 0.09), 0 10px 10px rgba(24, 20, 46, 0.04);
 
   --shadow-focus: 0 0 0 3px rgba(124, 82, 232, 0.25);
+
+  /* Overlay de modais e diálogos */
+  --shadow-overlay: rgba(24, 20, 46, 0.55);
 }
 
 /* ============================================================
-   7. Tokens de movemento
+   6. Tokens de movemento
    ============================================================ */
 :root {
   --duration-fast:   120ms;
@@ -157,7 +172,7 @@
 }
 
 /* ============================================================
-   8. Tokens de z-index
+   7. Tokens de z-index
    ============================================================ */
 :root {
   --z-dropdown: 100;
@@ -167,16 +182,74 @@
   --z-modal:    500;
   --z-toast:    600;
   --z-tooltip:  700;
+  --z-panel:   2000;
 }
 
 /* ============================================================
-   9. Tokens de layout
+   8. Tokens de layout
    ============================================================ */
 :root {
   --sidebar-collapsed-width: 56px;
   --sidebar-expanded-width:  240px;
   --topbar-height:           52px;
   --bottom-nav-height:       64px;
+}
+
+/* ============================================================
+   9. Animacións globais reutilizables
+   Definidas aquí unha soa vez para evitar duplicacións.
+   ============================================================ */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes menu-in {
+  from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+@keyframes modal-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)      scale(1); }
+}
+
+@keyframes label-in {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes marcador-busca-fadein {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes campana-swing {
+  0%   { transform: rotate(0deg); }
+  20%  { transform: rotate(12deg); }
+  40%  { transform: rotate(-10deg); }
+  60%  { transform: rotate(7deg); }
+  80%  { transform: rotate(-4deg); }
+  100% { transform: rotate(0deg); }
 }
 
 /* ============================================================
@@ -221,12 +294,7 @@ select {
 }
 
 p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   overflow-wrap: break-word;
 }
 
@@ -267,24 +335,19 @@ button {
 /* ============================================================
    12. Xerarquía tipográfica
    ============================================================ */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-ui);
   color: var(--color-neutral-900);
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tight);
 }
 
-h1 { font-size: var(--text-3xl); font-weight: var(--font-bold); }
-h2 { font-size: var(--text-2xl); font-weight: var(--font-bold); }
-h3 { font-size: var(--text-xl);  font-weight: var(--font-semibold); }
-h4 { font-size: var(--text-lg);  font-weight: var(--font-semibold); }
+h1 { font-size: var(--text-3xl);  font-weight: var(--font-bold); }
+h2 { font-size: var(--text-2xl);  font-weight: var(--font-bold); }
+h3 { font-size: var(--text-xl);   font-weight: var(--font-semibold); }
+h4 { font-size: var(--text-lg);   font-weight: var(--font-semibold); }
 h5 { font-size: var(--text-base); font-weight: var(--font-medium); }
-h6 { font-size: var(--text-sm);  font-weight: var(--font-medium); }
+h6 { font-size: var(--text-sm);   font-weight: var(--font-medium); }
 
 code,
 pre,
@@ -294,6 +357,7 @@ kbd {
 
 /* ============================================================
    13. Sistema de botóns
+   Fonte única de verdade. Non redefinir en ningún outro ficheiro.
    ============================================================ */
 .btn {
   display: inline-flex;
@@ -307,13 +371,14 @@ kbd {
   border: 1px solid transparent;
   transition:
     background-color var(--duration-normal) var(--ease-default),
-    color           var(--duration-normal) var(--ease-default),
-    border-color    var(--duration-normal) var(--ease-default),
-    box-shadow      var(--duration-normal) var(--ease-default),
-    transform       var(--duration-fast)   var(--ease-default);
+    color            var(--duration-normal) var(--ease-default),
+    border-color     var(--duration-normal) var(--ease-default),
+    box-shadow       var(--duration-normal) var(--ease-default),
+    transform        var(--duration-fast)   var(--ease-default);
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .btn:active {
@@ -326,7 +391,7 @@ kbd {
   pointer-events: none;
 }
 
-/* Modificadores de variante */
+/* Variantes */
 .btn--primary {
   background-color: var(--color-primary-500);
   color: var(--color-neutral-50);
@@ -352,6 +417,7 @@ kbd {
 }
 .btn--ghost:hover {
   background-color: var(--color-neutral-100);
+  border-color: var(--color-neutral-300);
 }
 
 .btn--danger {
@@ -362,13 +428,15 @@ kbd {
   background-color: #B5162A;
 }
 
-/* Para accións reversibles */
 .btn--warning {
-  background-color: var(--color-primary-500);
+  background-color: var(--color-warning);
   color: var(--color-neutral-50);
 }
+.btn--warning:hover {
+  background-color: var(--color-primary-600);
+}
 
-/* Modificadores de tamaño */
+/* Tamaños */
 .btn--sm {
   padding: var(--space-1) var(--space-3);
   font-size: var(--text-xs);
@@ -395,6 +463,7 @@ kbd {
 
 /* ============================================================
    14. Sistema de formularios
+   Fonte única de verdade. Non redefinir en ningún outro ficheiro.
    ============================================================ */
 .form-group {
   display: flex;
@@ -421,7 +490,7 @@ kbd {
   font-family: var(--font-ui);
   color: var(--color-neutral-800);
   background-color: var(--color-surface);
-  border: 1px solid var(--color-neutral-300);
+  border: var(--border-default);
   border-radius: var(--radius-md);
   transition:
     border-color var(--duration-normal) var(--ease-default),
@@ -476,6 +545,7 @@ kbd {
 
 /* ============================================================
    15. Sistema de badges
+   Fonte única de verdade. Non redefinir en ningún outro ficheiro.
    ============================================================ */
 .badge {
   display: inline-flex;
@@ -486,8 +556,10 @@ kbd {
   font-weight: var(--font-medium);
   border-radius: var(--radius-full);
   border: 1px solid transparent;
+  white-space: nowrap;
 }
 
+/* Visibilidade de mapa */
 .badge--publico {
   background-color: var(--color-success-bg);
   color: var(--color-success);
@@ -500,6 +572,7 @@ kbd {
   border-color: var(--color-warning-border);
 }
 
+/* Estados de convite */
 .badge--pendente {
   background-color: var(--color-warning-bg);
   color: var(--color-warning);
@@ -530,8 +603,27 @@ kbd {
   border-color: var(--color-neutral-200);
 }
 
+/* Roles de mapa — substitúen o obxecto ROL_BADGE inline de MapaDetallePage */
+.badge--rol-membro {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+  border-color: var(--color-info-border);
+}
+
+.badge--rol-colaboradora {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+  border-color: var(--color-primary-300);
+}
+
+.badge--rol-admin {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-600);
+  border-color: var(--color-primary-400);
+}
+
 /* ============================================================
-   16. Clases utilitarias básicas
+   16. Clases utilitarias
    ============================================================ */
 .sr-only,
 .visually-hidden {
@@ -550,6 +642,16 @@ kbd {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Usado no fallback de Suspense en main.jsx */
+.app-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: var(--font-ui);
+  color: var(--color-neutral-700);
 }
 
 /* ============================================================
@@ -583,7 +685,7 @@ kbd {
   --color-surface-elevated: #2D2848;
   --color-bg:               #18142E;
 
-  /* Semánticas — mantéñense pero lixeiramente axustadas */
+  /* Semánticas axustadas */
   --color-success:        #4CAF74;
   --color-success-bg:     #0D2B18;
   --color-success-border: #1A5C30;
@@ -607,6 +709,7 @@ kbd {
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.45), 0 10px 10px rgba(0, 0, 0, 0.3);
   --shadow-focus: 0 0 0 3px rgba(179, 157, 245, 0.3);
+  --shadow-overlay: rgba(0, 0, 0, 0.7);
 
   /* Bordos */
   --border-default: 1px solid var(--color-neutral-300);

@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import useSidebarStore from '../store/useSidebarStore';
 import useIdiomaStore from '../store/useIdiomaStore';
+import { HamburgerIcon, MoonIcon, SunIcon } from './Iconas';
 
 /* ---- Iconas SVG inline (Feather-style, 24×24) ---- */
 
@@ -126,18 +127,13 @@ export default function Sidebar({ onVisualizarClick }) {
                     onClick={toggleSidebar}
                     aria-label={expanded ? 'Colapsar menú' : 'Expandir menú'}
                 >
-                    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2} width={20} height={20}>
-                        <line x1="3" y1="6" x2="21" y2="6" />
-                        <line x1="3" y1="12" x2="21" y2="12" />
-                        <line x1="3" y1="18" x2="21" y2="18" />
-                    </svg>
+                    <HamburgerIcon size={20} />
                 </button>
                 {expanded && (
                     <Link
                         to="/"
                         className="sidebar__logo"
                         aria-label="Ir á páxina principal"
-                        style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}
                     >
                         <div className="sidebar__logo-icona" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -171,7 +167,6 @@ export default function Sidebar({ onVisualizarClick }) {
                                 to="/perfil"
                                 className="sidebar__link"
                                 aria-label="Ir ao perfil"
-                                style={{ textDecoration: 'none', cursor: 'pointer' }}
                             >
                                 <span className="sidebar__avatar" aria-hidden="true" title={username}>
                                     {username?.[0]?.toUpperCase()}
