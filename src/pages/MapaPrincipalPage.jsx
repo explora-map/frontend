@@ -80,7 +80,7 @@ function FormNovaMarcador({ coords, categorias, onGardar, onCancelar }) {
             <div className="panel-rutas__destino">
                 Novo marcador
             </div>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <form onSubmit={handleSubmit} className="panel-rutas__corpo">
                 <input
                     type="text"
                     placeholder="Nome do marcador..."
@@ -104,7 +104,7 @@ function FormNovaMarcador({ coords, categorias, onGardar, onCancelar }) {
                 {erro && (
                     <p className="panel-rutas__erro">{erro}</p>
                 )}
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div className="panel-rutas__fila">
                     <button
                         type="submit"
                         disabled={gardando}
@@ -528,7 +528,7 @@ export default function MapaPrincipalPage() {
                     {/* Cabeceira con tempo */}
                     <div className="panel-cidade__cabeceira">
                         {panelCidade === 'cargando' ? (
-                            <p className="panel-cidade__cargando" style={{ margin: 0 }}>
+                            <p className="panel-cidade__cargando">
                                 Cargando...
                             </p>
                         ) : (
@@ -541,7 +541,7 @@ export default function MapaPrincipalPage() {
                                 )}
                             </div>
                         )}
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '4px', flexShrink: 0, marginLeft: '8px' }}>
+                        <div className="panel-cidade__tempo-wrapper">
                             {panelCidade !== 'cargando' && panelCidade.temp !== null && (
                                 <span className="panel-cidade__tempo-principal">
                                     {panelCidade.emoji} {panelCidade.temp}°C
@@ -618,7 +618,7 @@ export default function MapaPrincipalPage() {
                                 <div className="panel-cidade__directions-form">
 
                                     {/* Selector de modo de transporte */}
-                                    <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                                    <div className="panel-cidade__directions-fila">
                                         {MODOS.map(m => (
                                             <button
                                                 key={m.id}
@@ -642,7 +642,7 @@ export default function MapaPrincipalPage() {
                                     />
 
                                     {/* Botóns de acción */}
-                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                    <div className="panel-cidade__fila">
                                         <button
                                             onClick={calcularRuta}
                                             disabled={calculandoRuta || !inputOrixe.trim()}
@@ -786,7 +786,7 @@ export default function MapaPrincipalPage() {
                                 placeholder="Descrición"
                                 disabled={gardandoEditPanel}
                             />
-                            {erroEditPanel && <p style={{ color: 'var(--color-error)', fontSize: '0.8rem' }}>{erroEditPanel}</p>}
+                            {erroEditPanel && <p className="panel-rutas__erro">{erroEditPanel}</p>}
                             <div className="marcador-popup-flotante__accions">
                                 <button
                                     className="btn btn--ghost btn--sm"

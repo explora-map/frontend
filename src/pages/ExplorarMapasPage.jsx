@@ -163,8 +163,8 @@ export default function ExplorarMapasPage() {
             {!cargando && mapas.length > 0 && (
                 <div className="explorar-page__grid">
                     {mapas.map(mapa => (
-                        <div key={mapa.id} className="explorar-card" style={{ position: 'relative' }}>
-                            <div style={{ position: 'absolute', top: '8px', right: '8px', display: 'flex', gap: '4px', alignItems: 'center' }}>
+                        <div key={mapa.id} className="explorar-card explorar-card--relativo">
+                            <div className="explorar-card__accions">
                                 {isAuthenticated && mapa.creadoPor !== username && (
                                     <button
                                         onClick={(e) => { e.stopPropagation(); toggleGardar(mapa.id); }}
@@ -184,11 +184,7 @@ export default function ExplorarMapasPage() {
                                         navigate('/');
                                     }}
                                     title="Ver no mapa"
-                                    style={{
-                                        background: 'none', border: 'none', cursor: 'pointer',
-                                        color: 'var(--color-primary-500)',
-                                        padding: '4px', display: 'flex', alignItems: 'center',
-                                    }}
+                                    className="btn btn--ghost btn--icon btn--icon-sm"
                                 >
                                     <EyeIcon size={18} />
                                 </button>

@@ -164,7 +164,7 @@ export default function MapaCrearPage() {
                         <label className="field__label">
                             Localización no mapa <span className="field__required" aria-hidden="true"> *</span>
                         </label>
-                        <div style={{ marginBottom: 'var(--space-3)' }}>
+                        <div className="mapa-form__hint">
                             <MapSearchBar
                                 onLocationSelect={handleBuscaLocalizacion}
                                 placeholder="Buscar localización do mapa…"

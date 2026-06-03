@@ -91,6 +91,14 @@
     color: var(--color-success);
 }
 
+.auth-card__centrado {
+    margin: 0 auto;
+}
+
+.auth-submit--full {
+    width: 100%;
+}
+
 /* ---- Botón de envío ---- */
 .auth-submit {
     display: flex;

@@ -184,6 +184,16 @@
     flex-shrink: 0;
 }
 
+.notificacion-item__erro {
+    font-size: var(--text-xs);
+    color: var(--color-error);
+    width: 100%;
+}
+
+.notificacions-panel__lista {
+    list-style: none;
+}
+
 @media (max-width: 640px) {
     .notificacions-panel {
         width: calc(100vw - var(--space-8));

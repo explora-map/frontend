@@ -198,6 +198,36 @@
     flex-direction: column;
 }
 
+.panel-rutas__corpo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.panel-rutas__fila {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.panel-cidade__tempo-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1);
+    flex-shrink: 0;
+    margin-left: var(--space-2);
+}
+
+.panel-cidade__directions-fila {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+}
+
+.panel-cidade__fila {
+    display: flex;
+    gap: var(--space-2);
+}
+
 /* ---- Buscador flotante ---- */
 .mapa-principal__buscador {
     position: absolute;
@@ -393,5 +423,7 @@
 .mapa-principal-page {
     position: relative;
     height: 100vh;
+    margin: 0;
+    padding: 0;
     overflow: hidden;
 }

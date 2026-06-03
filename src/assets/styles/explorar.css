@@ -96,6 +96,19 @@
   }
 }
 
+.explorar-card--relativo {
+  position: relative;
+}
+
+.explorar-card__accions {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+}
+
 .explorar-card {
   border: 1px solid var(--color-neutral-200);
   border-radius: var(--radius-lg);

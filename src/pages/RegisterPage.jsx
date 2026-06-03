@@ -156,7 +156,7 @@ export default function RegisterPage() {
         return (
             <div className="auth-page">
                 <div className="auth-card">
-                    <div className="verificar-card__icona verificar-card__icona--ok" style={{ margin: '0 auto' }} aria-hidden="true">
+                    <div className="verificar-card__icona verificar-card__icona--ok auth-card__centrado" aria-hidden="true">
                         <span className="tick-icon" />
                     </div>
                     <h1 className="auth-card__titulo auth-card__centro">
@@ -166,8 +166,7 @@ export default function RegisterPage() {
                         Enviámosche un correo de verificación. Preme na ligazón para activar a túa conta.
                     </p>
                     <button
-                        className="btn btn--secondary"
-                        style={{ width: '100%' }}
+                        className="btn btn--secondary auth-submit--full"
                         onClick={() => navigate('/login')}
                     >
                         Ir ao login

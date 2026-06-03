@@ -115,7 +115,7 @@ export default function MapaCard({ mapa, onEliminar, onVisibilidadeCambiada, acc
           </span>
         )}
 
-        <div style={{ position: 'relative' }}>
+        <div className="mapa-card__kebab-wrapper">
           <button
             ref={btnRef}
             className="btn btn--icon btn--ghost mapa-card__kebab-trigger"
@@ -147,7 +147,7 @@ export default function MapaCard({ mapa, onEliminar, onVisibilidadeCambiada, acc
             {mapa.nomeLocalizacion}
           </p>
         )}
-        {erro && <p className="form-error" style={{ marginTop: '8px' }}>{erro}</p>}
+        {erro && <p className="form-error mapa-card__footer--offset">{erro}</p>}
       </div>
 
       {accionExtra && (

@@ -100,7 +100,7 @@ function NotificacionItem({ notificacion }) {
                             {t('convites.botonRexeitar')}
                         </button>
                         {erroAccion && (
-                            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-error)', width: '100%' }}>
+                            <p className="notificacion-item__erro">
                                 {erroAccion}
                             </p>
                         )}
@@ -227,7 +227,7 @@ export default function Notificacions() {
                         {notificacions.length === 0 ? (
                             <p className="notificacions-panel__baleiro">{t('notificacions.baleiro')}</p>
                         ) : (
-                            <ul style={{ listStyle: 'none' }}>
+                            <ul className="notificacions-panel__lista">
                                 {notificacions.map((n) => (
                                     <NotificacionItem key={n.id} notificacion={n} />
                                 ))}

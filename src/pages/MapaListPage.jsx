@@ -197,7 +197,7 @@ export default function MapaListPage() {
                                         key={mapa.id}
                                         mapa={mapa}
                                         accionExtra={
-                                            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                                            <div className="mapa-list__tabs-accions">
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); handleDesgardar(mapa.id); }}
                                                     title={t('mapas.botonDesgardar')}
