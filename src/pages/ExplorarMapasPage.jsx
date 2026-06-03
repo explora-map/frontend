@@ -25,7 +25,7 @@ export default function ExplorarMapasPage() {
     const [mapasGardadosIds, setMapasGardadosIds] = useState(new Set());
     const [buscaActiva, setBuscaActiva] = useState('');
     const [mapas, setMapas] = useState([]);
-    const [cargando, setCargando] = useState(false);
+    const [cargando, setCargando] = useState(true);
 
     const cargarMapas = useCallback(async (lat, lon, radius) => {
         setCargando(true);
@@ -49,8 +49,10 @@ export default function ExplorarMapasPage() {
                     const { latitude: lat, longitude: lon } = pos.coords;
                     cargarMapas(lat, lon, RADIUS_BUSCA);
                 },
-                () => {}
+                () => { setCargando(false); }
             );
+        } else {
+            setCargando(false);
         }
     }, [cargarMapas]);
 
