@@ -286,9 +286,6 @@
     z-index: var(--z-tooltip);
 }
 
-    to   { opacity: 1; transform: scale(1)    translateY(0); }
-}
-
 .mapa-card__kebab-item {
     display: flex;
     align-items: center;
@@ -814,10 +811,6 @@
     }
 }
 
-/* ---- FormModal ---- */
-    to   { opacity: 1; transform: translateY(0)      scale(1);    }
-}
-
 .form-modal-overlay {
     position: fixed;
     inset: 0;
@@ -995,9 +988,6 @@
 }
 
 /* ---- Marker address search (AddressSearchField in modals) ---- */
-    to   { opacity: 1; transform: translateY(0); }
-}
-
 .marcador-busca {
     position: relative;
 }
