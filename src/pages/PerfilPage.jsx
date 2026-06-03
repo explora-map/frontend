@@ -18,8 +18,11 @@ export default function PerfilPage() {
     nome: '',
     username: '',
     correo: '',
-    password: '',
+    contrasinelActual: '',
+    contrasinelNovo: '',
+    contrasinelNovoConfirmacion: '',
   });
+  const [erros, setErros] = useState({});
   const [cargando, setCargando] = useState(true);
   const [gardando, setGardando] = useState(false);
   const [gardado, setGardado] = useState(false);
@@ -35,7 +38,7 @@ export default function PerfilPage() {
   const [erroEliminar, setErroEliminar] = useState('');
 
   // Password strength
-  const passwordStrength = usePasswordStrength(formData.password ?? '', {
+  const passwordStrength = usePasswordStrength(formData.contrasinelNovo ?? '', {
     weak: t('contrasinal.debil'),
     moderate: t('contrasinal.moderado'),
     strong: t('contrasinal.forte'),
@@ -50,7 +53,9 @@ export default function PerfilPage() {
           nome: datos.nome ?? '',
           username: datos.username ?? '',
           correo: datos.correo ?? '',
-          password: '',
+          contrasinelActual: '',
+          contrasinelNovo: '',
+          contrasinelNovoConfirmacion: '',
         });
       } catch {
         setErroForm(t('erros.xenerico'));
@@ -79,27 +84,54 @@ export default function PerfilPage() {
   function handleChange(e) {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    setErros(prev => ({ ...prev, [name]: undefined }));
     setErroForm('');
     setGardado(false);
   }
 
+  function validate(fields) {
+    const erros = {};
+    const quereChangar = fields.contrasinelNovo.trim() !== '';
+    if (quereChangar) {
+      if (!fields.contrasinelActual.trim()) {
+        erros.contrasinelActual = t('perfil.erros.contrasinelActualObrigatorio');
+      }
+      if (fields.contrasinelNovo.length < 8) {
+        erros.contrasinelNovo = t('perfil.erros.contrasinelCurto');
+      }
+      if (fields.contrasinelNovo === fields.contrasinelActual) {
+        erros.contrasinelNovo = t('perfil.erros.contrasinelIgualAoActual');
+      }
+      if (fields.contrasinelNovo !== fields.contrasinelNovoConfirmacion) {
+        erros.contrasinelNovoConfirmacion = t('perfil.erros.contrasinelNonCoinicide');
+      }
+    }
+    return erros;
+  }
+
   async function handleGardar(e) {
     e.preventDefault();
+
+    const validErros = validate(formData);
+    if (Object.keys(validErros).length > 0) {
+      setErros(validErros);
+      return;
+    }
+
     setGardando(true);
     setErroForm('');
+    setErros({});
     setGardado(false);
 
-    // Only send non-empty fields
-    const payload = {};
-    if (formData.nome.trim()) payload.nome = formData.nome.trim();
-    if (formData.username.trim()) payload.username = formData.username.trim();
-    if (formData.correo.trim()) payload.correo = formData.correo.trim();
-    if (formData.password.trim()) payload.password = formData.password.trim();
-
     try {
-      await actualizarPerfil(payload);
+      await actualizarPerfil(formData);
       setGardado(true);
-      setFormData(prev => ({ ...prev, password: '' }));
+      setFormData(prev => ({
+        ...prev,
+        contrasinelActual: '',
+        contrasinelNovo: '',
+        contrasinelNovoConfirmacion: '',
+      }));
       setTimeout(() => setGardado(false), 3000);
     } catch (err) {
       setErroForm(err.response?.data?.message || t('erros.xenerico'));
@@ -242,17 +274,34 @@ export default function PerfilPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="perfil-password">
-              {t('perfil.campoClave')}
+            <label className="form-label" htmlFor="perfil-contrasinelActual">
+              {t('perfil.contrasinelActual')}
             </label>
             <input
-              id="perfil-password"
-              name="password"
+              id="perfil-contrasinelActual"
+              name="contrasinelActual"
               type="password"
               className="form-input"
-              value={formData.password}
+              value={formData.contrasinelActual}
               onChange={handleChange}
-              placeholder={t('perfil.placeholderClave')}
+              autoComplete="current-password"
+            />
+            {erros.contrasinelActual && (
+              <p className="form-error" role="alert">{erros.contrasinelActual}</p>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="perfil-contrasinelNovo">
+              {t('perfil.contrasinelNovo')}
+            </label>
+            <input
+              id="perfil-contrasinelNovo"
+              name="contrasinelNovo"
+              type="password"
+              className="form-input"
+              value={formData.contrasinelNovo}
+              onChange={handleChange}
               autoComplete="new-password"
             />
             {passwordStrength.visible && (
@@ -267,6 +316,27 @@ export default function PerfilPage() {
                   {passwordStrength.label}
                 </span>
               </div>
+            )}
+            {erros.contrasinelNovo && (
+              <p className="form-error" role="alert">{erros.contrasinelNovo}</p>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="perfil-contrasinelNovoConfirmacion">
+              {t('perfil.contrasinelNovoConfirmacion')}
+            </label>
+            <input
+              id="perfil-contrasinelNovoConfirmacion"
+              name="contrasinelNovoConfirmacion"
+              type="password"
+              className="form-input"
+              value={formData.contrasinelNovoConfirmacion}
+              onChange={handleChange}
+              autoComplete="new-password"
+            />
+            {erros.contrasinelNovoConfirmacion && (
+              <p className="form-error" role="alert">{erros.contrasinelNovoConfirmacion}</p>
             )}
           </div>
 

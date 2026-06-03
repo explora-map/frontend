@@ -202,6 +202,9 @@
     "campoCorreo": "Correo electrónico",
     "campoClave": "Novo contrasinal",
     "placeholderClave": "Deixa en branco para non cambiar",
+    "contrasinelActual": "Contrasinal actual",
+    "contrasinelNovo": "Novo contrasinal",
+    "contrasinelNovoConfirmacion": "Confirmar novo contrasinal",
     "botonGardar": "Gardar cambios",
     "botonEliminarConta": "Eliminar conta",
     "confirmEliminarTitulo": "Eliminar conta",
@@ -212,7 +215,13 @@
     "zonaPerigo": "Zona de perigo",
     "funcionalidadeNonDisponible": "Funcionalidade non dispoñible aínda.",
     "convidouteAoMapa": "convidoute ao mapa",
-    "accionsTitulo": "Accións"
+    "accionsTitulo": "Accións",
+    "erros": {
+      "contrasinelActualObrigatorio": "Debes indicar o contrasinal actual.",
+      "contrasinelCurto": "O contrasinal debe ter polo menos 8 caracteres.",
+      "contrasinelIgualAoActual": "O novo contrasinal debe ser diferente ao actual.",
+      "contrasinelNonCoinicide": "Os contrasineis novos non coinciden."
+    }
   },
   "notificacions": {
     "titulo": "Notificacións",

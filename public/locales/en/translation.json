@@ -202,6 +202,9 @@
     "campoCorreo": "Email address",
     "campoClave": "New password",
     "placeholderClave": "Leave blank to keep current password",
+    "contrasinelActual": "Current password",
+    "contrasinelNovo": "New password",
+    "contrasinelNovoConfirmacion": "Confirm new password",
     "botonGardar": "Save changes",
     "botonEliminarConta": "Delete account",
     "confirmEliminarTitulo": "Delete account",
@@ -212,7 +215,13 @@
     "zonaPerigo": "Danger zone",
     "funcionalidadeNonDisponible": "Feature not yet available.",
     "convidouteAoMapa": "invited you to the map",
-    "accionsTitulo": "Actions"
+    "accionsTitulo": "Actions",
+    "erros": {
+      "contrasinelActualObrigatorio": "You must enter your current password.",
+      "contrasinelCurto": "Password must be at least 8 characters.",
+      "contrasinelIgualAoActual": "New password must be different from the current one.",
+      "contrasinelNonCoinicide": "New passwords do not match."
+    }
   },
   "notificacions": {
     "titulo": "Notifications",
