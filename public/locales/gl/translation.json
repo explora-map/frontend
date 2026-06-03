@@ -281,5 +281,9 @@
     "eliminar": "Eliminar",
     "facerPrivado": "Facer privado",
     "facerPublico": "Facer público"
+  },
+  "accesibilidade": {
+    "mostrarContrasinal": "Mostrar contrasinal",
+    "ocultarContrasinal": "Ocultar contrasinal"
   }
 }

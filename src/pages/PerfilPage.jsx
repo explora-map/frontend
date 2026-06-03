@@ -37,6 +37,11 @@ export default function PerfilPage() {
   const [eliminando, setEliminando] = useState(false);
   const [erroEliminar, setErroEliminar] = useState('');
 
+  // Password visibility toggles
+  const [mostrarActual, setMostrarActual] = useState(false);
+  const [mostrarNovo, setMostrarNovo] = useState(false);
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+
   // Password strength
   const passwordStrength = usePasswordStrength(formData.contrasinelNovo ?? '', {
     weak: t('contrasinal.debil'),
@@ -277,15 +282,25 @@ export default function PerfilPage() {
             <label className="form-label" htmlFor="perfil-contrasinelActual">
               {t('perfil.contrasinelActual')}
             </label>
-            <input
-              id="perfil-contrasinelActual"
-              name="contrasinelActual"
-              type="password"
-              className="form-input"
-              value={formData.contrasinelActual}
-              onChange={handleChange}
-              autoComplete="current-password"
-            />
+            <div className="form-input-wrapper">
+              <input
+                id="perfil-contrasinelActual"
+                name="contrasinelActual"
+                type={mostrarActual ? 'text' : 'password'}
+                className="form-input form-input--has-ollo"
+                value={formData.contrasinelActual}
+                onChange={handleChange}
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="btn-ollo"
+                onClick={() => setMostrarActual(v => !v)}
+                aria-label={mostrarActual ? t('accesibilidade.ocultarContrasinal') : t('accesibilidade.mostrarContrasinal')}
+              >
+                {mostrarActual ? '🙈' : '👁️'}
+              </button>
+            </div>
             {erros.contrasinelActual && (
               <p className="form-error" role="alert">{erros.contrasinelActual}</p>
             )}
@@ -295,15 +310,25 @@ export default function PerfilPage() {
             <label className="form-label" htmlFor="perfil-contrasinelNovo">
               {t('perfil.contrasinelNovo')}
             </label>
-            <input
-              id="perfil-contrasinelNovo"
-              name="contrasinelNovo"
-              type="password"
-              className="form-input"
-              value={formData.contrasinelNovo}
-              onChange={handleChange}
-              autoComplete="new-password"
-            />
+            <div className="form-input-wrapper">
+              <input
+                id="perfil-contrasinelNovo"
+                name="contrasinelNovo"
+                type={mostrarNovo ? 'text' : 'password'}
+                className="form-input form-input--has-ollo"
+                value={formData.contrasinelNovo}
+                onChange={handleChange}
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="btn-ollo"
+                onClick={() => setMostrarNovo(v => !v)}
+                aria-label={mostrarNovo ? t('accesibilidade.ocultarContrasinal') : t('accesibilidade.mostrarContrasinal')}
+              >
+                {mostrarNovo ? '🙈' : '👁️'}
+              </button>
+            </div>
             {passwordStrength.visible && (
               <div className="password-strength"
                    style={{ '--strength-pct': `${passwordStrength.pct}%`,
@@ -326,15 +351,25 @@ export default function PerfilPage() {
             <label className="form-label" htmlFor="perfil-contrasinelNovoConfirmacion">
               {t('perfil.contrasinelNovoConfirmacion')}
             </label>
-            <input
-              id="perfil-contrasinelNovoConfirmacion"
-              name="contrasinelNovoConfirmacion"
-              type="password"
-              className="form-input"
-              value={formData.contrasinelNovoConfirmacion}
-              onChange={handleChange}
-              autoComplete="new-password"
-            />
+            <div className="form-input-wrapper">
+              <input
+                id="perfil-contrasinelNovoConfirmacion"
+                name="contrasinelNovoConfirmacion"
+                type={mostrarConfirmacion ? 'text' : 'password'}
+                className="form-input form-input--has-ollo"
+                value={formData.contrasinelNovoConfirmacion}
+                onChange={handleChange}
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="btn-ollo"
+                onClick={() => setMostrarConfirmacion(v => !v)}
+                aria-label={mostrarConfirmacion ? t('accesibilidade.ocultarContrasinal') : t('accesibilidade.mostrarContrasinal')}
+              >
+                {mostrarConfirmacion ? '🙈' : '👁️'}
+              </button>
+            </div>
             {erros.contrasinelNovoConfirmacion && (
               <p className="form-error" role="alert">{erros.contrasinelNovoConfirmacion}</p>
             )}

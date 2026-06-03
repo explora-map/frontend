@@ -3,7 +3,8 @@
 // Accepts an `error` string — when truthy, shows it below the field
 // and applies error styling.
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function FormInput({
     id,
@@ -18,6 +19,11 @@ export default function FormInput({
     required = false,
     disabled = false,
 }) {
+    const { t } = useTranslation();
+    const [mostrar, setMostrar] = useState(false);
+    const isPassword = type === 'password';
+    const effectiveType = isPassword ? (mostrar ? 'text' : 'password') : type;
+
     return (
         <div className="field">
             <label htmlFor={id} className="field__label">
@@ -26,20 +32,32 @@ export default function FormInput({
                     <span className="field__required" aria-hidden="true"> *</span>
                 )}
             </label>
-            <input
-                id={id}
-                type={type}
-                className={`field__input${error ? ' field__input--error' : ''}`}
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                placeholder={placeholder}
-                autoComplete={autoComplete}
-                required={required}
-                disabled={disabled}
-                aria-invalid={error ? 'true' : undefined}
-                aria-describedby={error ? `${id}-error` : undefined}
-            />
+            <div className="field__input-wrapper">
+                <input
+                    id={id}
+                    type={effectiveType}
+                    className={`field__input${error ? ' field__input--error' : ''}${isPassword ? ' field__input--has-ollo' : ''}`}
+                    value={value}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    placeholder={placeholder}
+                    autoComplete={autoComplete}
+                    required={required}
+                    disabled={disabled}
+                    aria-invalid={error ? 'true' : undefined}
+                    aria-describedby={error ? `${id}-error` : undefined}
+                />
+                {isPassword && (
+                    <button
+                        type="button"
+                        className="btn-ollo"
+                        onClick={() => setMostrar(v => !v)}
+                        aria-label={mostrar ? t('accesibilidade.ocultarContrasinal') : t('accesibilidade.mostrarContrasinal')}
+                    >
+                        {mostrar ? '🙈' : '👁️'}
+                    </button>
+                )}
+            </div>
             {error && (
                 <p id={`${id}-error`} className="field__error" role="alert">
                     {error}

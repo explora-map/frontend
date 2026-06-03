@@ -281,5 +281,9 @@
     "eliminar": "Delete",
     "facerPrivado": "Make private",
     "facerPublico": "Make public"
+  },
+  "accesibilidade": {
+    "mostrarContrasinal": "Show password",
+    "ocultarContrasinal": "Hide password"
   }
 }
