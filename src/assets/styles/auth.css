@@ -23,31 +23,7 @@
 }
 
 /* ---- Header ---- */
-.auth-card__logo {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    margin-bottom: var(--space-6);
-}
-
-.auth-card__logo-icon {
-    width: 36px;
-    height: 36px;
-    background: var(--color-primary-500);
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-neutral-50);
-    font-size: var(--text-lg);
-}
-
-.auth-card__logo-name {
-    font-size: var(--text-lg);
-    font-weight: var(--font-bold);
-    color: var(--color-neutral-900);
-    letter-spacing: var(--tracking-tight);
-}
+.auth-logo { height: 48px; width: auto; display: block; margin: 0 auto 1.5rem; }
 
 .auth-card__title {
     font-size: var(--text-xl);

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import useTemaStore from '../store/useTemaStore';
 import { useAuth } from '../hooks/useAuth';
 import Notificacions from './Notificacions';
+import AppLogo from './AppLogo';
 
 export default function MobileHeader() {
     const navigate = useNavigate();
@@ -23,24 +24,7 @@ export default function MobileHeader() {
                 onKeyDown={e => e.key === 'Enter' && navigate('/')}
                 aria-label="Explora — ir á páxina principal"
             >
-                <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                >
-                    <circle cx="12" cy="10" r="3" fill="var(--color-primary-500)" />
-                    <path
-                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"
-                        fill="var(--color-primary-100)"
-                        stroke="var(--color-primary-500)"
-                        strokeWidth="1.5"
-                        strokeLinejoin="round"
-                    />
-                </svg>
-                <span className="mobile-header__texto">Explora</span>
+                <AppLogo className="mobile-header-logo" />
             </div>
             <div className="mobile-header__accions">
                 <button

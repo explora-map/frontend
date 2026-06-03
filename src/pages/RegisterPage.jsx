@@ -15,6 +15,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { register } from '../services/authApi';
 import FormInput from '../components/FormInput';
+import AppLogo from '../components/AppLogo';
 import usePasswordStrength from '../hooks/usePasswordStrength';
 import '../assets/styles/auth.css';
 
@@ -179,10 +180,7 @@ export default function RegisterPage() {
     return (
         <div className="auth-page">
             <div className="auth-card">
-                <div className="auth-card__logo">
-                    <div className="auth-card__logo-icon">🗺</div>
-                    <span className="auth-card__logo-name">Explora Map</span>
-                </div>
+                <AppLogo className="auth-logo" />
 
                 <h1 className="auth-card__title">{t('auth.rexistro.titulo')}</h1>
                 <p className="auth-card__subtitle">

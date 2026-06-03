@@ -10,6 +10,7 @@ import { useAuth } from '../hooks/useAuth';
 import useSidebarStore from '../store/useSidebarStore';
 import useIdiomaStore from '../store/useIdiomaStore';
 import { HamburgerIcon, MoonIcon, SunIcon } from './Iconas';
+import AppLogo from './AppLogo';
 
 /* ---- Iconas SVG inline (Feather-style, 24×24) ---- */
 
@@ -135,13 +136,7 @@ export default function Sidebar({ onVisualizarClick }) {
                         className="sidebar__logo"
                         aria-label="Ir á páxina principal"
                     >
-                        <div className="sidebar__logo-icona" aria-hidden="true">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="12" cy="10" r="3" fill="var(--color-primary-500)" />
-                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="var(--color-primary-100)" stroke="var(--color-primary-500)" strokeWidth="1.5" strokeLinejoin="round" />
-                            </svg>
-                        </div>
-                        <span className="sidebar__logo-texto" aria-hidden="true">Explora</span>
+                        <AppLogo className="sidebar-logo" />
                     </Link>
                 )}
                 {!expanded && (

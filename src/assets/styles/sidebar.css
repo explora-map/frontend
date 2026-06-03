@@ -194,6 +194,8 @@
     margin: var(--space-2);
 }
 
+.sidebar-logo { height: 32px; width: auto; display: block; }
+
 /* ---- Botón hamburger ---- */
 .sidebar__hamburger {
     display: flex;
@@ -360,6 +362,8 @@
         color: var(--color-primary-500);
         letter-spacing: var(--tracking-tight);
     }
+
+    .mobile-header-logo { height: 28px; width: auto; display: block; }
 
     .mobile-header__accions {
         display: flex;
