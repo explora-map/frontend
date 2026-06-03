@@ -2,8 +2,9 @@
 //
 // Axios instance pre-configured with:
 //  1. Authorization header injection from in-memory token store
-//  2. 401 response interceptor: attempts one silent token refresh,
-//     retries the original request, then redirects to /login on failure.
+//  2. 401 response interceptor: attempts one silent token refresh via the
+//     HttpOnly refresh_token cookie, retries the original request, then
+//     redirects to /login on failure.
 //
 // WHY IN-MEMORY TOKEN STORAGE (not localStorage)?
 // -----------------------------------------------
@@ -15,47 +16,30 @@
 //
 // In-memory storage (a JS module variable) is only accessible to this
 // application's own code. An XSS attacker executing in the same tab
-// COULD still call getAccessToken(), but:
-//   a) The window of opportunity is the single page session (no persistence).
-//   b) HttpOnly cookies for the refresh token would be even safer, but
-//      require backend cooperation. For this sprint we store the refresh
-//      token in memory too, accepting that trade-off consciously.
+// COULD still call getAccessToken(), but the window of opportunity is
+// limited to the single page session (no persistence).
 //
-// The refresh token lives longer and is therefore higher-risk. In a
-// production hardening pass, move it to an HttpOnly, Secure, SameSite=Strict
-// cookie set by the backend — that way JS cannot access it at all.
+// The refresh token is stored in an HttpOnly, Secure, SameSite=Strict
+// cookie set by the backend — JS cannot access it at all.
 
 import axios from 'axios';
 import { refreshAccessToken } from './authApi';
 
 // ------------------------------------------------------------------ //
-//  In-memory token store
-//  Module-level variables: persist for the lifetime of the page session.
-//  Cleared on page reload (intentional — forces re-login on refresh,
-//  which is acceptable for a mapping app where sessions are intentional).
+//  In-memory access token store
+//  Module-level variable: persists for the lifetime of the page session.
+//  Cleared on page reload — silent recovery via the HttpOnly cookie refresh.
 // ------------------------------------------------------------------ //
 let _accessToken = null;
-let _refreshToken = null;
-let _tokenExpiration = null;
-let _username = null;
 
-export function setTokens({ accessToken, refreshToken, tokenExpiration, username }) {
+export function setTokens(accessToken) {
     _accessToken = accessToken;
-    _refreshToken = refreshToken;
-    _tokenExpiration = tokenExpiration;
-    _username = username;
 }
 
 export function getAccessToken() { return _accessToken; }
-export function getRefreshToken() { return _refreshToken; }
-export function getTokenExpiration() { return _tokenExpiration; }
-export function getUsername() { return _username; }
 
 export function clearTokens() {
     _accessToken = null;
-    _refreshToken = null;
-    _tokenExpiration = null;
-    _username = null;
 }
 
 export function isAuthenticated() {
@@ -67,6 +51,7 @@ export function isAuthenticated() {
 // ------------------------------------------------------------------ //
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
+    withCredentials: true,
 });
 
 // REQUEST INTERCEPTOR — attach Bearer token to every outgoing request
@@ -108,15 +93,6 @@ axiosInstance.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            const storedRefreshToken = getRefreshToken();
-
-            // No refresh token stored → session is dead → go to login
-            if (!storedRefreshToken) {
-                clearTokens();
-                window.location.href = '/login';
-                return Promise.reject(error);
-            }
-
             if (isRefreshing) {
                 // Another request is already refreshing.
                 // Queue this request to retry once the refresh completes.
@@ -133,17 +109,11 @@ axiosInstance.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                const data = await refreshAccessToken(storedRefreshToken);
-                // Persist the new tokens
-                setTokens({
-                    accessToken: data.accessToken,
-                    refreshToken: data.refreshToken,
-                    tokenExpiration: data.tokenExpiration,
-                    username: getUsername(), // username does not change on refresh
-                });
+                // The HttpOnly cookie is sent automatically — no body needed.
+                const data = await refreshAccessToken();
+                setTokens(data.accessToken);
 
-                // Notify the AuthContext that tokens changed so React state updates.
-                // We fire a custom DOM event; AuthContext listens for it.
+                // Notify AuthContext that tokens changed so React state updates.
                 window.dispatchEvent(new CustomEvent('tokens-refreshed', { detail: data }));
 
                 processQueue(null, data.accessToken);
@@ -152,7 +122,7 @@ axiosInstance.interceptors.response.use(
                 originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
-                // Refresh failed (token expired or revoked) → force logout
+                // Refresh failed (cookie expired or revoked) → force logout
                 processQueue(refreshError, null);
                 clearTokens();
                 window.dispatchEvent(new CustomEvent('session-expired'));
