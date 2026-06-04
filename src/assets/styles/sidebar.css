@@ -194,7 +194,27 @@
     margin: var(--space-2);
 }
 
-.sidebar-logo { height: 32px; width: auto; display: block; }
+.app-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.app-logo img {
+  width: auto;
+  flex-shrink: 0;
+}
+
+.app-logo span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.sidebar-logo img  { height: 28px; }
+.sidebar-logo span { font-size: 1.15rem; color: var(--color-text-primary); }
 
 /* ---- Botón hamburger ---- */
 .sidebar__hamburger {
@@ -363,7 +383,8 @@
         letter-spacing: var(--tracking-tight);
     }
 
-    .mobile-header-logo { height: 28px; width: auto; display: block; }
+    .mobile-header-logo img  { height: 24px; }
+    .mobile-header-logo span { font-size: 1.05rem; color: var(--color-text-primary); }
 
     .mobile-header__accions {
         display: flex;

@@ -23,7 +23,9 @@
 }
 
 /* ---- Header ---- */
-.auth-logo { height: 48px; width: auto; display: block; margin: 0 auto 1.5rem; }
+.auth-logo              { margin: 0 auto 1.5rem; justify-content: center; }
+.auth-logo img          { height: 48px; }
+.auth-logo span         { font-size: 1.8rem; color: var(--color-heading, #18142E); }
 
 .auth-card__title {
     font-size: var(--text-xl);
