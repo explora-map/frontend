@@ -128,11 +128,14 @@ export default function MapaPrincipalPage() {
     const navigate = useNavigate();
     const { isAuthenticated, username } = useAuth();
 
-    const [coords, setCoords] = useState(() =>
-        coordsActuais
-            ? { lat: coordsActuais.lat, lng: coordsActuais.lon, zoom: 13 }
-            : GALICIA
-    );
+    const [coords, setCoords] = useState(GALICIA);
+
+    useEffect(() => {
+        if (coordsActuais) {
+            setCoords({ lat: coordsActuais.lat, lng: coordsActuais.lon, zoom: 13 });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const [destino, setDestino] = useState(null);
 
     // Panel unificado: null | 'cargando' | { nome, emoji, temp, desc, vento }
