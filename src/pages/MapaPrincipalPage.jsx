@@ -716,6 +716,7 @@ export default function MapaPrincipalPage() {
                     onLocationSelect={
                         (mapaIdEngadindo && !mostrarFormMarcador)
                             ? ({ lat, lng }) => {
+                                console.log('[DEBUG] onLocationSelect chamado', lat, lng);
                                 setCoordsNovaMarcador({ lat, lng });
                                 setMostrarFormMarcador(true);
                             }
