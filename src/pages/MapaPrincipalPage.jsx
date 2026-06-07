@@ -177,11 +177,9 @@ export default function MapaPrincipalPage() {
     useEffect(() => {
         const store = useMapaVisualStore.getState();
         const ca = store.coordsActuais;
-        console.log('[DEBUG] location effect, ca:', ca, 'ref:', coordsAplicadasRef.current);
-        if (ca && coordsAplicadasRef.current !== `${ca.lat},${ca.lon}`) {
+if (ca && coordsAplicadasRef.current !== `${ca.lat},${ca.lon}`) {
             coordsAplicadasRef.current = `${ca.lat},${ca.lon}`;
-            console.log('[DEBUG] chamando setCoords', ca.lat, ca.lon);
-            setCoords({ lat: ca.lat, lng: ca.lon, zoom: 13 });
+setCoords({ lat: ca.lat, lng: ca.lon, zoom: 13 });
         }
     }, [location]);
 
@@ -213,6 +211,8 @@ export default function MapaPrincipalPage() {
 
     useEffect(() => {
         if (!navigator.geolocation) return;
+        const store = useMapaVisualStore.getState();
+        if (store.coordsActuais) return;
         navigator.geolocation.getCurrentPosition(
             (pos) => setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude, zoom: 13 }),
             () => {},
