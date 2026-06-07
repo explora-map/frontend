@@ -10,11 +10,20 @@ import { obterMeusMaps, obterMapasColaboradora, obterMapasGardados } from '../se
 import { desgardarMapa } from '../services/mapaGardadoApi';
 import { BookmarkFilledIcon, EyeIcon } from '../components/Iconas';
 import MapaCard from '../components/MapaCard';
+import useMapaVisualStore from '../store/useMapaVisualStore';
+import axiosInstance from '../services/axiosInstance';
 import '../assets/styles/mapas.css';
 
 export default function MapaListPage() {
     const { t } = useTranslation();
     const navigate = useNavigate();
+
+    const toggleMapa             = useMapaVisualStore(s => s.toggleMapa);
+    const isMapaActivo           = useMapaVisualStore(s => s.isMapaActivo);
+    const setCategoriasMapa      = useMapaVisualStore(s => s.setCategoriasMapa);
+    const setMarcadoresMapa      = useMapaVisualStore(s => s.setMarcadoresMapa);
+    const activarTodasCategorias = useMapaVisualStore(s => s.activarTodasCategorias);
+    const setCoords              = useMapaVisualStore(s => s.setCoords);
 
     const LAPELAS = [
         { id: 'creados',       label: t('mapas.lapela.creados') },
@@ -68,8 +77,7 @@ export default function MapaListPage() {
         setErrorGardados('');
         try {
             const data = await obterMapasGardados();
-            console.log('[DEBUG] mapa gardado:', data[0]);
-            setMapasGardados(data);
+setMapasGardados(data);
         } catch {
             setErrorGardados(t('mapas.erroCargarGardados'));
         } finally {
@@ -92,6 +100,25 @@ export default function MapaListPage() {
 
     function handleVisibilidadeCambiada(mapaActualizado) {
         setMapasCreados((prev) => prev.map((m) => (m.id === mapaActualizado.id ? mapaActualizado : m)));
+    }
+
+    async function activarMapaConCategorias(mapaId) {
+        if (!isMapaActivo(mapaId)) {
+            toggleMapa(mapaId);
+        }
+        try {
+            const [catsRes, marcsRes] = await Promise.all([
+                axiosInstance.get(`/mapas/${mapaId}/categorias`),
+                axiosInstance.get(`/mapas/${mapaId}/marcadores`),
+            ]);
+            const cats = catsRes.data ?? [];
+            const marcs = marcsRes.data ?? [];
+            setCategoriasMapa(String(mapaId), cats);
+            setMarcadoresMapa(String(mapaId), marcs);
+            activarTodasCategorias(cats.map(c => String(c.id)));
+        } catch {
+            // silently ignore
+        }
     }
 
     async function handleDesgardar(mapaId) {
@@ -207,7 +234,12 @@ export default function MapaListPage() {
                                                     <BookmarkFilledIcon size={18} />
                                                 </button>
                                                 <button
-                                                    onClick={(e) => { e.stopPropagation(); navigate(`/mapas/${mapa.id}`); }}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        activarMapaConCategorias(mapa.id);
+                                                        setCoords(mapa.latitude, mapa.lonxitude);
+                                                        navigate('/');
+                                                    }}
                                                     title="Ver mapa"
                                                     className="btn btn--ghost btn--icon"
                                                 >

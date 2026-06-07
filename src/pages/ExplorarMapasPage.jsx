@@ -20,6 +20,7 @@ export default function ExplorarMapasPage() {
     const setCategoriasMapa      = useMapaVisualStore(s => s.setCategoriasMapa);
     const setMarcadoresMapa      = useMapaVisualStore(s => s.setMarcadoresMapa);
     const activarTodasCategorias = useMapaVisualStore(s => s.activarTodasCategorias);
+    const setCoords              = useMapaVisualStore(s => s.setCoords);
 
     const [inputBusca, setInputBusca] = useState('');
     const [mapasGardadosIds, setMapasGardadosIds] = useState(new Set());
@@ -183,6 +184,7 @@ export default function ExplorarMapasPage() {
                                 <button
                                     onClick={() => {
                                         activarMapaConCategorias(mapa.id);
+                                        setCoords(mapa.latitude, mapa.lonxitude);
                                         navigate('/');
                                     }}
                                     title="Ver no mapa"

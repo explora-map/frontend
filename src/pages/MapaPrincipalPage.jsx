@@ -128,7 +128,11 @@ export default function MapaPrincipalPage() {
     const navigate = useNavigate();
     const { isAuthenticated, username } = useAuth();
 
-    const [coords, setCoords] = useState(GALICIA);
+    const [coords, setCoords] = useState(() =>
+        coordsActuais
+            ? { lat: coordsActuais.lat, lng: coordsActuais.lon, zoom: 13 }
+            : GALICIA
+    );
     const [destino, setDestino] = useState(null);
 
     // Panel unificado: null | 'cargando' | { nome, emoji, temp, desc, vento }
@@ -159,6 +163,7 @@ export default function MapaPrincipalPage() {
     const [erroEditPanel, setErroEditPanel] = useState('');
 
     const setCoordsStore          = useMapaVisualStore(s => s.setCoords);
+    const coordsActuais           = useMapaVisualStore(s => s.coordsActuais);
     const mapasActivos            = useMapaVisualStore(s => s.mapasActivos);
     const marcadoresPorMapa       = useMapaVisualStore(s => s.marcadoresPorMapa);
     const categoriasActivas       = useMapaVisualStore(s => s.categoriasActivas);
@@ -347,8 +352,7 @@ export default function MapaPrincipalPage() {
             const res = await axiosInstance.get(`/mapas/publicos?lat=${lat}&lon=${lng}&radius=100`);
             console.log('Mapas públicos recibidos:', res.data);
             console.log('Params usados:', { lat, lon: lng, radius: 100 });
-            console.log('[DEBUG] mapa próximo:', Array.isArray(res.data) && res.data[0]);
-            setMapasZona(Array.isArray(res.data) ? res.data : []);
+setMapasZona(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             console.log('cargarMapas: erro:', err.response?.status, err.response?.data);
             setMapasZona([]);
@@ -586,7 +590,11 @@ export default function MapaPrincipalPage() {
                                     </button>
                                 )}
                                 <button
-                                    onClick={() => { activarMapaConCategorias(mapa.id); fecharPanel(); }}
+                                    onClick={() => {
+                                        activarMapaConCategorias(mapa.id);
+                                        setCoordsStore(mapa.latitude, mapa.lonxitude);
+                                        fecharPanel();
+                                    }}
                                     title="Ver no mapa"
                                     className="btn btn--ghost btn--icon"
                                 >
