@@ -140,6 +140,30 @@ export default function MapViewer({
         };
     }, [onLocationSelect]);
 
+    // Crear ou destruír o marcador central cando o prop `marker` cambia en tempo de execución
+    useEffect(() => {
+        if (!mapRef.current) return;
+        if (marker) {
+            if (!markerRef.current) {
+                markerRef.current = L.marker([latitude, lonxitude], { draggable: markerDraggable }).addTo(mapRef.current);
+                if (markerDraggable && onLocationSelect) {
+                    markerRef.current.on('dragend', () => {
+                        const { lat, lng } = markerRef.current.getLatLng();
+                        onLocationSelect({ lat, lng });
+                    });
+                }
+            } else {
+                markerRef.current.setLatLng([latitude, lonxitude]);
+            }
+        } else {
+            if (markerRef.current) {
+                markerRef.current.remove();
+                markerRef.current = null;
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [marker]);
+
     // Render named markers from the marcadores array; remove previous ones first
     useEffect(() => {
         if (!mapRef.current) return;
