@@ -180,6 +180,7 @@ export default function MapaPrincipalPage() {
         console.log('[DEBUG] location effect, ca:', ca, 'ref:', coordsAplicadasRef.current);
         if (ca && coordsAplicadasRef.current !== `${ca.lat},${ca.lon}`) {
             coordsAplicadasRef.current = `${ca.lat},${ca.lon}`;
+            console.log('[DEBUG] chamando setCoords', ca.lat, ca.lon);
             setCoords({ lat: ca.lat, lng: ca.lon, zoom: 13 });
         }
     }, [location]);
