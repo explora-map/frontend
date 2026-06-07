@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import L from 'leaflet';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import MapViewer from '../components/MapViewer';
 import MapSearchBar from '../components/MapSearchBar';
 import axiosInstance from '../services/axiosInstance';
@@ -126,6 +126,7 @@ function FormNovaMarcador({ coords, categorias, onGardar, onCancelar }) {
 
 export default function MapaPrincipalPage() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { isAuthenticated, username } = useAuth();
 
     const [coords, setCoords] = useState(GALICIA);
@@ -160,7 +161,6 @@ export default function MapaPrincipalPage() {
     const [erroEditPanel, setErroEditPanel] = useState('');
 
     const setCoordsStore          = useMapaVisualStore(s => s.setCoords);
-    const coordsActuais           = useMapaVisualStore(s => s.coordsActuais);
     const mapasActivos            = useMapaVisualStore(s => s.mapasActivos);
     const marcadoresPorMapa       = useMapaVisualStore(s => s.marcadoresPorMapa);
     const categoriasActivas       = useMapaVisualStore(s => s.categoriasActivas);
@@ -173,13 +173,15 @@ export default function MapaPrincipalPage() {
     const activarTodasCategorias  = useMapaVisualStore(s => s.activarTodasCategorias);
     const isMapaActivo            = useMapaVisualStore(s => s.isMapaActivo);
 
-    const coordsActuaisAplicadas = useRef(false);
+    const coordsAplicadasRef = useRef(null);
     useEffect(() => {
-        if (coordsActuais && !coordsActuaisAplicadas.current) {
-            coordsActuaisAplicadas.current = true;
-            setCoords({ lat: coordsActuais.lat, lng: coordsActuais.lon, zoom: 13 });
+        const store = useMapaVisualStore.getState();
+        const ca = store.coordsActuais;
+        if (ca && coordsAplicadasRef.current !== `${ca.lat},${ca.lon}`) {
+            coordsAplicadasRef.current = `${ca.lat},${ca.lon}`;
+            setCoords({ lat: ca.lat, lng: ca.lon, zoom: 13 });
         }
-    }, [coordsActuais]);
+    }, [location]);
 
     const marcadoresVisuais = useMemo(() => {
         const resultado = [];
