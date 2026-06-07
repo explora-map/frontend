@@ -347,6 +347,7 @@ export default function MapaPrincipalPage() {
             const res = await axiosInstance.get(`/mapas/publicos?lat=${lat}&lon=${lng}&radius=100`);
             console.log('Mapas públicos recibidos:', res.data);
             console.log('Params usados:', { lat, lon: lng, radius: 100 });
+            console.log('[DEBUG] mapa próximo:', Array.isArray(res.data) && res.data[0]);
             setMapasZona(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             console.log('cargarMapas: erro:', err.response?.status, err.response?.data);

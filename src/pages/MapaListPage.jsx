@@ -68,6 +68,7 @@ export default function MapaListPage() {
         setErrorGardados('');
         try {
             const data = await obterMapasGardados();
+            console.log('[DEBUG] mapa gardado:', data[0]);
             setMapasGardados(data);
         } catch {
             setErrorGardados(t('mapas.erroCargarGardados'));

@@ -164,7 +164,7 @@ export default function ExplorarMapasPage() {
             )}
             {!cargando && mapas.length > 0 && (
                 <div className="explorar-page__grid">
-                    {mapas.map(mapa => { console.log('mapa:', mapa); return (
+                    {mapas.map(mapa => (
                         <div key={mapa.id} className="explorar-card explorar-card--relativo">
                             <div className="explorar-card__accions">
                                 {isAuthenticated && mapa.creadoPor !== username && (
@@ -198,7 +198,7 @@ export default function ExplorarMapasPage() {
                             <div className="explorar-card__meta">{mapa.cidade || mapa.nomeLocalizacion}</div>
                             <div className="explorar-card__meta">{mapa.rexion && mapa.pais ? `${mapa.rexion} · ${mapa.pais}` : ''} · {mapa.creadoPor}</div>
                         </div>
-                    ); })}
+                    ))}
                 </div>
             )}
         </div>
