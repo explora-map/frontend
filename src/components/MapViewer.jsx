@@ -19,6 +19,7 @@ import 'leaflet/dist/leaflet.css';
 
 // Fix default marker icon broken by Vite/webpack asset hashing
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -145,7 +146,16 @@ export default function MapViewer({
         if (!mapRef.current) return;
         if (marker) {
             if (!markerRef.current) {
-                markerRef.current = L.marker([latitude, lonxitude], { draggable: markerDraggable }).addTo(mapRef.current);
+                const defaultIcon = L.icon({
+                    iconUrl: markerIcon,
+                    iconRetinaUrl: markerIcon2x,
+                    shadowUrl: markerShadow,
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41],
+                });
+                markerRef.current = L.marker([latitude, lonxitude], { draggable: markerDraggable, icon: defaultIcon }).addTo(mapRef.current);
                 if (markerDraggable && onLocationSelect) {
                     markerRef.current.on('dragend', () => {
                         const { lat, lng } = markerRef.current.getLatLng();
