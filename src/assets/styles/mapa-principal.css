@@ -371,6 +371,11 @@
 
 /* Barra de información da ruta */
 .panel-rutas__info {
+    position: absolute;
+    bottom: var(--space-6);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
     background: var(--color-primary-500);
     color: var(--color-neutral-50);
     border-radius: var(--radius-lg);
@@ -379,6 +384,9 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+    text-align: center;
+    min-width: 220px;
+    pointer-events: all;
 }
 
 .panel-rutas__pechar {
