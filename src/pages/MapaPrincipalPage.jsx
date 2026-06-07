@@ -130,12 +130,6 @@ export default function MapaPrincipalPage() {
 
     const [coords, setCoords] = useState(GALICIA);
 
-    useEffect(() => {
-        if (coordsActuais) {
-            setCoords({ lat: coordsActuais.lat, lng: coordsActuais.lon, zoom: 13 });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
     const [destino, setDestino] = useState(null);
 
     // Panel unificado: null | 'cargando' | { nome, emoji, temp, desc, vento }
@@ -178,6 +172,12 @@ export default function MapaPrincipalPage() {
     const setCategoriasMapa       = useMapaVisualStore(s => s.setCategoriasMapa);
     const activarTodasCategorias  = useMapaVisualStore(s => s.activarTodasCategorias);
     const isMapaActivo            = useMapaVisualStore(s => s.isMapaActivo);
+
+    useEffect(() => {
+        if (coordsActuais) {
+            setCoords({ lat: coordsActuais.lat, lng: coordsActuais.lon, zoom: 13 });
+        }
+    }, [coordsActuais]);
 
     const marcadoresVisuais = useMemo(() => {
         const resultado = [];
