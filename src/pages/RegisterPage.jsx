@@ -167,7 +167,7 @@ export default function RegisterPage() {
                         Enviámosche un correo de verificación. Preme na ligazón para activar a túa conta.
                     </p>
                     <button
-                        className="btn btn--secondary auth-submit--full"
+                        className="btn btn--primary auth-submit--full"
                         onClick={() => navigate('/login')}
                     >
                         Ir ao login
