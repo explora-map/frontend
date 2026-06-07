@@ -173,8 +173,10 @@ export default function MapaPrincipalPage() {
     const activarTodasCategorias  = useMapaVisualStore(s => s.activarTodasCategorias);
     const isMapaActivo            = useMapaVisualStore(s => s.isMapaActivo);
 
+    const coordsActuaisAplicadas = useRef(false);
     useEffect(() => {
-        if (coordsActuais) {
+        if (coordsActuais && !coordsActuaisAplicadas.current) {
+            coordsActuaisAplicadas.current = true;
             setCoords({ lat: coordsActuais.lat, lng: coordsActuais.lon, zoom: 13 });
         }
     }, [coordsActuais]);
@@ -212,10 +214,6 @@ export default function MapaPrincipalPage() {
             () => {},
         );
     }, []);
-
-    useEffect(() => {
-        setCoordsStore(coords.lat, coords.lng);
-    }, [coords.lat, coords.lng]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         if (!isAuthenticated) return;
