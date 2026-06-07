@@ -217,6 +217,7 @@ export default function MapViewer({
     // Keep marker in sync when coordinates change from outside (edit page pre-fill)
     useEffect(() => {
         if (!mapRef.current) return;
+        console.log('[DEBUG] MapViewer setView', latitude, lonxitude, zoom);
         mapRef.current.setView([latitude, lonxitude], zoom);
         if (markerRef.current) {
             markerRef.current.setLatLng([latitude, lonxitude]);
