@@ -686,12 +686,14 @@ export default function MapaPrincipalPage() {
 
             {/* Formulario de novo marcador */}
             {mostrarFormMarcador && coordsNovaMarcador && (
-                <FormNovaMarcador
-                    coords={coordsNovaMarcador}
-                    categorias={categoriasDisponibles}
-                    onGardar={handleGardarMarcador}
-                    onCancelar={cancelarEngadirMarcador}
-                />
+                <div className="mapa-principal__form-marcador-wrap">
+                    <FormNovaMarcador
+                        coords={coordsNovaMarcador}
+                        categorias={categoriasDisponibles}
+                        onGardar={handleGardarMarcador}
+                        onCancelar={cancelarEngadirMarcador}
+                    />
+                </div>
             )}
 
             {/* Mapa */}
