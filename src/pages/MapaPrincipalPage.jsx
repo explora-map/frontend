@@ -372,6 +372,7 @@ setMapasZona(Array.isArray(res.data) ? res.data : []);
             return;
         }
         setDestino({ lat, lng });
+        console.log('[DEBUG] coords:', { lat, lng, zoom }, 'destino:', { lat, lng });
         cancelarDirections();
         if (nome) cargarTempo(lat, lng, nome);
         cargarMapas(lat, lng);
