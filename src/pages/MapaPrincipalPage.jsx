@@ -714,7 +714,7 @@ setMapasZona(Array.isArray(res.data) ? res.data : []);
                     latitude={coords.lat}
                     lonxitude={coords.lng}
                     zoom={coords.zoom}
-                    marker={false}
+                    marker={!!destino}
                     height="100%"
                     marcadores={marcadoresVisuais}
                     onMarcadorClick={(marcador) => {
