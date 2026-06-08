@@ -63,14 +63,20 @@ export default function App() {
                     <Route path="/verificar" element={<VerificarPage />} />
 
                     {/* Rutas públicas con layout (Sidebar visible sen autenticación) */}
-                    <Route element={<AppLayout onVisualizarClick={() => setPanelVisualizar(prev => !prev)} />}>
+                    <Route element={<AppLayout onVisualizarClick={() => {
+                            setPanelVisualizar(prev => !prev);
+                            window.dispatchEvent(new CustomEvent('visualizar-toggle'));
+                        }} />}>
                         <Route path="/"        element={<MapaPrincipalPage />} />
                         <Route path="/explorar" element={<ExplorarMapasPage />} />
                     </Route>
 
                     {/* Rutas protexidas con layout */}
                     <Route element={<ProtectedRoute />}>
-                        <Route element={<AppLayout onVisualizarClick={() => setPanelVisualizar(prev => !prev)} />}>
+                        <Route element={<AppLayout onVisualizarClick={() => {
+                            setPanelVisualizar(prev => !prev);
+                            window.dispatchEvent(new CustomEvent('visualizar-toggle'));
+                        }} />}>
                             <Route path="/mapas"            element={<MapaListPage />} />
                             {/* /mapas/novo antes de /mapas/:id para evitar conflito de segmento */}
                             <Route path="/mapas/novo"       element={<MapaCrearPage />} />

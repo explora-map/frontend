@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { CloseIcon } from './Iconas';
 
 // Nominatim search with debounce — no external dependencies needed
-export default function MapSearchBar({ onLocationSelect, placeholder }) {
+export default function MapSearchBar({ onLocationSelect, placeholder, onFocus }) {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [resultados, setResultados] = useState([]);
@@ -97,6 +97,7 @@ export default function MapSearchBar({ onLocationSelect, placeholder }) {
           type="search"
           value={query}
           onChange={handleChange}
+          onFocus={onFocus}
           placeholder={placeholderText}
           aria-label={placeholderText}
           aria-expanded={aberto}

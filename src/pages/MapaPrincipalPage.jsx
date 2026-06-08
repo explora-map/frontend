@@ -253,6 +253,13 @@ setCoords({ lat: ca.lat, lng: ca.lon, zoom: 13 });
         return () => window.removeEventListener('centrar-mapa', handleCentrarMapa);
     }, []);
 
+    useEffect(() => {
+        const handler = () => fecharPanel();
+        window.addEventListener('visualizar-toggle', handler);
+        return () => window.removeEventListener('visualizar-toggle', handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     /* ---- Gardar mapa ---- */
 
     async function toggleGardar(mapaId) {
@@ -528,7 +535,10 @@ setMapasZona(Array.isArray(res.data) ? res.data : []);
 
             {/* Barra de busca flotante */}
             <div className="mapa-principal__buscador">
-                <MapSearchBar onLocationSelect={handleLocationSelect} />
+                <MapSearchBar
+                    onLocationSelect={handleLocationSelect}
+                    onFocus={fecharPanel}
+                />
             </div>
 
             {/* Panel unificado: tempo + mapas + directions */}
