@@ -211,6 +211,7 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1;
+  color: var(--color-primary-500);
 }
 
 .sidebar-logo img  { height: 28px; }
