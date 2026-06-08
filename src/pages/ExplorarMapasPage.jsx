@@ -10,7 +10,7 @@ import useMapaVisualStore from '../store/useMapaVisualStore';
 const LAT_GALICIA = 42.8782;
 const LON_GALICIA = -8.5448;
 const RADIUS_DESTACADOS = 50000;
-const RADIUS_BUSCA = 50000;
+const RADIUS_BUSCA = 50;
 
 export default function ExplorarMapasPage() {
     const navigate = useNavigate();

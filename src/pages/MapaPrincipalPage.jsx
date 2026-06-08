@@ -361,7 +361,7 @@ setCoords({ lat: ca.lat, lng: ca.lon, zoom: 13 });
         setCargandoMapas(true);
         setMapasZona([]);
         try {
-            const res = await axiosInstance.get(`/mapas/publicos?lat=${lat}&lon=${lng}&radius=100`);
+            const res = await axiosInstance.get(`/mapas/publicos?lat=${lat}&lon=${lng}&radius=5`);
             console.log('Mapas públicos recibidos:', res.data);
             console.log('Params usados:', { lat, lon: lng, radius: 100 });
 setMapasZona(Array.isArray(res.data) ? res.data : []);
