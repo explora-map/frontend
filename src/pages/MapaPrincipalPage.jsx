@@ -802,6 +802,23 @@ setCoordsNovaMarcador({ lat, lng });
                                 placeholder="Descrición"
                                 disabled={gardandoEditPanel}
                             />
+                            {(() => {
+                                const cats = categoriasPorMapa[String(marcadorSeleccionado?.mapaId)] ?? [];
+                                if (cats.length === 0) return null;
+                                return (
+                                    <select
+                                        className="modal-input"
+                                        value={categoriaIdEditPanel}
+                                        onChange={(e) => setCategoriaIdEditPanel(e.target.value)}
+                                        disabled={gardandoEditPanel}
+                                    >
+                                        <option value="">Sen categoría</option>
+                                        {cats.map(cat => (
+                                            <option key={cat.id} value={cat.id}>{cat.nome}</option>
+                                        ))}
+                                    </select>
+                                );
+                            })()}
                             {erroEditPanel && <p className="panel-rutas__erro">{erroEditPanel}</p>}
                             <div className="marcador-popup-flotante__accions">
                                 <button
