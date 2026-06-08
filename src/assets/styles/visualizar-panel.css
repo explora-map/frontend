@@ -98,6 +98,7 @@
 .mapa-toggle-item__count {
     font-size: var(--text-xs);
     color: var(--color-neutral-500);
+    white-space: nowrap;
 }
 
 /* ---- Botóns de acción do mapa item ---- */
