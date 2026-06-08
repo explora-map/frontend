@@ -25,7 +25,6 @@ import '../assets/styles/mapas.css';
 function AddressSearchField({ onSelect }) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const debounceRef = useRef(null);
     const wrapperRef = useRef(null);
@@ -51,7 +50,6 @@ function AddressSearchField({ onSelect }) {
             return;
         }
         debounceRef.current = setTimeout(async () => {
-            setLoading(true);
             try {
                 const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(val)}&format=json&limit=5`;
                 const res = await fetch(url, { headers: { 'User-Agent': 'ExploraMap/1.0' } });
@@ -61,8 +59,6 @@ function AddressSearchField({ onSelect }) {
             } catch {
                 setResults([]);
                 setOpen(false);
-            } finally {
-                setLoading(false);
             }
         }, 400);
     }
@@ -121,7 +117,6 @@ function AddressSearchField({ onSelect }) {
                 aria-haspopup="listbox"
                 aria-autocomplete="list"
                 autoComplete="off"
-                disabled={loading}
             />
             {open && results.length > 0 && (
                 <ul
