@@ -25,6 +25,7 @@ export default function ExplorarMapasPage() {
     const [inputBusca, setInputBusca] = useState('');
     const [mapasGardadosIds, setMapasGardadosIds] = useState(new Set());
     const [buscaActiva, setBuscaActiva] = useState('');
+    const [zonaActual, setZonaActual] = useState('');
     const [mapas, setMapas] = useState([]);
     const [cargando, setCargando] = useState(true);
 
@@ -46,9 +47,20 @@ export default function ExplorarMapasPage() {
     useEffect(() => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                (pos) => {
+                async (pos) => {
                     const { latitude: lat, longitude: lon } = pos.coords;
                     cargarMapas(lat, lon, RADIUS_BUSCA);
+                    try {
+                        const res = await fetch(
+                            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+                            { headers: { 'User-Agent': 'ExploraMap/1.0' } }
+                        );
+                        const data = await res.json();
+                        const nome = data.address?.city || data.address?.town || data.address?.village || data.address?.county || '';
+                        setZonaActual(nome);
+                    } catch {
+                        setZonaActual('');
+                    }
                 },
                 () => { setCargando(false); }
             );
@@ -164,7 +176,9 @@ export default function ExplorarMapasPage() {
                 <p className="explorar-page__mensaxe">
                     {buscaActiva
                         ? t('explorar.senResultadosZona', { zona: buscaActiva })
-                        : t('explorar.senResultados')}
+                        : zonaActual
+                            ? t('explorar.senResultadosZona', { zona: zonaActual })
+                            : t('explorar.senResultados')}
                 </p>
             )}
             {!cargando && mapas.length > 0 && (
