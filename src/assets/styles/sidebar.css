@@ -401,7 +401,7 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: var(--bottom-nav-height);
+        height: calc(var(--bottom-nav-height) + 12px);
         background-color: var(--color-surface-sidebar);
         border-top: var(--border-default);
         z-index: var(--z-sidebar);

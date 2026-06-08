@@ -661,6 +661,22 @@
     .form-actions .btn {
         width: 100%;
     }
+
+    .tabs {
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        flex-wrap: nowrap;
+    }
+
+    .tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tab {
+        flex-shrink: 0;
+        padding: var(--space-3) var(--space-4);
+    }
 }
 
 /* ---- AppLayout ---- */
