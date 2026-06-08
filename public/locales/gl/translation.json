@@ -250,9 +250,7 @@
       "titulo": "Explorar",
       "descriccion": "Descobre mapas públicos preto de ti",
       "btn": "Explorar mapa",
-      "aria": "Acceso rápido a Explorar",
-      "senResultados": "Non se atoparon mapas.",
-      "senResultadosZona": "Non se atoparon mapas na área de {{zona}}"
+      "aria": "Acceso rápido a Explorar"
     },
     "convites": {
       "titulo": "Convites",
@@ -287,5 +285,9 @@
   "accesibilidade": {
     "mostrarContrasinal": "Mostrar contrasinal",
     "ocultarContrasinal": "Ocultar contrasinal"
+  },
+  "explorar": {
+    "senResultados": "Non se atoparon mapas.",
+    "senResultadosZona": "Non se atoparon mapas na área de {{zona}}"
   }
 }

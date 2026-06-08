@@ -250,9 +250,7 @@
       "titulo": "Explore",
       "descriccion": "Discover public maps near you",
       "btn": "Explore map",
-      "aria": "Quick access to Explore",
-      "senResultados": "No maps found.",
-      "senResultadosZona": "No maps found in the area of {{zona}}"
+      "aria": "Quick access to Explore"
     },
     "convites": {
       "titulo": "Invitations",
@@ -287,5 +285,9 @@
   "accesibilidade": {
     "mostrarContrasinal": "Show password",
     "ocultarContrasinal": "Hide password"
+  },
+  "explorar": {
+    "senResultados": "No maps found in this area.",
+    "senResultadosZona": "No maps found in the area of {{zona}}"
   }
 }
