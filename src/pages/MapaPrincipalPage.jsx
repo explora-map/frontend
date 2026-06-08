@@ -718,7 +718,7 @@ setMapasZona(Array.isArray(res.data) ? res.data : []);
                     zoom={coords.zoom}
                     marker={!!destino}
                     provisionalMarker={
-                        (mapaIdEngadindo && !mostrarFormMarcador && coordsNovaMarcador)
+                        mapaIdEngadindo && coordsNovaMarcador
                             ? coordsNovaMarcador
                             : null
                     }
