@@ -250,7 +250,9 @@
       "titulo": "Explorar",
       "descriccion": "Descobre mapas públicos preto de ti",
       "btn": "Explorar mapa",
-      "aria": "Acceso rápido a Explorar"
+      "aria": "Acceso rápido a Explorar",
+      "senResultados": "Non se atoparon mapas.",
+      "senResultadosZona": "Non se atoparon mapas na área de {{zona}}"
     },
     "convites": {
       "titulo": "Convites",

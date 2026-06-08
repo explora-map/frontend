@@ -161,7 +161,11 @@ export default function ExplorarMapasPage() {
                 <p className="explorar-page__mensaxe">Cargando mapas...</p>
             )}
             {!cargando && mapas.length === 0 && (
-                <p className="explorar-page__mensaxe">{t('explorar.senResultados')}</p>
+                <p className="explorar-page__mensaxe">
+                    {buscaActiva
+                        ? t('explorar.senResultadosZona', { zona: buscaActiva })
+                        : t('explorar.senResultados')}
+                </p>
             )}
             {!cargando && mapas.length > 0 && (
                 <div className="explorar-page__grid">

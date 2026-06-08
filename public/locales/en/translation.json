@@ -250,7 +250,9 @@
       "titulo": "Explore",
       "descriccion": "Discover public maps near you",
       "btn": "Explore map",
-      "aria": "Quick access to Explore"
+      "aria": "Quick access to Explore",
+      "senResultados": "No maps found.",
+      "senResultadosZona": "No maps found in the area of {{zona}}"
     },
     "convites": {
       "titulo": "Invitations",
