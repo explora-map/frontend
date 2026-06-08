@@ -1357,6 +1357,42 @@
     margin-bottom: var(--space-4);
 }
 
+.membro-panel__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: var(--border-default);
+}
+
+.membro-panel__item:last-child {
+    border-bottom: none;
+}
+
+.membro-panel__username {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-neutral-800);
+    min-width: 120px;
+}
+
+.membro-panel__item .form-select {
+    width: auto;
+    flex: 1;
+    max-width: 180px;
+}
+
+.membro-panel__rol-label {
+    font-size: var(--text-sm);
+    color: var(--color-neutral-600);
+    flex: 1;
+}
+
+.membro-panel__feedback {
+    font-size: var(--text-xs);
+    color: var(--color-success);
+}
+
 .kebab-dots { display: flex; flex-direction: column; gap: 3px; align-items: center; }
 .kebab-dot  { width: 4px; height: 4px; border-radius: var(--radius-full);
               background-color: currentColor; }
