@@ -115,7 +115,7 @@ export default function MembroPanel({ mapaId, creadoPor, tipoMapa }) {
 
                                 {esPropietario ? (
                                     <select
-                                        className="membro-panel__rol-select"
+                                        className="form-select"
                                         value={m.rol}
                                         onChange={(e) => handleCambiarRol(m.username, e.target.value)}
                                         disabled={rolGardando === m.username}
