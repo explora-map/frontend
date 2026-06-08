@@ -206,10 +206,6 @@
   flex-shrink: 0;
 }
 
-[data-theme="dark"] .app-logo img {
-  filter: brightness(0) invert(1);
-}
-
 .app-logo span {
   font-family: 'Inter', sans-serif;
   font-weight: 700;
