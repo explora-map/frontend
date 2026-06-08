@@ -624,8 +624,14 @@
 
 /* ---- Responsive ---- */
 @media (max-width: 640px) {
+    .page {
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
     .page__main {
-        padding: var(--space-4);
+        padding: var(--space-4) var(--space-3);
+        overflow-x: hidden;
     }
 
 .mapa-grid {

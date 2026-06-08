@@ -66,13 +66,14 @@ export default function BottomNav({ onVisualizarClick }) {
         return location.pathname === ruta;
     }
 
-    const itemsNoAuth = [
-        { ruta: '/',         label: t('nav.explorar'),      icona: <GlobeIcon /> },
-        { ruta: '/explorar', label: t('nav.explorarMapas'), icona: <CompassIcon /> },
-        { ruta: '/login',    label: t('nav.iniciarSesion'), icona: <LoginIcon /> },
-    ];
-
     const soNaInicio = location.pathname === '/';
+
+    const itemsNoAuth = [
+        { ruta: '/',         label: t('nav.explorar'),        icona: <GlobeIcon /> },
+        { ruta: '/explorar', label: t('nav.explorarMapas'),   icona: <CompassIcon /> },
+        ...(soNaInicio && onVisualizarClick ? [{ ruta: '/mapas-visualizar', label: t('nav.visualizarMapas'), icona: <LayersIcon /> }] : []),
+        { ruta: '/login',    label: t('nav.iniciarSesion'),   icona: <LoginIcon /> },
+    ];
 
     const itemsAuth = [
         { ruta: '/',         label: t('nav.explorar'),        icona: <GlobeIcon /> },
