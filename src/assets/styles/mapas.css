@@ -1055,9 +1055,11 @@
 /* ---- MapaPrincipalPage: anular o padding do layout cando hai mapa a pantalla completa ---- */
 
 /* :has() anula o padding de app-layout__main cando contén o mapa principal */
-.app-layout__main:has(.mapa-principal-page) {
-    padding: 0;
-    overflow: hidden;
+@media (min-width: 641px) {
+    .app-layout__main:has(.mapa-principal-page) {
+        padding: 0;
+        overflow: hidden;
+    }
 }
 
 @media (max-width: 640px) {
