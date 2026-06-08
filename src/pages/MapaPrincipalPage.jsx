@@ -717,6 +717,11 @@ setMapasZona(Array.isArray(res.data) ? res.data : []);
                     lonxitude={coords.lng}
                     zoom={coords.zoom}
                     marker={!!destino}
+                    provisionalMarker={
+                        (mapaIdEngadindo && !mostrarFormMarcador && coordsNovaMarcador)
+                            ? coordsNovaMarcador
+                            : null
+                    }
                     height="100%"
                     marcadores={marcadoresVisuais}
                     onMarcadorClick={(marcador) => {
