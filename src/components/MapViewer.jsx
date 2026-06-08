@@ -30,12 +30,12 @@ function crearIconoProvisional() {
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36" opacity="0.8">
           <path
             d="M14 2C8.477 2 4 6.477 4 12c0 7.418 8.667 20.167 9.04 20.708a1.167 1.167 0 0 0 1.92 0C15.333 32.167 24 19.418 24 12c0-5.523-4.477-10-10-10z"
-            fill="white"
-            stroke="#9E97BB"
+            fill="#7C3AED"
+            stroke="#4C1D95"
             stroke-width="2.5"
             stroke-dasharray="5 3"
           />
-          <circle cx="14" cy="12" r="4" fill="#9E97BB" />
+          <circle cx="14" cy="12" r="4" fill="white" />
         </svg>
     `;
     return L.divIcon({
