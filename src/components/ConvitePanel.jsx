@@ -98,7 +98,7 @@ export default function ConvitePanel({ mapaId, tipoMapa }) {
                     aria-label="Nome de usuaria a convidar"
                 />
                 <select
-                    className="convite-panel__rol-select"
+                    className="form-select"
                     value={rolConvite}
                     onChange={(e) => setRolConvite(e.target.value)}
                     disabled={sending}
