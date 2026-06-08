@@ -1063,11 +1063,15 @@
 @media (max-width: 640px) {
     .app-layout__main:has(.mapa-principal-page) {
         padding: 0;
-        padding-top: var(--topbar-height);
-        padding-bottom: var(--bottom-nav-height);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
     .mapa-principal-page {
-        height: 100%;
+        flex: 1;
+        min-height: 0;
+        margin-top: var(--topbar-height);
+        margin-bottom: var(--bottom-nav-height);
         position: relative;
         overflow: hidden;
     }
