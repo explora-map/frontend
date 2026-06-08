@@ -1063,16 +1063,13 @@
 @media (max-width: 640px) {
     .app-layout__main:has(.mapa-principal-page) {
         padding: 0;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
     }
     .mapa-principal-page {
-        flex: 1;
-        min-height: 0;
-        margin-top: var(--topbar-height);
-        margin-bottom: var(--bottom-nav-height);
-        position: relative;
+        position: fixed;
+        top: var(--topbar-height);
+        left: 0;
+        right: 0;
+        bottom: var(--bottom-nav-height);
         overflow: hidden;
     }
 }
